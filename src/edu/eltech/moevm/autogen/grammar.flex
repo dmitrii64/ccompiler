@@ -110,8 +110,8 @@ L?'(\\.|[^\\'])+'	{ return Parser.CONSTANT; }
 "="			{ return Parser.EQUAL; }
 "("			{ return Parser.RBLEFT; }
 ")"			{ return Parser.RBRIGHT; }
-("["|"<:")		{ return Parser.BRACKETLEFT; }
-("]"|":>")		{ return Parser.BRACKETRIGHT; }
+"["         { return Parser.BRACKETLEFT; }
+"]"         { return Parser.BRACKETRIGHT; }
 "."			{ return Parser.DOT; }
 "&"			{ return Parser.AMP; }
 "!"			{ return Parser.EXCL; }

@@ -12,7 +12,6 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 %{
-  package edu.eltech.moevm.autogen;
   import java.io.*;
 %}
       
@@ -39,15 +38,15 @@ primary_expression
 	: IDENTIFIER
 	| CONSTANT
 	| STRING_LITERAL
-	| '(' expression ')'
+	| RBLEFT expression RBRIGHT
 	;
 
 postfix_expression
 	: primary_expression
-	| postfix_expression '[' expression ']'
-	| postfix_expression '(' ')'
-	| postfix_expression '(' argument_expression_list ')'
-	| postfix_expression '.' IDENTIFIER
+	| postfix_expression BRACKETLEFT expression BRACKETRIGHT
+	| postfix_expression RBLEFT RBRIGHT
+	| postfix_expression RBLEFT argument_expression_list RBRIGHT
+	| postfix_expression DOT IDENTIFIER
 	| postfix_expression PTR_OP IDENTIFIER
 	| postfix_expression INC_OP
 	| postfix_expression DEC_OP
@@ -55,7 +54,7 @@ postfix_expression
 
 argument_expression_list
 	: assignment_expression
-	| argument_expression_list ',' assignment_expression
+	| argument_expression_list COMMA assignment_expression
 	;
 
 unary_expression
@@ -64,34 +63,34 @@ unary_expression
 	| DEC_OP unary_expression
 	| unary_operator cast_expression
 	| SIZEOF unary_expression
-	| SIZEOF '(' type_name ')'
+	| SIZEOF RBLEFT type_name RBRIGHT
 	;
 
 unary_operator
-	: '&'
-	| '*'
-	| '+'
-	| '-'
-	| '~'
-	| '!'
+	: AMP
+	| STAR
+	| PLUS
+	| MINUS
+	| TILDE
+	| EXCL
 	;
 
 cast_expression
 	: unary_expression
-	| '(' type_name ')' cast_expression
+	| RBLEFT type_name RBRIGHT cast_expression
 	;
 
 multiplicative_expression
 	: cast_expression
-	| multiplicative_expression '*' cast_expression
-	| multiplicative_expression '/' cast_expression
-	| multiplicative_expression '%' cast_expression
+	| multiplicative_expression STAR cast_expression
+	| multiplicative_expression SLASH cast_expression
+	| multiplicative_expression PERCENT cast_expression
 	;
 
 additive_expression
 	: multiplicative_expression
-	| additive_expression '+' multiplicative_expression
-	| additive_expression '-' multiplicative_expression
+	| additive_expression PLUS multiplicative_expression
+	| additive_expression MINUS multiplicative_expression
 	;
 
 shift_expression
@@ -102,8 +101,8 @@ shift_expression
 
 relational_expression
 	: shift_expression
-	| relational_expression '<' shift_expression
-	| relational_expression '>' shift_expression
+	| relational_expression LESS shift_expression
+	| relational_expression GREATER shift_expression
 	| relational_expression LE_OP shift_expression
 	| relational_expression GE_OP shift_expression
 	;
@@ -116,17 +115,17 @@ equality_expression
 
 and_expression
 	: equality_expression
-	| and_expression '&' equality_expression
+	| and_expression AMP equality_expression
 	;
 
 exclusive_or_expression
 	: and_expression
-	| exclusive_or_expression '^' and_expression
+	| exclusive_or_expression CARET and_expression
 	;
 
 inclusive_or_expression
 	: exclusive_or_expression
-	| inclusive_or_expression '|' exclusive_or_expression
+	| inclusive_or_expression BAR exclusive_or_expression
 	;
 
 logical_and_expression
@@ -141,7 +140,7 @@ logical_or_expression
 
 conditional_expression
 	: logical_or_expression
-	| logical_or_expression '?' expression ':' conditional_expression
+	| logical_or_expression QUESTION expression COLON conditional_expression
 	;
 
 assignment_expression
@@ -150,7 +149,7 @@ assignment_expression
 	;
 
 assignment_operator
-	: '='
+	: EQUAL
 	| MUL_ASSIGN
 	| DIV_ASSIGN
 	| MOD_ASSIGN
@@ -165,7 +164,7 @@ assignment_operator
 
 expression
 	: assignment_expression
-	| expression ',' assignment_expression
+	| expression COMMA assignment_expression
 	;
 
 constant_expression
@@ -173,8 +172,8 @@ constant_expression
 	;
 
 declaration
-	: declaration_specifiers ';'
-	| declaration_specifiers init_declarator_list ';'
+	: declaration_specifiers SEMICOLON
+	| declaration_specifiers init_declarator_list SEMICOLON
 	;
 
 declaration_specifiers
@@ -188,12 +187,12 @@ declaration_specifiers
 
 init_declarator_list
 	: init_declarator
-	| init_declarator_list ',' init_declarator
+	| init_declarator_list COMMA init_declarator
 	;
 
 init_declarator
 	: declarator
-	| declarator '=' initializer
+	| declarator EQUAL initializer
 	;
 
 storage_class_specifier
@@ -220,8 +219,8 @@ type_specifier
 	;
 
 struct_or_union_specifier
-	: struct_or_union IDENTIFIER '{' struct_declaration_list '}'
-	| struct_or_union '{' struct_declaration_list '}'
+	: struct_or_union IDENTIFIER BRACELEFT struct_declaration_list BRACERIGHT
+	| struct_or_union BRACELEFT struct_declaration_list BRACERIGHT
 	| struct_or_union IDENTIFIER
 	;
 
@@ -236,7 +235,7 @@ struct_declaration_list
 	;
 
 struct_declaration
-	: specifier_qualifier_list struct_declarator_list ';'
+	: specifier_qualifier_list struct_declarator_list SEMICOLON
 	;
 
 specifier_qualifier_list
@@ -248,29 +247,29 @@ specifier_qualifier_list
 
 struct_declarator_list
 	: struct_declarator
-	| struct_declarator_list ',' struct_declarator
+	| struct_declarator_list COMMA struct_declarator
 	;
 
 struct_declarator
 	: declarator
-	| ':' constant_expression
-	| declarator ':' constant_expression
+	| COLON constant_expression
+	| declarator COLON constant_expression
 	;
 
 enum_specifier
-	: ENUM '{' enumerator_list '}'
-	| ENUM IDENTIFIER '{' enumerator_list '}'
+	: ENUM BRACELEFT enumerator_list BRACERIGHT
+	| ENUM IDENTIFIER BRACELEFT enumerator_list BRACERIGHT
 	| ENUM IDENTIFIER
 	;
 
 enumerator_list
 	: enumerator
-	| enumerator_list ',' enumerator
+	| enumerator_list COMMA enumerator
 	;
 
 enumerator
 	: IDENTIFIER
-	| IDENTIFIER '=' constant_expression
+	| IDENTIFIER EQUAL constant_expression
 	;
 
 type_qualifier
@@ -285,19 +284,19 @@ declarator
 
 direct_declarator
 	: IDENTIFIER
-	| '(' declarator ')'
-	| direct_declarator '[' constant_expression ']'
-	| direct_declarator '[' ']'
-	| direct_declarator '(' parameter_type_list ')'
-	| direct_declarator '(' identifier_list ')'
-	| direct_declarator '(' ')'
+	| RBLEFT declarator RBRIGHT
+	| direct_declarator BRACKETLEFT constant_expression BRACKETRIGHT
+	| direct_declarator BRACKETLEFT BRACKETRIGHT
+	| direct_declarator RBLEFT parameter_type_list RBRIGHT
+	| direct_declarator RBLEFT identifier_list RBRIGHT
+	| direct_declarator RBLEFT RBRIGHT
 	;
 
 pointer
-	: '*'
-	| '*' type_qualifier_list
-	| '*' pointer
-	| '*' type_qualifier_list pointer
+	: STAR
+	| STAR type_qualifier_list
+	| STAR pointer
+	| STAR type_qualifier_list pointer
 	;
 
 type_qualifier_list
@@ -308,12 +307,12 @@ type_qualifier_list
 
 parameter_type_list
 	: parameter_list
-	| parameter_list ',' ELLIPSIS
+	| parameter_list COMMA ELLIPSIS
 	;
 
 parameter_list
 	: parameter_declaration
-	| parameter_list ',' parameter_declaration
+	| parameter_list COMMA parameter_declaration
 	;
 
 parameter_declaration
@@ -324,7 +323,7 @@ parameter_declaration
 
 identifier_list
 	: IDENTIFIER
-	| identifier_list ',' IDENTIFIER
+	| identifier_list COMMA IDENTIFIER
 	;
 
 type_name
@@ -339,26 +338,26 @@ abstract_declarator
 	;
 
 direct_abstract_declarator
-	: '(' abstract_declarator ')'
-	| '[' ']'
-	| '[' constant_expression ']'
-	| direct_abstract_declarator '[' ']'
-	| direct_abstract_declarator '[' constant_expression ']'
-	| '(' ')'
-	| '(' parameter_type_list ')'
-	| direct_abstract_declarator '(' ')'
-	| direct_abstract_declarator '(' parameter_type_list ')'
+	: RBLEFT abstract_declarator RBRIGHT
+	| BRACKETLEFT BRACKETRIGHT
+	| BRACKETLEFT constant_expression BRACKETRIGHT
+	| direct_abstract_declarator BRACKETLEFT BRACKETRIGHT
+	| direct_abstract_declarator BRACKETLEFT constant_expression BRACKETRIGHT
+	| RBLEFT RBRIGHT
+	| RBLEFT parameter_type_list RBRIGHT
+	| direct_abstract_declarator RBLEFT RBRIGHT
+	| direct_abstract_declarator RBLEFT parameter_type_list RBRIGHT
 	;
 
 initializer
 	: assignment_expression
-	| '{' initializer_list '}'
-	| '{' initializer_list ',' '}'
+	| BRACELEFT initializer_list BRACERIGHT
+	| BRACELEFT initializer_list COMMA BRACERIGHT
 	;
 
 initializer_list
 	: initializer
-	| initializer_list ',' initializer
+	| initializer_list COMMA initializer
 	;
 
 statement
@@ -371,16 +370,16 @@ statement
 	;
 
 labeled_statement
-	: IDENTIFIER ':' statement
-	| CASE constant_expression ':' statement
-	| DEFAULT ':' statement
+	: IDENTIFIER COLON statement
+	| CASE constant_expression COLON statement
+	| DEFAULT COLON statement
 	;
 
 compound_statement
-	: '{' '}'
-	| '{' statement_list '}'
-	| '{' declaration_list '}'
-	| '{' declaration_list statement_list '}'
+	: BRACELEFT BRACERIGHT
+	| BRACELEFT statement_list BRACERIGHT
+	| BRACELEFT declaration_list BRACERIGHT
+	| BRACELEFT declaration_list statement_list BRACERIGHT
 	;
 
 declaration_list
@@ -394,28 +393,28 @@ statement_list
 	;
 
 expression_statement
-	: ';'
-	| expression ';'
+	: SEMICOLON
+	| expression SEMICOLON
 	;
 
 selection_statement
-	: IF '(' expression ')' statement ELSE statement
-	| SWITCH '(' expression ')' statement
+	: IF RBLEFT expression RBRIGHT statement ELSE statement
+	| SWITCH RBLEFT expression RBRIGHT statement
 	;
 
 iteration_statement
-	: WHILE '(' expression ')' statement
-	| DO statement WHILE '(' expression ')' ';'
-	| FOR '(' expression_statement expression_statement ')' statement
-	| FOR '(' expression_statement expression_statement expression ')' statement
+	: WHILE RBLEFT expression RBRIGHT statement
+	| DO statement WHILE RBLEFT expression RBRIGHT SEMICOLON
+	| FOR RBLEFT expression_statement expression_statement RBRIGHT statement
+	| FOR RBLEFT expression_statement expression_statement expression RBRIGHT statement
 	;
 
 jump_statement
-	: GOTO IDENTIFIER ';'
-	| CONTINUE ';'
-	| BREAK ';'
-	| RETURN ';'
-	| RETURN expression ';'
+	: GOTO IDENTIFIER SEMICOLON
+	| CONTINUE SEMICOLON
+	| BREAK SEMICOLON
+	| RETURN SEMICOLON
+	| RETURN expression SEMICOLON
 	;
 
 translation_unit

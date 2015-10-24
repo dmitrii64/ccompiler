@@ -2,7 +2,7 @@
 
     <target name="grammar">
         <exec executable="byaccj">
-            <arg value="-J"/>
+            <arg value="-Jpackage=edu.eltech.moevm.autogen"/>
             <arg value="grammar.y"/>
         </exec>
         <exec executable="jflex">
@@ -18,7 +18,7 @@
 
     <target name="byaccj">
         <exec executable="byaccj">
-            <arg value="-J"/>
+            <arg value="-Jpackage=edu.eltech.moevm.autogen"/>
             <arg value="grammar.y"/>
         </exec>
     </target>
