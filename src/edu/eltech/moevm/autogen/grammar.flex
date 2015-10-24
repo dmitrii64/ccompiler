@@ -67,6 +67,8 @@ IS = (u|U|l|L)*
 "volatile"		{ return Parser.VOLATILE; }
 "while"			{ return Parser.WHILE; }
 
+{L}({L}|{D})*	{ return Parser.IDENTIFIER; }
+
 0[xX]{H}+{IS}?		{ return Parser.CONSTANT; }
 0{D}+{IS}?		{ return Parser.CONSTANT; }
 {D}+{IS}?		{ return Parser.CONSTANT; }
