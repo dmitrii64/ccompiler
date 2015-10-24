@@ -460,29 +460,8 @@ function_definition
     lexer = new Yylex(r, this);
   }
 
-
-  static boolean interactive;
-
-  public static void main(String args[]) throws IOException {
-    System.out.println("BYACC/Java with JFlex Calculator Demo");
-
-    Parser yyparser;
-    if ( args.length > 0 ) {
-      // parse a file
-      yyparser = new Parser(new FileReader(args[0]));
-    }
-    else {
-      // interactive mode
-      System.out.println("[Quit with CTRL-D]");
-      System.out.print("Expression: ");
-      interactive = true;
-	    yyparser = new Parser(new InputStreamReader(System.in));
-    }
-
-    yyparser.yyparse();
-    
-    if (interactive) {
-      System.out.println();
-      System.out.println("Have a nice day");
-    }
+  public static void ParseFile(String file) throws IOException {
+  	Parser yyparser;
+  	yyparser = new Parser(new FileReader(file));
+  	yyparser.yyparse();
   }
