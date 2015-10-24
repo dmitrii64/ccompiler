@@ -67,8 +67,6 @@ IS = (u|U|l|L)*
 "volatile"		{ return Parser.VOLATILE; }
 "while"			{ return Parser.WHILE; }
 
-{L}({L}|{D})*		{  }
-
 0[xX]{H}+{IS}?		{ return Parser.CONSTANT; }
 0{D}+{IS}?		{ return Parser.CONSTANT; }
 {D}+{IS}?		{ return Parser.CONSTANT; }
@@ -78,7 +76,7 @@ L?'(\\.|[^\\'])+'	{ return Parser.CONSTANT; }
 {D}*"."{D}+({E})?{FS}?	{ return Parser.CONSTANT; }
 {D}+"."{D}*({E})?{FS}?	{ return Parser.CONSTANT; }
 
-\"([^\\\"]|\\.)*\" { return Parser.STRING_LITERAL; }
+\".*\"     { return Parser.STRING_LITERAL; }
 
 "..."			{ return Parser.ELLIPSIS; }
 ">>="			{ return Parser.RIGHT_ASSIGN; }
@@ -127,5 +125,5 @@ L?'(\\.|[^\\'])+'	{ return Parser.CONSTANT; }
 "|"			{ return Parser.BAR; }
 "?"			{ return Parser.QUESTION; }
 
-[ \t\v\n\f]		{  }
-.			{ /* ignore bad characters */ }
+[ \t\v\n\f]	{ }
+.           { }

@@ -438,6 +438,7 @@ function_definition
   private Yylex lexer;
 
 
+
   private int yylex () {
     int yyl_return = -1;
     try {
@@ -461,7 +462,22 @@ function_definition
   }
 
   public static void ParseFile(String file) throws IOException {
-  	Parser yyparser;
-  	yyparser = new Parser(new FileReader(file));
-  	yyparser.yyparse();
+	System.out.println("Lexer:");
+	Parser yyparser;
+    yyparser = new Parser(new FileReader(file));
+    //Tokenize input file (for debug)
+	Yylex lexer = new Yylex(new FileReader(file));
+	    int i = 1;
+          while(i>0)
+          {
+              i = lexer.yylex();
+              System.out.print(Parser.yyname[i]);
+              System.out.print(" ");
+          }
+    System.out.println();
+
+	System.out.println("Parser:");
+
+  	yyparser.yydebug = true;
+  	yyparser.yyparse(); //Parsing goes here
   }
