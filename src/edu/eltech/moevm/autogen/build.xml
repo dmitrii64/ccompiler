@@ -10,12 +10,6 @@
         </exec>
     </target>
 
-    <target name="clean">
-        <delete>
-            <fileset dir="." includes="**/*.java"/>
-        </delete>
-    </target>
-
     <target name="jflex">
         <exec executable="jflex">
             <arg value="grammar.flex"/>

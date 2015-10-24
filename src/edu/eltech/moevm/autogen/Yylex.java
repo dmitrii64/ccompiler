@@ -9,9 +9,8 @@
  * License: BSD                                                            *
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-%{
-  package edu.eltech.moevm.autogen;
-%}
+package edu.eltech.moevm.autogen;
+
 
 
 
