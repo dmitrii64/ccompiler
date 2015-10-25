@@ -172,5 +172,92 @@ public class Translator {
         ParserVal value = new ParserVal(s1.sval+"\n"+"MOV\t"+s2.sval);
         return value;
     }
+    public static ParserVal jump_statement1(ParserVal s1)
+    {
+        ParserVal value = new ParserVal("GOTO\t"+s1.sval+"\n");
+        return value;
+    }
+    public static ParserVal jump_statement2()
+    {
+        ParserVal value = new ParserVal("CONTINUE\n");
+        return value;
+    }
+    public static ParserVal jump_statement3()
+    {
+        ParserVal value = new ParserVal("BREAK\n");
+        return value;
+    }
+    public static ParserVal jump_statement4()
+    {
+        ParserVal value = new ParserVal("RETURN\n");
+        return value;
+    }
+    public static ParserVal jump_statement5(ParserVal s1)
+    {
+        ParserVal value = new ParserVal("PUSH\t"+s1.sval+"\n");
+        return value;
+    }
+    public static ParserVal assignment_expression2(ParserVal s1,ParserVal s2,ParserVal s3)
+    {
+        ParserVal value = new ParserVal(s3.sval+"\nMOV\t"+s1.sval+",R1"+"\n");
+        return value;
+    }
+    public static ParserVal conditional_expression2(ParserVal s1,ParserVal s2,ParserVal s3)
+    {
+        ParserVal value = new ParserVal("<----QUESTION---->\n");
+        return value;
+    }
+    public static ParserVal logical_or_expression2(ParserVal s1,ParserVal s2)
+    {
+        ParserVal value = new ParserVal("OR\t"+s1.sval+","+s2.sval);
+        return value;
+    }
+    public static ParserVal logical_and_expression2(ParserVal s1,ParserVal s2)
+    {
+        ParserVal value = new ParserVal("AND\t" + s1.sval + "," + s2.sval);
+        return value;
+    }
+    public static ParserVal multiplicative_expression2(ParserVal s1,ParserVal s2)
+    {
+        ParserVal value = new ParserVal("MUL\t"+s1.sval+","+s2.sval+",R1");
+        return value;
+    }
+
+
+    public static ParserVal unary_expression1(ParserVal s1)
+    {
+        ParserVal value = new ParserVal(s1.sval);
+        return value;
+    }
+    public static ParserVal unary_expression2(ParserVal s1)
+    {
+        ParserVal value = new ParserVal(s1.sval);
+        return value;
+    }
+    public static ParserVal unary_expression3(ParserVal s1)
+    {
+        ParserVal value = new ParserVal(s1.sval);
+        return value;
+    }
+    public static ParserVal unary_expression4(ParserVal s1,ParserVal s2)
+    {
+        ParserVal value = new ParserVal("\t"+s1.sval+","+s2.sval);
+        return value;
+    }
+    public static ParserVal unary_expression5(ParserVal s1)
+    {
+        ParserVal value = new ParserVal(s1.sval);
+        return value;
+    }
+    public static ParserVal unary_expression6(ParserVal s1)
+    {
+        ParserVal value = new ParserVal(s1.sval);
+        return value;
+    }
+
+
+
+
+
 
 }

@@ -69,14 +69,14 @@ IS = (u|U|l|L)*
 
 {L}({L}|{D})*	{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.IDENTIFIER; }
 
-0[xX]{H}+{IS}?		{ return Parser.CONSTANT; }
-0{D}+{IS}?		{ return Parser.CONSTANT; }
-{D}+{IS}?		{ return Parser.CONSTANT; }
-L?'(\\.|[^\\'])+'	{ return Parser.CONSTANT; }
+0[xX]{H}+{IS}?		{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
+0{D}+{IS}?		{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
+{D}+{IS}?		{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
+L?'(\\.|[^\\'])+'	{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
 
-{D}+{E}{FS}?		{ return Parser.CONSTANT; }
-{D}*"."{D}+({E})?{FS}?	{ return Parser.CONSTANT; }
-{D}+"."{D}*({E})?{FS}?	{ return Parser.CONSTANT; }
+{D}+{E}{FS}?		{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
+{D}*"."{D}+({E})?{FS}?	{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
+{D}+"."{D}*({E})?{FS}?	{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
 
 \".*\"     { return Parser.STRING_LITERAL; }
 

@@ -1112,7 +1112,7 @@ final static String yyrule[] = {
 "function_definition : declarator compound_statement",
 };
 
-//#line 438 "grammar.y"
+//#line 437 "grammar.y"
 
   private Yylex lexer;
 
@@ -1324,6 +1324,34 @@ case 3:
 //#line 41 "grammar.y"
 { yyval = new ParserVal(val_peek(0).sval); }
 break;
+case 5:
+//#line 46 "grammar.y"
+{ yyval = new ParserVal(val_peek(0).sval); }
+break;
+case 15:
+//#line 62 "grammar.y"
+{ yyval = Translator.unary_expression1(val_peek(0)); }
+break;
+case 16:
+//#line 63 "grammar.y"
+{ yyval = Translator.unary_expression2(val_peek(0)); }
+break;
+case 17:
+//#line 64 "grammar.y"
+{ yyval = Translator.unary_expression3(val_peek(0)); }
+break;
+case 18:
+//#line 65 "grammar.y"
+{ yyval = Translator.unary_expression4(val_peek(1),val_peek(0)); }
+break;
+case 19:
+//#line 66 "grammar.y"
+{ yyval = Translator.unary_expression5(val_peek(0)); }
+break;
+case 20:
+//#line 67 "grammar.y"
+{ yyval = Translator.unary_expression6(val_peek(1)); }
+break;
 case 21:
 //#line 71 "grammar.y"
 { yyval = new ParserVal("&"); }
@@ -1347,6 +1375,90 @@ break;
 case 26:
 //#line 76 "grammar.y"
 { yyval = new ParserVal("!"); }
+break;
+case 27:
+//#line 80 "grammar.y"
+{ yyval = new ParserVal(val_peek(0).sval); }
+break;
+case 29:
+//#line 85 "grammar.y"
+{ yyval = new ParserVal(val_peek(0).sval); }
+break;
+case 30:
+//#line 86 "grammar.y"
+{ yyval = Translator.multiplicative_expression2(val_peek(2),val_peek(0)); }
+break;
+case 33:
+//#line 92 "grammar.y"
+{ yyval = new ParserVal(val_peek(0).sval); }
+break;
+case 36:
+//#line 98 "grammar.y"
+{ yyval = new ParserVal(val_peek(0).sval); }
+break;
+case 39:
+//#line 104 "grammar.y"
+{ yyval = new ParserVal(val_peek(0).sval); }
+break;
+case 44:
+//#line 112 "grammar.y"
+{ yyval = new ParserVal(val_peek(0).sval); }
+break;
+case 47:
+//#line 118 "grammar.y"
+{ yyval = new ParserVal(val_peek(0).sval); }
+break;
+case 49:
+//#line 123 "grammar.y"
+{ yyval = new ParserVal(val_peek(0).sval); }
+break;
+case 51:
+//#line 128 "grammar.y"
+{ yyval = new ParserVal(val_peek(0).sval); }
+break;
+case 53:
+//#line 133 "grammar.y"
+{ yyval = new ParserVal(val_peek(0).sval); }
+break;
+case 54:
+//#line 134 "grammar.y"
+{ yyval = Translator.logical_and_expression2(val_peek(2),val_peek(0)); }
+break;
+case 55:
+//#line 138 "grammar.y"
+{ yyval = new ParserVal(val_peek(0).sval); }
+break;
+case 56:
+//#line 139 "grammar.y"
+{ yyval = Translator.logical_or_expression2(val_peek(2),val_peek(0)); }
+break;
+case 57:
+//#line 143 "grammar.y"
+{ yyval = new ParserVal(val_peek(0).sval); }
+break;
+case 58:
+//#line 144 "grammar.y"
+{ yyval = Translator.conditional_expression2(val_peek(4),val_peek(3),val_peek(2)); }
+break;
+case 59:
+//#line 148 "grammar.y"
+{ yyval = new ParserVal(val_peek(0).sval); }
+break;
+case 60:
+//#line 149 "grammar.y"
+{ yyval = Translator.assignment_expression2(val_peek(2),val_peek(1),val_peek(0)); }
+break;
+case 61:
+//#line 153 "grammar.y"
+{ yyval = new ParserVal("EQUAL"); }
+break;
+case 72:
+//#line 167 "grammar.y"
+{ yyval = new ParserVal(val_peek(0).sval); }
+break;
+case 73:
+//#line 168 "grammar.y"
+{ yyval = new ParserVal(val_peek(2).sval+"\n"+val_peek(1).sval); }
 break;
 case 75:
 //#line 176 "grammar.y"
@@ -1445,98 +1557,142 @@ case 132:
 { yyval = new ParserVal(val_peek(0).sval); }
 break;
 case 152:
-//#line 326 "grammar.y"
+//#line 325 "grammar.y"
 { yyval = Translator.identifier_list1(val_peek(0)); }
 break;
 case 153:
-//#line 327 "grammar.y"
+//#line 326 "grammar.y"
 { yyval = Translator.identifier_list2(val_peek(2),val_peek(0)); }
 break;
 case 168:
-//#line 354 "grammar.y"
+//#line 353 "grammar.y"
 { yyval = Translator.initializer1(val_peek(0)); }
 break;
 case 169:
-//#line 355 "grammar.y"
+//#line 354 "grammar.y"
 { yyval = Translator.initializer2(val_peek(1)); }
 break;
 case 170:
-//#line 356 "grammar.y"
+//#line 355 "grammar.y"
 { yyval = Translator.initializer3(val_peek(2)); }
 break;
 case 171:
-//#line 360 "grammar.y"
+//#line 359 "grammar.y"
 { yyval = Translator.initializer_list1(val_peek(0)); }
 break;
 case 172:
-//#line 361 "grammar.y"
+//#line 360 "grammar.y"
 { yyval = Translator.initializer_list2(val_peek(2),val_peek(0)); }
 break;
+case 173:
+//#line 364 "grammar.y"
+{ yyval = new ParserVal(val_peek(0).sval); }
+break;
+case 174:
+//#line 365 "grammar.y"
+{ yyval = new ParserVal(val_peek(0).sval); }
+break;
+case 175:
+//#line 366 "grammar.y"
+{ yyval = new ParserVal(val_peek(0).sval); }
+break;
+case 176:
+//#line 367 "grammar.y"
+{ yyval = new ParserVal(val_peek(0).sval); }
+break;
+case 177:
+//#line 368 "grammar.y"
+{ yyval = new ParserVal(val_peek(0).sval); }
+break;
+case 178:
+//#line 369 "grammar.y"
+{ yyval = new ParserVal(val_peek(0).sval); }
+break;
 case 182:
-//#line 380 "grammar.y"
+//#line 379 "grammar.y"
 { yyval = Translator.compound_statement1(); }
 break;
 case 183:
-//#line 381 "grammar.y"
+//#line 380 "grammar.y"
 { yyval = Translator.compound_statement2(val_peek(1)); }
 break;
 case 184:
-//#line 382 "grammar.y"
+//#line 381 "grammar.y"
 { yyval = Translator.compound_statement3(val_peek(1)); }
 break;
 case 185:
-//#line 383 "grammar.y"
+//#line 382 "grammar.y"
 { yyval = Translator.compound_statement4(val_peek(2),val_peek(1)); }
 break;
 case 186:
-//#line 387 "grammar.y"
+//#line 386 "grammar.y"
 { yyval = Translator.declaration_list1(val_peek(0)); }
 break;
 case 187:
-//#line 388 "grammar.y"
+//#line 387 "grammar.y"
 { yyval = Translator.declaration_list2(val_peek(1),val_peek(0)); }
 break;
 case 188:
-//#line 392 "grammar.y"
+//#line 391 "grammar.y"
 { yyval = Translator.statement_list1(val_peek(0)); }
 break;
 case 189:
-//#line 393 "grammar.y"
+//#line 392 "grammar.y"
 { yyval = Translator.statement_list2(val_peek(1),val_peek(0)); }
 break;
+case 198:
+//#line 413 "grammar.y"
+{ yyval = Translator.jump_statement1(val_peek(1)); }
+break;
+case 199:
+//#line 414 "grammar.y"
+{ yyval = Translator.jump_statement2(); }
+break;
+case 200:
+//#line 415 "grammar.y"
+{ yyval = Translator.jump_statement3(); }
+break;
+case 201:
+//#line 416 "grammar.y"
+{ yyval = Translator.jump_statement4(); }
+break;
+case 202:
+//#line 417 "grammar.y"
+{ yyval = Translator.jump_statement5(val_peek(1)); }
+break;
 case 203:
-//#line 422 "grammar.y"
+//#line 421 "grammar.y"
 { yyval = Translator.translation_unit(val_peek(0)); System.out.println(yyval.sval); }
 break;
 case 204:
-//#line 423 "grammar.y"
+//#line 422 "grammar.y"
 { yyval = Translator.translation_unit(val_peek(0)); System.out.println(yyval.sval); }
 break;
 case 205:
-//#line 427 "grammar.y"
+//#line 426 "grammar.y"
 { yyval = Translator.external_declaration(val_peek(0)); }
 break;
 case 206:
-//#line 428 "grammar.y"
+//#line 427 "grammar.y"
 { yyval = Translator.external_declaration(val_peek(0)); }
 break;
 case 207:
-//#line 432 "grammar.y"
+//#line 431 "grammar.y"
 { yyval = Translator.function_definition1(val_peek(3),val_peek(2),val_peek(1),val_peek(0)); }
 break;
 case 208:
-//#line 433 "grammar.y"
+//#line 432 "grammar.y"
 { yyval = Translator.function_definition2(val_peek(2),val_peek(1),val_peek(0)); }
 break;
 case 209:
-//#line 434 "grammar.y"
+//#line 433 "grammar.y"
 { yyval = Translator.function_definition3(val_peek(2),val_peek(1),val_peek(0)); }
 break;
 case 210:
-//#line 435 "grammar.y"
+//#line 434 "grammar.y"
 { yyval = Translator.function_definition4(val_peek(1),val_peek(0)); }
 break;
-//#line 1462 "Parser.java"
+//#line 1618 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

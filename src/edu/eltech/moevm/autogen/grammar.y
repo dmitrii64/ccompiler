@@ -43,7 +43,7 @@ primary_expression
 	;
 
 postfix_expression
-	: primary_expression
+	: primary_expression                                                        { $$ = new ParserVal($1.sval); }
 	| postfix_expression BRACKETLEFT expression BRACKETRIGHT
 	| postfix_expression RBLEFT RBRIGHT
 	| postfix_expression RBLEFT argument_expression_list RBRIGHT
@@ -59,12 +59,12 @@ argument_expression_list
 	;
 
 unary_expression
-	: postfix_expression
-	| INC_OP unary_expression
-	| DEC_OP unary_expression
-	| unary_operator cast_expression
-	| SIZEOF unary_expression
-	| SIZEOF RBLEFT type_name RBRIGHT
+	: postfix_expression                                                            { $$ = Translator.unary_expression1($1); }
+	| INC_OP unary_expression                                                       { $$ = Translator.unary_expression2($2); }
+	| DEC_OP unary_expression                                                       { $$ = Translator.unary_expression3($2); }
+	| unary_operator cast_expression                                                { $$ = Translator.unary_expression4($1,$2); }
+	| SIZEOF unary_expression                                                       { $$ = Translator.unary_expression5($2); }
+	| SIZEOF RBLEFT type_name RBRIGHT                                               { $$ = Translator.unary_expression6($3); }
 	;
 
 unary_operator
@@ -77,31 +77,31 @@ unary_operator
 	;
 
 cast_expression
-	: unary_expression
+	: unary_expression                                                                       { $$ = new ParserVal($1.sval); }
 	| RBLEFT type_name RBRIGHT cast_expression
 	;
 
 multiplicative_expression
-	: cast_expression
-	| multiplicative_expression STAR cast_expression
+	: cast_expression                                                                        { $$ = new ParserVal($1.sval); }
+	| multiplicative_expression STAR cast_expression                                         { $$ = Translator.multiplicative_expression2($1,$3); }
 	| multiplicative_expression SLASH cast_expression
 	| multiplicative_expression PERCENT cast_expression
 	;
 
 additive_expression
-	: multiplicative_expression
+	: multiplicative_expression                                                              { $$ = new ParserVal($1.sval); }
 	| additive_expression PLUS multiplicative_expression
 	| additive_expression MINUS multiplicative_expression
 	;
 
 shift_expression
-	: additive_expression
+	: additive_expression                                                                    { $$ = new ParserVal($1.sval); }
 	| shift_expression LEFT_OP additive_expression
 	| shift_expression RIGHT_OP additive_expression
 	;
 
 relational_expression
-	: shift_expression
+	: shift_expression                                                                       { $$ = new ParserVal($1.sval); }
 	| relational_expression LESS shift_expression
 	| relational_expression GREATER shift_expression
 	| relational_expression LE_OP shift_expression
@@ -109,48 +109,48 @@ relational_expression
 	;
 
 equality_expression
-	: relational_expression
+	: relational_expression                                                                  { $$ = new ParserVal($1.sval); }
 	| equality_expression EQ_OP relational_expression
 	| equality_expression NE_OP relational_expression
 	;
 
 and_expression
-	: equality_expression
+	: equality_expression                                                                    { $$ = new ParserVal($1.sval); }
 	| and_expression AMP equality_expression
 	;
 
 exclusive_or_expression
-	: and_expression
+	: and_expression                                                                         { $$ = new ParserVal($1.sval); }
 	| exclusive_or_expression CARET and_expression
 	;
 
 inclusive_or_expression
-	: exclusive_or_expression
+	: exclusive_or_expression                                                                { $$ = new ParserVal($1.sval); }
 	| inclusive_or_expression BAR exclusive_or_expression
 	;
 
 logical_and_expression
-	: inclusive_or_expression
-	| logical_and_expression AND_OP inclusive_or_expression
+	: inclusive_or_expression                                                                { $$ = new ParserVal($1.sval); }
+	| logical_and_expression AND_OP inclusive_or_expression                                  { $$ = Translator.logical_and_expression2($1,$3); }
 	;
 
 logical_or_expression
-	: logical_and_expression
-	| logical_or_expression OR_OP logical_and_expression
+	: logical_and_expression                                                                 { $$ = new ParserVal($1.sval); }
+	| logical_or_expression OR_OP logical_and_expression                                     { $$ = Translator.logical_or_expression2($1,$3); }
 	;
 
 conditional_expression
-	: logical_or_expression
-	| logical_or_expression QUESTION expression COLON conditional_expression
+	: logical_or_expression                                                                  { $$ = new ParserVal($1.sval); }
+	| logical_or_expression QUESTION expression COLON conditional_expression                 { $$ = Translator.conditional_expression2($1,$2,$3); }
 	;
 
 assignment_expression
-	: conditional_expression
-	| unary_expression assignment_operator assignment_expression
+	: conditional_expression                                                                 { $$ = new ParserVal($1.sval); }
+	| unary_expression assignment_operator assignment_expression                             { $$ = Translator.assignment_expression2($1,$2,$3); }
 	;
 
 assignment_operator
-	: EQUAL
+	: EQUAL                                                                                  { $$ = new ParserVal("EQUAL"); }
 	| MUL_ASSIGN
 	| DIV_ASSIGN
 	| MOD_ASSIGN
@@ -164,8 +164,8 @@ assignment_operator
 	;
 
 expression
-	: assignment_expression
-	| expression COMMA assignment_expression
+	: assignment_expression                                                                 { $$ = new ParserVal($1.sval); }
+	| expression COMMA assignment_expression                                                { $$ = new ParserVal($1.sval+"\n"+$2.sval); }
 	;
 
 constant_expression
@@ -305,7 +305,6 @@ type_qualifier_list
 	| type_qualifier_list type_qualifier
 	;
 
-
 parameter_type_list
 	: parameter_list
 	| parameter_list COMMA ELLIPSIS
@@ -362,12 +361,12 @@ initializer_list
 	;
 
 statement
-	: labeled_statement
-	| compound_statement
-	| expression_statement
-	| selection_statement
-	| iteration_statement
-	| jump_statement
+	: labeled_statement                                                                         { $$ = new ParserVal($1.sval); }
+	| compound_statement                                                                        { $$ = new ParserVal($1.sval); }
+	| expression_statement                                                                      { $$ = new ParserVal($1.sval); }
+	| selection_statement                                                                       { $$ = new ParserVal($1.sval); }
+	| iteration_statement                                                                       { $$ = new ParserVal($1.sval); }
+	| jump_statement                                                                            { $$ = new ParserVal($1.sval); }
 	;
 
 labeled_statement
@@ -411,11 +410,11 @@ iteration_statement
 	;
 
 jump_statement
-	: GOTO IDENTIFIER SEMICOLON
-	| CONTINUE SEMICOLON
-	| BREAK SEMICOLON
-	| RETURN SEMICOLON
-	| RETURN expression SEMICOLON
+	: GOTO IDENTIFIER SEMICOLON                             { $$ = Translator.jump_statement1($2); }
+	| CONTINUE SEMICOLON                                    { $$ = Translator.jump_statement2(); }
+	| BREAK SEMICOLON                                       { $$ = Translator.jump_statement3(); }
+	| RETURN SEMICOLON                                      { $$ = Translator.jump_statement4(); }
+	| RETURN expression SEMICOLON                           { $$ = Translator.jump_statement5($2); }
 	;
 
 translation_unit
