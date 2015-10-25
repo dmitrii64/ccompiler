@@ -172,8 +172,8 @@ constant_expression
 	;
 
 declaration
-	: declaration_specifiers SEMICOLON
-	| declaration_specifiers init_declarator_list SEMICOLON
+	: declaration_specifiers SEMICOLON                                                      { $$ = new ParserVal("DEC_SPEC("+$1.sval+")" ); }
+	| declaration_specifiers init_declarator_list SEMICOLON                                 { $$ = new ParserVal("DEC_SPEC("+$1.sval+","+$2.sval+")" ); }
 	;
 
 declaration_specifiers
@@ -278,8 +278,8 @@ type_qualifier
 	;
 
 declarator
-	: pointer direct_declarator
-	| direct_declarator
+	: pointer direct_declarator                                         { $$ = new ParserVal("DECLARATOR("+$1.sval+","+$2.sval+")" ); }
+	| direct_declarator                                                 { $$ = new ParserVal("DECLARATOR("+$1.sval+")" ); }
 	;
 
 direct_declarator
@@ -376,10 +376,10 @@ labeled_statement
 	;
 
 compound_statement
-	: BRACELEFT BRACERIGHT
-	| BRACELEFT statement_list BRACERIGHT
-	| BRACELEFT declaration_list BRACERIGHT
-	| BRACELEFT declaration_list statement_list BRACERIGHT
+	: BRACELEFT BRACERIGHT                                              { $$ = new ParserVal("EMPTY BODY"); }
+	| BRACELEFT statement_list BRACERIGHT                               { $$ = new ParserVal("COMP_ST("+$2.sval+")"); }
+	| BRACELEFT declaration_list BRACERIGHT                             { $$ = new ParserVal("COMP_ST("+$2.sval+")"); }
+	| BRACELEFT declaration_list statement_list BRACERIGHT              { $$ = new ParserVal("COMP_ST("+$2.sval+","+$3.sval+")"); }
 	;
 
 declaration_list
@@ -418,26 +418,24 @@ jump_statement
 	;
 
 translation_unit
-	: external_declaration
+	: external_declaration                                  { $$ = new ParserVal("TR_UNIT("+$1.sval+")" ); System.out.println($$.sval); }
 	| translation_unit external_declaration
 	;
 
 external_declaration
-	: function_definition
-	| declaration
+	: function_definition                                   { $$ = new ParserVal("EXT_DEC("+$1.sval+")" ); }
+	| declaration                                           { $$ = new ParserVal("EXT_DEC("+$1.sval+")" ); }
 	;
 
 function_definition
-	: declaration_specifiers declarator declaration_list compound_statement
-	| declaration_specifiers declarator compound_statement
-	| declarator declaration_list compound_statement
-	| declarator compound_statement
+	: declaration_specifiers declarator declaration_list compound_statement                 { $$ = new ParserVal("FUNC_DEF("+$1.sval+","+$2.sval+","+$3.sval+","+$4.sval+")" ); }
+	| declaration_specifiers declarator compound_statement                                  { $$ = new ParserVal("FUNC_DEF("+$1.sval+","+$2.sval+","+$3.sval+")" ); }
+	| declarator declaration_list compound_statement                                        { $$ = new ParserVal("FUNC_DEF("+$1.sval+","+$2.sval+","+$3.sval+")" ); }
+	| declarator compound_statement                                                         { $$ = new ParserVal("FUNC_DEF("+$1.sval+","+$2.sval+")" ); }
 	;
 %%
 
   private Yylex lexer;
-
-
 
   private int yylex () {
     int yyl_return = -1;
@@ -478,6 +476,6 @@ function_definition
 
 	System.out.println("Parser:");
 
-  	yyparser.yydebug = true;
+  	//yyparser.yydebug = true;
   	yyparser.yyparse(); //Parsing goes here
   }

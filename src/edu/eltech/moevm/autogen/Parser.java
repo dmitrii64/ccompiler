@@ -1115,8 +1115,6 @@ final static String yyrule[] = {
 
   private Yylex lexer;
 
-
-
   private int yylex () {
     int yyl_return = -1;
     try {
@@ -1156,10 +1154,10 @@ final static String yyrule[] = {
 
 	System.out.println("Parser:");
 
-  	yyparser.yydebug = true;
+  	//yyparser.yydebug = true;
   	yyparser.yyparse(); //Parsing goes here
   }
-//#line 1090 "Parser.java"
+//#line 1088 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1313,6 +1311,67 @@ boolean doaction;
     switch(yyn)
       {
 //########## USER-SUPPLIED ACTIONS ##########
+case 75:
+//#line 175 "grammar.y"
+{ yyval = new ParserVal("DEC_SPEC("+val_peek(1).sval+")" ); }
+break;
+case 76:
+//#line 176 "grammar.y"
+{ yyval = new ParserVal("DEC_SPEC("+val_peek(2).sval+","+val_peek(1).sval+")" ); }
+break;
+case 130:
+//#line 281 "grammar.y"
+{ yyval = new ParserVal("DECLARATOR("+val_peek(1).sval+","+val_peek(0).sval+")" ); }
+break;
+case 131:
+//#line 282 "grammar.y"
+{ yyval = new ParserVal("DECLARATOR("+val_peek(0).sval+")" ); }
+break;
+case 182:
+//#line 379 "grammar.y"
+{ yyval = new ParserVal("EMPTY BODY"); }
+break;
+case 183:
+//#line 380 "grammar.y"
+{ yyval = new ParserVal("COMP_ST("+val_peek(1).sval+")"); }
+break;
+case 184:
+//#line 381 "grammar.y"
+{ yyval = new ParserVal("COMP_ST("+val_peek(1).sval+")"); }
+break;
+case 185:
+//#line 382 "grammar.y"
+{ yyval = new ParserVal("COMP_ST("+val_peek(2).sval+","+val_peek(1).sval+")"); }
+break;
+case 203:
+//#line 421 "grammar.y"
+{ yyval = new ParserVal("TR_UNIT("+val_peek(0).sval+")" ); System.out.println(yyval.sval); }
+break;
+case 205:
+//#line 426 "grammar.y"
+{ yyval = new ParserVal("EXT_DEC("+val_peek(0).sval+")" ); }
+break;
+case 206:
+//#line 427 "grammar.y"
+{ yyval = new ParserVal("EXT_DEC("+val_peek(0).sval+")" ); }
+break;
+case 207:
+//#line 431 "grammar.y"
+{ yyval = new ParserVal("FUNC_DEF("+val_peek(3).sval+","+val_peek(2).sval+","+val_peek(1).sval+","+val_peek(0).sval+")" ); }
+break;
+case 208:
+//#line 432 "grammar.y"
+{ yyval = new ParserVal("FUNC_DEF("+val_peek(2).sval+","+val_peek(1).sval+","+val_peek(0).sval+")" ); }
+break;
+case 209:
+//#line 433 "grammar.y"
+{ yyval = new ParserVal("FUNC_DEF("+val_peek(2).sval+","+val_peek(1).sval+","+val_peek(0).sval+")" ); }
+break;
+case 210:
+//#line 434 "grammar.y"
+{ yyval = new ParserVal("FUNC_DEF("+val_peek(1).sval+","+val_peek(0).sval+")" ); }
+break;
+//#line 1297 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
