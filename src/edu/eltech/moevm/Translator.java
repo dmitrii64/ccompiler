@@ -197,7 +197,16 @@ public class Translator {
     }
     public static ParserVal assignment_expression2(ParserVal s1,ParserVal s2,ParserVal s3)
     {
-        ParserVal value = new ParserVal(s3.sval+"\nMOV\tR1,EMPTY,"+s1.sval);
+        //TODO: REWRITE THIS PART
+        // String temp = "";
+        String[] tokens = s3.sval.split("[ \\t\\n]");
+        //for(int i=0;i<tokens.length;i++)
+        //    temp += tokens[i]+"|";
+        ParserVal value;
+        if(1 == tokens.length)
+            value = new ParserVal("\nMOV\t"+s3.sval+",EMPTY,"+s1.sval);
+        else
+            value = new ParserVal(s3.sval+"\nMOV\tR1,EMPTY,"+s1.sval);
         return value;
     }
     public static ParserVal conditional_expression2(ParserVal s1,ParserVal s2,ParserVal s3)
