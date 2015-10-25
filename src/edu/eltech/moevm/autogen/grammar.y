@@ -13,6 +13,7 @@
 
 %{
   import java.io.*;
+  import edu.eltech.moevm.*;
 %}
       
 %token IDENTIFIER CONSTANT STRING_LITERAL SIZEOF
@@ -35,9 +36,9 @@
 %%
 
 primary_expression
-	: IDENTIFIER
-	| CONSTANT
-	| STRING_LITERAL
+	: IDENTIFIER                                                                { $$ = new ParserVal($1.sval); }
+	| CONSTANT                                                                  { $$ = new ParserVal($1.sval); }
+	| STRING_LITERAL                                                            { $$ = new ParserVal($1.sval); }
 	| RBLEFT expression RBRIGHT
 	;
 
@@ -67,12 +68,12 @@ unary_expression
 	;
 
 unary_operator
-	: AMP
-	| STAR
-	| PLUS
-	| MINUS
-	| TILDE
-	| EXCL
+	: AMP                                                                           { $$ = new ParserVal("&"); }
+	| STAR                                                                          { $$ = new ParserVal("*"); }
+	| PLUS                                                                          { $$ = new ParserVal("+"); }
+	| MINUS                                                                         { $$ = new ParserVal("-"); }
+	| TILDE                                                                         { $$ = new ParserVal("~"); }
+	| EXCL                                                                          { $$ = new ParserVal("!"); }
 	;
 
 cast_expression
@@ -172,27 +173,27 @@ constant_expression
 	;
 
 declaration
-	: declaration_specifiers SEMICOLON                                                      { $$ = new ParserVal("DEC_SPEC("+$1.sval+")" ); }
-	| declaration_specifiers init_declarator_list SEMICOLON                                 { $$ = new ParserVal("DEC_SPEC("+$1.sval+","+$2.sval+")" ); }
+	: declaration_specifiers SEMICOLON                                                      { $$ = Translator.declaration1($1); }
+	| declaration_specifiers init_declarator_list SEMICOLON                                 { $$ = Translator.declaration2($1,$2); }
 	;
 
 declaration_specifiers
-	: storage_class_specifier
-	| storage_class_specifier declaration_specifiers
-	| type_specifier
-	| type_specifier declaration_specifiers
-	| type_qualifier
-	| type_qualifier declaration_specifiers
+	: storage_class_specifier                                                               { $$ = new ParserVal($1.sval); }
+	| storage_class_specifier declaration_specifiers                                        { $$ = new ParserVal($1.sval+" "+$2.sval); }
+	| type_specifier                                                                        { $$ = new ParserVal($1.sval); }
+	| type_specifier declaration_specifiers                                                 { $$ = new ParserVal($1.sval+" "+$2.sval); }
+	| type_qualifier                                                                        { $$ = new ParserVal($1.sval); }
+	| type_qualifier declaration_specifiers                                                 { $$ = new ParserVal($1.sval+" "+$2.sval); }
 	;
 
 init_declarator_list
-	: init_declarator
-	| init_declarator_list COMMA init_declarator
+	: init_declarator                                                                       { $$ = Translator.init_declarator_list1($1); }
+	| init_declarator_list COMMA init_declarator                                            { $$ = Translator.init_declarator_list2($1,$3); }
 	;
 
 init_declarator
-	: declarator
-	| declarator EQUAL initializer
+	: declarator                                                                            { $$ = Translator.init_declarator1($1); }
+	| declarator EQUAL initializer                                                          { $$ = Translator.init_declarator2($1,$3); }
 	;
 
 storage_class_specifier
@@ -204,15 +205,15 @@ storage_class_specifier
 	;
 
 type_specifier
-	: VOID
-	| CHAR
-	| SHORT
-	| INT
-	| LONG
-	| FLOAT
-	| DOUBLE
-	| SIGNED
-	| UNSIGNED
+	: VOID                                                                  { $$ = new ParserVal("VOID"); }
+	| CHAR                                                                  { $$ = new ParserVal("CHAR"); }
+	| SHORT                                                                 { $$ = new ParserVal("SHORT"); }
+	| INT                                                                   { $$ = new ParserVal("INT"); }
+	| LONG                                                                  { $$ = new ParserVal("LONG"); }
+	| FLOAT                                                                 { $$ = new ParserVal("FLOAT"); }
+	| DOUBLE                                                                { $$ = new ParserVal("DOUBLE"); }
+	| SIGNED                                                                { $$ = new ParserVal("SIGNED"); }
+	| UNSIGNED                                                              { $$ = new ParserVal("UNSIGNED"); }
 	| struct_or_union_specifier
 	| enum_specifier
 	| TYPE_NAME
@@ -278,12 +279,12 @@ type_qualifier
 	;
 
 declarator
-	: pointer direct_declarator                                         { $$ = new ParserVal("DECLARATOR("+$1.sval+","+$2.sval+")" ); }
-	| direct_declarator                                                 { $$ = new ParserVal("DECLARATOR("+$1.sval+")" ); }
+	: pointer direct_declarator                                         { $$ = Translator.declarator1($1,$2); }
+	| direct_declarator                                                 { $$ = Translator.declarator2($1); }
 	;
 
 direct_declarator
-	: IDENTIFIER
+	: IDENTIFIER                                                        { $$ = new ParserVal($1.sval); }
 	| RBLEFT declarator RBRIGHT
 	| direct_declarator BRACKETLEFT constant_expression BRACKETRIGHT
 	| direct_declarator BRACKETLEFT BRACKETRIGHT
@@ -322,8 +323,8 @@ parameter_declaration
 	;
 
 identifier_list
-	: IDENTIFIER
-	| identifier_list COMMA IDENTIFIER
+	: IDENTIFIER                                                                                { $$ = Translator.identifier_list1($1); }
+	| identifier_list COMMA IDENTIFIER                                                          { $$ = Translator.identifier_list2($1,$3); }
 	;
 
 type_name
@@ -350,14 +351,14 @@ direct_abstract_declarator
 	;
 
 initializer
-	: assignment_expression
-	| BRACELEFT initializer_list BRACERIGHT
-	| BRACELEFT initializer_list COMMA BRACERIGHT
+	: assignment_expression                                                                     { $$ = Translator.initializer1($1); }
+	| BRACELEFT initializer_list BRACERIGHT                                                     { $$ = Translator.initializer2($2); }
+	| BRACELEFT initializer_list COMMA BRACERIGHT                                               { $$ = Translator.initializer3($2); }
 	;
 
 initializer_list
-	: initializer
-	| initializer_list COMMA initializer
+	: initializer                                                                               { $$ = Translator.initializer_list1($1); }
+	| initializer_list COMMA initializer                                                        { $$ = Translator.initializer_list2($1,$3); }
 	;
 
 statement
@@ -376,20 +377,20 @@ labeled_statement
 	;
 
 compound_statement
-	: BRACELEFT BRACERIGHT                                              { $$ = new ParserVal("EMPTY BODY"); }
-	| BRACELEFT statement_list BRACERIGHT                               { $$ = new ParserVal("COMP_ST("+$2.sval+")"); }
-	| BRACELEFT declaration_list BRACERIGHT                             { $$ = new ParserVal("COMP_ST("+$2.sval+")"); }
-	| BRACELEFT declaration_list statement_list BRACERIGHT              { $$ = new ParserVal("COMP_ST("+$2.sval+","+$3.sval+")"); }
+	: BRACELEFT BRACERIGHT                                              { $$ = Translator.compound_statement1(); }
+	| BRACELEFT statement_list BRACERIGHT                               { $$ = Translator.compound_statement2($2); }
+	| BRACELEFT declaration_list BRACERIGHT                             { $$ = Translator.compound_statement3($2); }
+	| BRACELEFT declaration_list statement_list BRACERIGHT              { $$ = Translator.compound_statement4($2,$3); }
 	;
 
 declaration_list
-	: declaration
-	| declaration_list declaration
+	: declaration                                                       { $$ = Translator.declaration_list1($1); }
+	| declaration_list declaration                                      { $$ = Translator.declaration_list2($1,$2); }
 	;
 
 statement_list
-	: statement
-	| statement_list statement
+	: statement                                                         { $$ = Translator.statement_list1($1); }
+	| statement_list statement                                          { $$ = Translator.statement_list2($1,$2); }
 	;
 
 expression_statement
@@ -418,20 +419,20 @@ jump_statement
 	;
 
 translation_unit
-	: external_declaration                                  { $$ = new ParserVal("TR_UNIT("+$1.sval+")" ); System.out.println($$.sval); }
-	| translation_unit external_declaration
+	: external_declaration                                  { $$ = Translator.translation_unit($1); System.out.println($$.sval); }
+	| translation_unit external_declaration                 { $$ = Translator.translation_unit($2); System.out.println($$.sval); }
 	;
 
 external_declaration
-	: function_definition                                   { $$ = new ParserVal("EXT_DEC("+$1.sval+")" ); }
-	| declaration                                           { $$ = new ParserVal("EXT_DEC("+$1.sval+")" ); }
+	: function_definition                                   { $$ = Translator.external_declaration($1); }
+	| declaration                                           { $$ = Translator.external_declaration($1); }
 	;
 
 function_definition
-	: declaration_specifiers declarator declaration_list compound_statement                 { $$ = new ParserVal("FUNC_DEF("+$1.sval+","+$2.sval+","+$3.sval+","+$4.sval+")" ); }
-	| declaration_specifiers declarator compound_statement                                  { $$ = new ParserVal("FUNC_DEF("+$1.sval+","+$2.sval+","+$3.sval+")" ); }
-	| declarator declaration_list compound_statement                                        { $$ = new ParserVal("FUNC_DEF("+$1.sval+","+$2.sval+","+$3.sval+")" ); }
-	| declarator compound_statement                                                         { $$ = new ParserVal("FUNC_DEF("+$1.sval+","+$2.sval+")" ); }
+	: declaration_specifiers declarator declaration_list compound_statement                 { $$ = Translator.function_definition1($1,$2,$3,$4); }
+	| declaration_specifiers declarator compound_statement                                  { $$ = Translator.function_definition2($1,$2,$3); }
+	| declarator declaration_list compound_statement                                        { $$ = Translator.function_definition3($1,$2,$3); }
+	| declarator compound_statement                                                         { $$ = Translator.function_definition4($1,$2); }
 	;
 %%
 
