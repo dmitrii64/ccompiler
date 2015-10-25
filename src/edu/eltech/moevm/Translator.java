@@ -34,9 +34,7 @@ public class Translator {
         result =  "LABEL\t"+funcname+"\n";
         result += "GOTO\t"+funcname+"_START\n";
         result += "LABEL\t"+funcname+"_START\n";
-
         result += s3.sval;
-
         result += "RETURN\n";
 
         ParserVal value = new ParserVal(result);
@@ -59,17 +57,17 @@ public class Translator {
     }
     public static ParserVal compound_statement2(ParserVal s1)
     {
-        ParserVal value = new ParserVal(s1.sval+"\n");
+        ParserVal value = new ParserVal(s1.sval);
         return value;
     }
     public static ParserVal compound_statement3(ParserVal s1)
     {
-        ParserVal value = new ParserVal(s1.sval+"\n");
+        ParserVal value = new ParserVal(s1.sval);
         return value;
     }
     public static ParserVal compound_statement4(ParserVal s1,ParserVal s2)
     {
-        ParserVal value = new ParserVal(s1.sval+"\n"+s2.sval+"\n");
+        ParserVal value = new ParserVal(s1.sval+"\n"+s2.sval);
         return value;
     }
     public static ParserVal declaration_list1(ParserVal s1)
@@ -169,7 +167,7 @@ public class Translator {
     }
     public static ParserVal init_declarator2(ParserVal s1,ParserVal s2)
     {
-        ParserVal value = new ParserVal(s1.sval+"\n"+"MOV\t"+s2.sval);
+        ParserVal value = new ParserVal(s1.sval+"\n"+"MOV\t"+s2.sval+",R1");
         return value;
     }
     public static ParserVal jump_statement1(ParserVal s1)
@@ -199,7 +197,7 @@ public class Translator {
     }
     public static ParserVal assignment_expression2(ParserVal s1,ParserVal s2,ParserVal s3)
     {
-        ParserVal value = new ParserVal(s3.sval+"\nMOV\t"+s1.sval+",R1"+"\n");
+        ParserVal value = new ParserVal(s3.sval+"\nMOV\tR1,EMPTY,"+s1.sval);
         return value;
     }
     public static ParserVal conditional_expression2(ParserVal s1,ParserVal s2,ParserVal s3)
@@ -209,12 +207,12 @@ public class Translator {
     }
     public static ParserVal logical_or_expression2(ParserVal s1,ParserVal s2)
     {
-        ParserVal value = new ParserVal("OR\t"+s1.sval+","+s2.sval);
+        ParserVal value = new ParserVal("OR\t"+s1.sval+","+s2.sval+",R1");
         return value;
     }
     public static ParserVal logical_and_expression2(ParserVal s1,ParserVal s2)
     {
-        ParserVal value = new ParserVal("AND\t" + s1.sval + "," + s2.sval);
+        ParserVal value = new ParserVal("AND\t" + s1.sval + "," + s2.sval+",R1");
         return value;
     }
     public static ParserVal multiplicative_expression2(ParserVal s1,ParserVal s2)
@@ -222,8 +220,6 @@ public class Translator {
         ParserVal value = new ParserVal("MUL\t"+s1.sval+","+s2.sval+",R1");
         return value;
     }
-
-
     public static ParserVal unary_expression1(ParserVal s1)
     {
         ParserVal value = new ParserVal(s1.sval);
@@ -254,9 +250,21 @@ public class Translator {
         ParserVal value = new ParserVal(s1.sval);
         return value;
     }
-
-
-
+    public static ParserVal postfix_expression2(ParserVal s1,ParserVal s2)
+    {
+        ParserVal value = new ParserVal(s2.sval+"PUSH\tR1"+"CALL\t"+s1.sval);
+        return value;
+    }
+    public static ParserVal postfix_expression3(ParserVal s1)
+    {
+        ParserVal value = new ParserVal("CALL\t"+s1.sval);
+        return value;
+    }
+    public static ParserVal postfix_expression4(ParserVal s1,ParserVal s2)
+    {
+        ParserVal value = new ParserVal("PUSH\t"+s2.sval+"\n"+"CALL\t"+s1.sval);
+        return value;
+    }
 
 
 

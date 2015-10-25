@@ -44,9 +44,9 @@ primary_expression
 
 postfix_expression
 	: primary_expression                                                        { $$ = new ParserVal($1.sval); }
-	| postfix_expression BRACKETLEFT expression BRACKETRIGHT
-	| postfix_expression RBLEFT RBRIGHT
-	| postfix_expression RBLEFT argument_expression_list RBRIGHT
+	| postfix_expression BRACKETLEFT expression BRACKETRIGHT                    { $$ = Translator.postfix_expression2($1,$3); }
+	| postfix_expression RBLEFT RBRIGHT                                         { $$ = Translator.postfix_expression3($1); }
+	| postfix_expression RBLEFT argument_expression_list RBRIGHT                { $$ = Translator.postfix_expression4($1,$3); }
 	| postfix_expression DOT IDENTIFIER
 	| postfix_expression PTR_OP IDENTIFIER
 	| postfix_expression INC_OP
