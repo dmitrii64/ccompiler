@@ -1,3 +1,7 @@
 out
 .idea
 *.iml
+
+src/edu/eltech/moevm/autogen/Parser.java
+src/edu/eltech/moevm/autogen/ParserVal.java
+src/edu/eltech/moevm/autogen/Yylex.java
