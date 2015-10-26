@@ -18,18 +18,17 @@
       
 %token IDENTIFIER CONSTANT STRING_LITERAL SIZEOF
 %token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
-%token AND_OP OR_OP MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN
-%token SUB_ASSIGN LEFT_ASSIGN RIGHT_ASSIGN AND_ASSIGN
-%token XOR_ASSIGN OR_ASSIGN TYPE_NAME
+%token AND_OP OR_OP
+%token TYPE_NAME
 
-%token TYPEDEF EXTERN STATIC AUTO REGISTER
-%token CHAR SHORT INT LONG SIGNED UNSIGNED FLOAT DOUBLE CONST VOLATILE VOID
+%token TYPEDEF STATIC AUTO REGISTER
+%token CHAR SHORT INT LONG SIGNED UNSIGNED FLOAT DOUBLE CONST VOID
 %token STRUCT UNION ENUM ELLIPSIS
 
-%token CASE DEFAULT IF ELSE SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
+%token CASE DEFAULT IF ELSE SWITCH WHILE DO FOR GOTO BREAK RETURN
 
 %token SEMICOLON BRACELEFT BRACERIGHT COMMA COLON EQUAL RBLEFT RBRIGHT BRACKETLEFT
-%token BRACKETRIGHT DOT AMP EXCL TILDE MINUS PLUS STAR SLASH PERCENT LESS GREATER
+%token BRACKETRIGHT DOT AMP EXCL MINUS PLUS STAR SLASH PERCENT LESS GREATER
 %token CARET BAR QUESTION
 
 %start translation_unit
@@ -72,7 +71,6 @@ unary_operator
 	| STAR                                                                          { $$ = new ParserVal("*"); }
 	| PLUS                                                                          { $$ = new ParserVal("+"); }
 	| MINUS                                                                         { $$ = new ParserVal("-"); }
-	| TILDE                                                                         { $$ = new ParserVal("~"); }
 	| EXCL                                                                          { $$ = new ParserVal("!"); }
 	;
 
@@ -146,21 +144,7 @@ conditional_expression
 
 assignment_expression
 	: conditional_expression                                                                 { $$ = new ParserVal($1.sval); }
-	| unary_expression assignment_operator assignment_expression                             { $$ = Translator.assignment_expression2($1,$2,$3); }
-	;
-
-assignment_operator
-	: EQUAL                                                                                  { $$ = new ParserVal("EQUAL"); }
-	| MUL_ASSIGN
-	| DIV_ASSIGN
-	| MOD_ASSIGN
-	| ADD_ASSIGN
-	| SUB_ASSIGN
-	| LEFT_ASSIGN
-	| RIGHT_ASSIGN
-	| AND_ASSIGN
-	| XOR_ASSIGN
-	| OR_ASSIGN
+	| unary_expression EQUAL assignment_expression                                           { $$ = Translator.assignment_expression2($1,$3); }
 	;
 
 expression
@@ -182,8 +166,8 @@ declaration_specifiers
 	| storage_class_specifier declaration_specifiers                                        { $$ = new ParserVal($1.sval+" "+$2.sval); }
 	| type_specifier                                                                        { $$ = new ParserVal($1.sval); }
 	| type_specifier declaration_specifiers                                                 { $$ = new ParserVal($1.sval+" "+$2.sval); }
-	| type_qualifier                                                                        { $$ = new ParserVal($1.sval); }
-	| type_qualifier declaration_specifiers                                                 { $$ = new ParserVal($1.sval+" "+$2.sval); }
+	| CONST                                                                                 { $$ = new ParserVal($1.sval); }
+	| CONST declaration_specifiers                                                          { $$ = new ParserVal($1.sval+" "+$2.sval); }
 	;
 
 init_declarator_list
@@ -198,7 +182,6 @@ init_declarator
 
 storage_class_specifier
 	: TYPEDEF
-	| EXTERN
 	| STATIC
 	| AUTO
 	| REGISTER
@@ -214,68 +197,14 @@ type_specifier
 	| DOUBLE                                                                { $$ = new ParserVal("DOUBLE"); }
 	| SIGNED                                                                { $$ = new ParserVal("SIGNED"); }
 	| UNSIGNED                                                              { $$ = new ParserVal("UNSIGNED"); }
-	| struct_or_union_specifier
-	| enum_specifier
-	| TYPE_NAME
-	;
-
-struct_or_union_specifier
-	: struct_or_union IDENTIFIER BRACELEFT struct_declaration_list BRACERIGHT
-	| struct_or_union BRACELEFT struct_declaration_list BRACERIGHT
-	| struct_or_union IDENTIFIER
-	;
-
-struct_or_union
-	: STRUCT
-	| UNION
-	;
-
-struct_declaration_list
-	: struct_declaration
-	| struct_declaration_list struct_declaration
-	;
-
-struct_declaration
-	: specifier_qualifier_list struct_declarator_list SEMICOLON
+	| TYPE_NAME                                                             { $$ = new ParserVal($1); }
 	;
 
 specifier_qualifier_list
 	: type_specifier specifier_qualifier_list
 	| type_specifier
-	| type_qualifier specifier_qualifier_list
-	| type_qualifier
-	;
-
-struct_declarator_list
-	: struct_declarator
-	| struct_declarator_list COMMA struct_declarator
-	;
-
-struct_declarator
-	: declarator
-	| COLON constant_expression
-	| declarator COLON constant_expression
-	;
-
-enum_specifier
-	: ENUM BRACELEFT enumerator_list BRACERIGHT
-	| ENUM IDENTIFIER BRACELEFT enumerator_list BRACERIGHT
-	| ENUM IDENTIFIER
-	;
-
-enumerator_list
-	: enumerator
-	| enumerator_list COMMA enumerator
-	;
-
-enumerator
-	: IDENTIFIER
-	| IDENTIFIER EQUAL constant_expression
-	;
-
-type_qualifier
-	: CONST
-	| VOLATILE
+	| CONST specifier_qualifier_list
+	| CONST
 	;
 
 declarator
@@ -295,14 +224,9 @@ direct_declarator
 
 pointer
 	: STAR
-	| STAR type_qualifier_list
+	| STAR CONST
 	| STAR pointer
-	| STAR type_qualifier_list pointer
-	;
-
-type_qualifier_list
-	: type_qualifier
-	| type_qualifier_list type_qualifier
+	| STAR CONST pointer
 	;
 
 parameter_type_list
@@ -411,10 +335,9 @@ iteration_statement
 
 jump_statement
 	: GOTO IDENTIFIER SEMICOLON                             { $$ = Translator.jump_statement1($2); }
-	| CONTINUE SEMICOLON                                    { $$ = Translator.jump_statement2(); }
-	| BREAK SEMICOLON                                       { $$ = Translator.jump_statement3(); }
-	| RETURN SEMICOLON                                      { $$ = Translator.jump_statement4(); }
-	| RETURN expression SEMICOLON                           { $$ = Translator.jump_statement5($2); }
+	| BREAK SEMICOLON                                       { $$ = Translator.jump_statement2(); }
+	| RETURN SEMICOLON                                      { $$ = Translator.jump_statement3(); }
+	| RETURN expression SEMICOLON                           { $$ = Translator.jump_statement4($2); }
 	;
 
 translation_unit

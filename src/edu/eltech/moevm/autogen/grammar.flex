@@ -39,13 +39,11 @@ IS = (u|U|l|L)*
 "case"			{ return Parser.CASE; }
 "char"			{ return Parser.CHAR; }
 "const"			{ return Parser.CONST; }
-"continue"		{ return Parser.CONTINUE; }
 "default"		{ return Parser.DEFAULT; }
 "do"			{ return Parser.DO; }
 "double"		{ return Parser.DOUBLE; }
 "else"			{ return Parser.ELSE; }
 "enum"			{ return Parser.ENUM; }
-"extern"		{ return Parser.EXTERN; }
 "float"			{ return Parser.FLOAT; }
 "for"			{ return Parser.FOR; }
 "goto"			{ return Parser.GOTO; }
@@ -64,7 +62,6 @@ IS = (u|U|l|L)*
 "union"			{ return Parser.UNION; }
 "unsigned"		{ return Parser.UNSIGNED; }
 "void"			{ return Parser.VOID; }
-"volatile"		{ return Parser.VOLATILE; }
 "while"			{ return Parser.WHILE; }
 
 {L}({L}|{D})*	{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.IDENTIFIER; }
@@ -81,16 +78,6 @@ L?'(\\.|[^\\'])+'	{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext())
 \".*\"     { return Parser.STRING_LITERAL; }
 
 "..."			{ return Parser.ELLIPSIS; }
-">>="			{ return Parser.RIGHT_ASSIGN; }
-"<<="			{ return Parser.LEFT_ASSIGN; }
-"+="			{ return Parser.ADD_ASSIGN; }
-"-="			{ return Parser.SUB_ASSIGN; }
-"*="			{ return Parser.MUL_ASSIGN; }
-"/="			{ return Parser.DIV_ASSIGN; }
-"%="			{ return Parser.MOD_ASSIGN; }
-"&="			{ return Parser.AND_ASSIGN; }
-"^="			{ return Parser.XOR_ASSIGN; }
-"|="			{ return Parser.OR_ASSIGN; }
 ">>"			{ return Parser.RIGHT_OP; }
 "<<"			{ return Parser.LEFT_OP; }
 "++"			{ return Parser.INC_OP; }
@@ -115,7 +102,6 @@ L?'(\\.|[^\\'])+'	{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext())
 "."			{ return Parser.DOT; }
 "&"			{ return Parser.AMP; }
 "!"			{ return Parser.EXCL; }
-"~"			{ return Parser.TILDE; }
 "-"			{ return Parser.MINUS; }
 "+"			{ return Parser.PLUS; }
 "*"			{ return Parser.STAR; }

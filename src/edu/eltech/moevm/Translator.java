@@ -191,25 +191,20 @@ public class Translator {
     }
     public static ParserVal jump_statement2()
     {
-        ParserVal value = new ParserVal("CONTINUE\n");
+        ParserVal value = new ParserVal("BREAK\n");
         return value;
     }
     public static ParserVal jump_statement3()
     {
-        ParserVal value = new ParserVal("BREAK\n");
-        return value;
-    }
-    public static ParserVal jump_statement4()
-    {
         ParserVal value = new ParserVal("RETURN\n");
         return value;
     }
-    public static ParserVal jump_statement5(ParserVal s1)
+    public static ParserVal jump_statement4(ParserVal s1)
     {
         ParserVal value = new ParserVal("PUSH\t"+s1.sval+"\n");
         return value;
     }
-    public static ParserVal assignment_expression2(ParserVal s1,ParserVal s2,ParserVal s3)
+    public static ParserVal assignment_expression2(ParserVal s1,ParserVal s3)
     {
         ParserVal value;
         if(isToken(s3))
