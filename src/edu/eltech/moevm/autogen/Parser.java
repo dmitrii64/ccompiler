@@ -1404,6 +1404,14 @@ case 33:
 //#line 92 "grammar.y"
 { yyval = new ParserVal(val_peek(0).sval); }
 break;
+case 34:
+//#line 93 "grammar.y"
+{ yyval = Translator.additive_expression2(val_peek(2),val_peek(0)); }
+break;
+case 35:
+//#line 94 "grammar.y"
+{ yyval = Translator.additive_expression3(val_peek(2),val_peek(0)); }
+break;
 case 36:
 //#line 98 "grammar.y"
 { yyval = new ParserVal(val_peek(0).sval); }
@@ -1704,7 +1712,7 @@ case 210:
 //#line 434 "grammar.y"
 { yyval = Translator.function_definition4(val_peek(1),val_peek(0)); }
 break;
-//#line 1630 "Parser.java"
+//#line 1638 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

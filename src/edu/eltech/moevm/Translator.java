@@ -7,9 +7,23 @@ import edu.eltech.moevm.autogen.ParserVal;
  */
 
 public class Translator {
+    static int id = 0;
+
     public Translator()
     {
 
+    }
+
+    public static int getId()
+    {
+        id++;
+        return id;
+    }
+
+    public static boolean isToken(ParserVal value)
+    {
+        String[] tokens = value.sval.split("[ \\t\\n]");
+        return 1 == tokens.length;
     }
 
     public static ParserVal translation_unit(ParserVal s1)
@@ -197,13 +211,8 @@ public class Translator {
     }
     public static ParserVal assignment_expression2(ParserVal s1,ParserVal s2,ParserVal s3)
     {
-        //TODO: REWRITE THIS PART
-        // String temp = "";
-        String[] tokens = s3.sval.split("[ \\t\\n]");
-        //for(int i=0;i<tokens.length;i++)
-        //    temp += tokens[i]+"|";
         ParserVal value;
-        if(1 == tokens.length)
+        if(isToken(s3))
             value = new ParserVal("\nMOV\t"+s3.sval+",EMPTY,"+s1.sval);
         else
             value = new ParserVal(s3.sval+"\nMOV\tR1,EMPTY,"+s1.sval);
@@ -227,6 +236,24 @@ public class Translator {
     public static ParserVal multiplicative_expression2(ParserVal s1,ParserVal s2)
     {
         ParserVal value = new ParserVal("MUL\t"+s1.sval+","+s2.sval+",R1");
+        return value;
+    }
+    public static ParserVal additive_expression2(ParserVal s1,ParserVal s2)
+    {
+        ParserVal value;
+        if(isToken(s1)&&isToken(s2))
+            value = new ParserVal("ADD\t"+s1.sval+","+s2.sval+",R1");
+        else if(isToken(s1)&&!isToken(s2))
+            value = new ParserVal(s2.sval+"ADD\t"+s1.sval+","+"R1"+",R1");
+        else if(!isToken(s1)&&isToken(s2))
+            value = new ParserVal(s1.sval+"ADD\t"+s2.sval+","+"R1"+",R1");
+        else
+            value = new ParserVal(s1.sval+"\nMOV\t R1,EMPTY,R2\n"+s2.sval+"\nADD\t"+"R2,R1,R1");
+        return value;
+    }
+    public static ParserVal additive_expression3(ParserVal s1,ParserVal s2)
+    {
+        ParserVal value = new ParserVal("SUB\t"+s1.sval+","+s2.sval+",R1");
         return value;
     }
     public static ParserVal unary_expression1(ParserVal s1)

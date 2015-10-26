@@ -90,8 +90,8 @@ multiplicative_expression
 
 additive_expression
 	: multiplicative_expression                                                              { $$ = new ParserVal($1.sval); }
-	| additive_expression PLUS multiplicative_expression
-	| additive_expression MINUS multiplicative_expression
+	| additive_expression PLUS multiplicative_expression                                     { $$ = Translator.additive_expression2($1,$3); }
+	| additive_expression MINUS multiplicative_expression                                    { $$ = Translator.additive_expression3($1,$3); }
 	;
 
 shift_expression
