@@ -48,20 +48,15 @@ public class Translator {
         String result;
         result =  "LABEL\t"+funcname+"\n";
         result += "GOTO\t"+funcname+"_START\n";
-
         for(int i=1;i<tokens.length;i+=2)
         {
             result += tokens[i]+"\t"+tokens[i+1]+"\n";
         }
-
         result += "LABEL\t"+funcname+"_START\n";
-
         for(int i=tokens.length;i>1;i-=2)
         {
             result += "POP\t"+tokens[i-1]+"\n";
         }
-
-
         result += s3.sval;
         result += "RETURN\n";
 
@@ -241,7 +236,7 @@ public class Translator {
     }
     public static ParserVal jump_statement4(ParserVal s1)
     {
-        ParserVal value = new ParserVal("PUSH\t"+s1.sval+"\n");
+        ParserVal value = new ParserVal("MOV\t"+s1.sval+",EMPTY,R1"+"\n");
         return value;
     }
     public static ParserVal assignment_expression2(ParserVal s1,ParserVal s3)
