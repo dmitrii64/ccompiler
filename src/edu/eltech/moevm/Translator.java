@@ -43,11 +43,25 @@ public class Translator {
     }
     public static ParserVal function_definition2(ParserVal s1,ParserVal s2,ParserVal s3)
     {
-        String funcname = s2.sval;
+        String[] tokens = s2.sval.split(" ");
+        String funcname = tokens[0];
         String result;
         result =  "LABEL\t"+funcname+"\n";
         result += "GOTO\t"+funcname+"_START\n";
+
+        for(int i=1;i<tokens.length;i+=2)
+        {
+            result += tokens[i]+"\t"+tokens[i+1]+"\n";
+        }
+
         result += "LABEL\t"+funcname+"_START\n";
+
+        for(int i=tokens.length;i>1;i-=2)
+        {
+            result += "POP\t"+tokens[i-1]+"\n";
+        }
+
+
         result += s3.sval;
         result += "RETURN\n";
 
@@ -66,7 +80,7 @@ public class Translator {
     }
     public static ParserVal compound_statement1()
     {
-        ParserVal value = new ParserVal("\n");
+        ParserVal value = new ParserVal("");
         return value;
     }
     public static ParserVal compound_statement2(ParserVal s1)
@@ -121,6 +135,32 @@ public class Translator {
         return value;
     }
     public static ParserVal declarator2(ParserVal s1)
+    {
+        ParserVal value = new ParserVal(s1.sval);
+        return value;
+    }
+    public static ParserVal direct_declarator2(ParserVal s1)
+    {
+        ParserVal value = new ParserVal(s1.sval);
+        return value;
+    }
+    public static ParserVal direct_declarator5(ParserVal s1,ParserVal s2)
+    {
+        ParserVal value = new ParserVal(s1.sval+" "+s2.sval);
+        return value;
+    }
+
+    public static ParserVal parameter_declaration1(ParserVal s1,ParserVal s2)
+    {
+        ParserVal value = new ParserVal(s1.sval+" "+s2.sval);
+        return value;
+    }
+    public static ParserVal parameter_declaration2(ParserVal s1,ParserVal s2)
+    {
+        ParserVal value = new ParserVal(s1.sval+" "+s2.sval);
+        return value;
+    }
+    public static ParserVal parameter_declaration3(ParserVal s1)
     {
         ParserVal value = new ParserVal(s1.sval);
         return value;
@@ -215,6 +255,7 @@ public class Translator {
     }
     public static ParserVal conditional_expression2(ParserVal s1,ParserVal s2,ParserVal s3)
     {
+        //TODO: Write some code here
         ParserVal value = new ParserVal("<----QUESTION---->\n");
         return value;
     }
@@ -293,7 +334,30 @@ public class Translator {
     }
     public static ParserVal postfix_expression4(ParserVal s1,ParserVal s2)
     {
-        ParserVal value = new ParserVal("PUSH\t"+s2.sval+"\n"+"CALL\t"+s1.sval);
+        ParserVal value = new ParserVal(s2.sval+"CALL\t"+s1.sval);
+        return value;
+    }
+    public static ParserVal argument_expression_list1(ParserVal s1)
+    {
+        ParserVal value;
+        if(isToken(s1))
+            value = new ParserVal("PUSH\t"+s1.sval);
+        else
+            value = new ParserVal(s1.sval+"\nPUSH\tR1");
+        return value;
+    }
+    public static ParserVal argument_expression_list2(ParserVal s1,ParserVal s2)
+    {
+        ParserVal value;
+        if(isToken(s1)&&isToken(s2))
+            value = new ParserVal("PUSH\t"+s1.sval+"\nPUSH\t"+s2.sval);
+        else if(isToken(s1)&&!isToken(s2))
+            value = new ParserVal("PUSH\t"+s1.sval+"\n"+s2.sval+"\nPUSH\tR1\n");
+        else if(!isToken(s1)&&isToken(s2))
+            value = new ParserVal(s1.sval+"\nPUSH\t"+s2.sval+"\n");
+        else
+            value = new ParserVal(s1.sval+s2.sval+"\nPUSH\tR1\n");
+
         return value;
     }
 

@@ -53,8 +53,8 @@ postfix_expression
 	;
 
 argument_expression_list
-	: assignment_expression
-	| argument_expression_list COMMA assignment_expression
+	: assignment_expression                                                         { $$ = Translator.argument_expression_list1($1); }
+	| argument_expression_list COMMA assignment_expression                          { $$ = Translator.argument_expression_list2($1,$3); }
 	;
 
 unary_expression
@@ -214,10 +214,10 @@ declarator
 
 direct_declarator
 	: IDENTIFIER                                                        { $$ = new ParserVal($1.sval); }
-	| RBLEFT declarator RBRIGHT
+	| RBLEFT declarator RBRIGHT                                         { $$ = Translator.direct_declarator2($2); }
 	| direct_declarator BRACKETLEFT constant_expression BRACKETRIGHT
 	| direct_declarator BRACKETLEFT BRACKETRIGHT
-	| direct_declarator RBLEFT parameter_type_list RBRIGHT
+	| direct_declarator RBLEFT parameter_type_list RBRIGHT              { $$ = Translator.direct_declarator5($1,$3); }
 	| direct_declarator RBLEFT identifier_list RBRIGHT
 	| direct_declarator RBLEFT RBRIGHT
 	;
@@ -230,19 +230,19 @@ pointer
 	;
 
 parameter_type_list
-	: parameter_list
-	| parameter_list COMMA ELLIPSIS
+	: parameter_list                                                                { $$ = new ParserVal($1.sval); }
+	| parameter_list COMMA ELLIPSIS                                                 { $$ = new ParserVal($1.sval); }
 	;
 
 parameter_list
-	: parameter_declaration
-	| parameter_list COMMA parameter_declaration
+	: parameter_declaration                                                         { $$ = new ParserVal($1.sval); }
+	| parameter_list COMMA parameter_declaration                                    { $$ = new ParserVal($1.sval+" "+$3.sval); }
 	;
 
 parameter_declaration
-	: declaration_specifiers declarator
-	| declaration_specifiers abstract_declarator
-	| declaration_specifiers
+	: declaration_specifiers declarator                                             { $$ = Translator.parameter_declaration1($1,$2); }
+	| declaration_specifiers abstract_declarator                                    { $$ = Translator.parameter_declaration2($1,$2); }
+	| declaration_specifiers                                                        { $$ = Translator.parameter_declaration3($1); }
 	;
 
 identifier_list

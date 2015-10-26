@@ -1160,6 +1160,14 @@ case 8:
 //#line 48 "grammar.y"
 { yyval = Translator.postfix_expression4(val_peek(3),val_peek(1)); }
 break;
+case 13:
+//#line 56 "grammar.y"
+{ yyval = Translator.argument_expression_list1(val_peek(0)); }
+break;
+case 14:
+//#line 57 "grammar.y"
+{ yyval = Translator.argument_expression_list2(val_peek(2),val_peek(0)); }
+break;
 case 15:
 //#line 61 "grammar.y"
 { yyval = Translator.unary_expression1(val_peek(0)); }
@@ -1392,6 +1400,42 @@ case 95:
 //#line 216 "grammar.y"
 { yyval = new ParserVal(val_peek(0).sval); }
 break;
+case 96:
+//#line 217 "grammar.y"
+{ yyval = Translator.direct_declarator2(val_peek(1)); }
+break;
+case 99:
+//#line 220 "grammar.y"
+{ yyval = Translator.direct_declarator5(val_peek(3),val_peek(1)); }
+break;
+case 106:
+//#line 233 "grammar.y"
+{ yyval = new ParserVal(val_peek(0).sval); }
+break;
+case 107:
+//#line 234 "grammar.y"
+{ yyval = new ParserVal(val_peek(2).sval); }
+break;
+case 108:
+//#line 238 "grammar.y"
+{ yyval = new ParserVal(val_peek(0).sval); }
+break;
+case 109:
+//#line 239 "grammar.y"
+{ yyval = new ParserVal(val_peek(2).sval+" "+val_peek(0).sval); }
+break;
+case 110:
+//#line 243 "grammar.y"
+{ yyval = Translator.parameter_declaration1(val_peek(1),val_peek(0)); }
+break;
+case 111:
+//#line 244 "grammar.y"
+{ yyval = Translator.parameter_declaration2(val_peek(1),val_peek(0)); }
+break;
+case 112:
+//#line 245 "grammar.y"
+{ yyval = Translator.parameter_declaration3(val_peek(0)); }
+break;
 case 113:
 //#line 249 "grammar.y"
 { yyval = Translator.identifier_list1(val_peek(0)); }
@@ -1524,7 +1568,7 @@ case 170:
 //#line 357 "grammar.y"
 { yyval = Translator.function_definition4(val_peek(1),val_peek(0)); }
 break;
-//#line 1450 "Parser.java"
+//#line 1494 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
