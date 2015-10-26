@@ -8,6 +8,9 @@
         <exec executable="jflex">
             <arg value="grammar.flex"/>
         </exec>
+        <exec executable="rm">
+            <arg value="Yylex.java~"/>
+        </exec>
     </target>
 
     <target name="jflex">
@@ -22,7 +25,5 @@
             <arg value="grammar.y"/>
         </exec>
     </target>
-
-
-
+    
 </project>
