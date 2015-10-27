@@ -36,13 +36,13 @@
 
 primary_expression
 	: IDENTIFIER                                                                { $$ = new ParserVal($1.sval); }
-	| CONSTANT                                                                  { $$ = new ParserVal($1.sval); }
+	| CONSTANT                                                                  { System.out.println("primary_expression"); }
 	| STRING_LITERAL                                                            { $$ = new ParserVal($1.sval); }
 	| RBLEFT expression RBRIGHT
 	;
 
 postfix_expression
-	: primary_expression                                                        { $$ = new ParserVal($1.sval); }
+	: primary_expression                                                        { System.out.println("postfix_expression"); }
 	| postfix_expression BRACKETLEFT expression BRACKETRIGHT                    { $$ = Translator.postfix_expression2($1,$3); }
 	| postfix_expression RBLEFT RBRIGHT                                         { $$ = Translator.postfix_expression3($1); }
 	| postfix_expression RBLEFT argument_expression_list RBRIGHT                { $$ = Translator.postfix_expression4($1,$3); }
@@ -58,7 +58,7 @@ argument_expression_list
 	;
 
 unary_expression
-	: postfix_expression                                                            { $$ = Translator.unary_expression1($1); }
+	: postfix_expression                                                            { System.out.println("unary_expression"); }
 	| INC_OP unary_expression                                                       { $$ = Translator.unary_expression2($2); }
 	| DEC_OP unary_expression                                                       { $$ = Translator.unary_expression3($2); }
 	| unary_operator cast_expression                                                { $$ = Translator.unary_expression4($1,$2); }
@@ -75,31 +75,31 @@ unary_operator
 	;
 
 cast_expression
-	: unary_expression                                                                       { $$ = new ParserVal($1.sval); }
+	: unary_expression                                                                       { System.out.println("cast_expression"); }
 	| RBLEFT type_name RBRIGHT cast_expression
 	;
 
 multiplicative_expression
-	: cast_expression                                                                        { $$ = new ParserVal($1.sval); }
+	: cast_expression                                                                        { System.out.println("multiplicative_expression"); }
 	| multiplicative_expression STAR cast_expression                                         { $$ = Translator.multiplicative_expression2($1,$3); }
 	| multiplicative_expression SLASH cast_expression
 	| multiplicative_expression PERCENT cast_expression
 	;
 
 additive_expression
-	: multiplicative_expression                                                              { $$ = new ParserVal($1.sval); }
+	: multiplicative_expression                                                              { System.out.println("additive_expression"); }
 	| additive_expression PLUS multiplicative_expression                                     { $$ = Translator.additive_expression2($1,$3); }
 	| additive_expression MINUS multiplicative_expression                                    { $$ = Translator.additive_expression3($1,$3); }
 	;
 
 shift_expression
-	: additive_expression                                                                    { $$ = new ParserVal($1.sval); }
+	: additive_expression                                                                    { System.out.println("shift_expression"); }
 	| shift_expression LEFT_OP additive_expression
 	| shift_expression RIGHT_OP additive_expression
 	;
 
 relational_expression
-	: shift_expression                                                                       { $$ = new ParserVal($1.sval); }
+	: shift_expression                                                                       { System.out.println("relational_expression"); }
 	| relational_expression LESS shift_expression
 	| relational_expression GREATER shift_expression
 	| relational_expression LE_OP shift_expression
@@ -107,43 +107,43 @@ relational_expression
 	;
 
 equality_expression
-	: relational_expression                                                                  { $$ = new ParserVal($1.sval); }
+	: relational_expression                                                                  { System.out.println("equality_expression"); }
 	| equality_expression EQ_OP relational_expression
 	| equality_expression NE_OP relational_expression
 	;
 
 and_expression
-	: equality_expression                                                                    { $$ = new ParserVal($1.sval); }
+	: equality_expression                                                                    { System.out.println("and_expression"); }
 	| and_expression AMP equality_expression
 	;
 
 exclusive_or_expression
-	: and_expression                                                                         { $$ = new ParserVal($1.sval); }
+	: and_expression                                                                         { System.out.println("exclusive_or_expression"); }
 	| exclusive_or_expression CARET and_expression
 	;
 
 inclusive_or_expression
-	: exclusive_or_expression                                                                { $$ = new ParserVal($1.sval); }
+	: exclusive_or_expression                                                                { System.out.println("inclusive_or_expression"); }
 	| inclusive_or_expression BAR exclusive_or_expression
 	;
 
 logical_and_expression
-	: inclusive_or_expression                                                                { $$ = new ParserVal($1.sval); }
+	: inclusive_or_expression                                                                { System.out.println("logical_and_expression"); }
 	| logical_and_expression AND_OP inclusive_or_expression                                  { $$ = Translator.logical_and_expression2($1,$3); }
 	;
 
 logical_or_expression
-	: logical_and_expression                                                                 { $$ = new ParserVal($1.sval); }
+	: logical_and_expression                                                                 { System.out.println("logical_or_expression"); }
 	| logical_or_expression OR_OP logical_and_expression                                     { $$ = Translator.logical_or_expression2($1,$3); }
 	;
 
 conditional_expression
-	: logical_or_expression                                                                  { $$ = new ParserVal($1.sval); }
+	: logical_or_expression                                                                  { System.out.println("conditional_expression"); }
 	| logical_or_expression QUESTION expression COLON conditional_expression                 { $$ = Translator.conditional_expression2($1,$2,$3); }
 	;
 
 assignment_expression
-	: conditional_expression                                                                 { $$ = new ParserVal($1.sval); }
+	: conditional_expression                                                                 { System.out.println("assignment_expression"); }
 	| unary_expression EQUAL assignment_expression                                           { $$ = Translator.assignment_expression2($1,$3); }
 	;
 
@@ -158,26 +158,26 @@ constant_expression
 
 declaration
 	: declaration_specifiers SEMICOLON                                                      { $$ = Translator.declaration1($1); }
-	| declaration_specifiers init_declarator_list SEMICOLON                                 { $$ = Translator.declaration2($1,$2); }
+	| declaration_specifiers init_declarator_list SEMICOLON                                 { System.out.println("declaration"); }
 	;
 
 declaration_specifiers
 	: storage_class_specifier                                                               { $$ = new ParserVal($1.sval); }
 	| storage_class_specifier declaration_specifiers                                        { $$ = new ParserVal($1.sval+" "+$2.sval); }
-	| type_specifier                                                                        { $$ = new ParserVal($1.sval); }
+	| type_specifier                                                                        { System.out.println("declaration_specifiers"); }
 	| type_specifier declaration_specifiers                                                 { $$ = new ParserVal($1.sval+" "+$2.sval); }
 	| CONST                                                                                 { $$ = new ParserVal($1.sval); }
 	| CONST declaration_specifiers                                                          { $$ = new ParserVal($1.sval+" "+$2.sval); }
 	;
 
 init_declarator_list
-	: init_declarator                                                                       { $$ = Translator.init_declarator_list1($1); }
+	: init_declarator                                                                       { System.out.println("init_declarator_list"); }
 	| init_declarator_list COMMA init_declarator                                            { $$ = Translator.init_declarator_list2($1,$3); }
 	;
 
 init_declarator
 	: declarator                                                                            { $$ = Translator.init_declarator1($1); }
-	| declarator EQUAL initializer                                                          { $$ = Translator.init_declarator2($1,$3); }
+	| declarator EQUAL initializer                                                          { System.out.println("init_declarator"); }
 	;
 
 storage_class_specifier
@@ -191,7 +191,7 @@ type_specifier
 	: VOID                                                                  { $$ = new ParserVal("VOID"); }
 	| CHAR                                                                  { $$ = new ParserVal("CHAR"); }
 	| SHORT                                                                 { $$ = new ParserVal("SHORT"); }
-	| INT                                                                   { $$ = new ParserVal("INT"); }
+	| INT                                                                   { System.out.println("type_specifier"); }
 	| LONG                                                                  { $$ = new ParserVal("LONG"); }
 	| FLOAT                                                                 { $$ = new ParserVal("FLOAT"); }
 	| DOUBLE                                                                { $$ = new ParserVal("DOUBLE"); }
@@ -209,11 +209,11 @@ specifier_qualifier_list
 
 declarator
 	: pointer direct_declarator                                         { $$ = Translator.declarator1($1,$2); }
-	| direct_declarator                                                 { $$ = Translator.declarator2($1); }
+	| direct_declarator                                                 { System.out.println("declarator"); }
 	;
 
 direct_declarator
-	: IDENTIFIER                                                        { $$ = new ParserVal($1.sval); }
+	: IDENTIFIER                                                        { System.out.println("direct_declarator"); }
 	| RBLEFT declarator RBRIGHT                                         { $$ = Translator.direct_declarator2($2); }
 	| direct_declarator BRACKETLEFT constant_expression BRACKETRIGHT
 	| direct_declarator BRACKETLEFT BRACKETRIGHT
@@ -274,7 +274,7 @@ direct_abstract_declarator
 	;
 
 initializer
-	: assignment_expression                                                                     { $$ = Translator.initializer1($1); }
+	: assignment_expression                                                                     { System.out.println("initializer"); $$ = Translator.initializer1($1); }
 	| BRACELEFT initializer_list BRACERIGHT                                                     { $$ = Translator.initializer2($2); }
 	| BRACELEFT initializer_list COMMA BRACERIGHT                                               { $$ = Translator.initializer3($2); }
 	;
@@ -341,13 +341,13 @@ jump_statement
 	;
 
 translation_unit
-	: external_declaration                                  { $$ = Translator.translation_unit($1); System.out.println($$.sval); }
-	| translation_unit external_declaration                 { $$ = Translator.translation_unit($2); System.out.println($$.sval); }
+	: external_declaration                                  { System.out.println("translation_unit"); }
+	| translation_unit external_declaration                 { $$ = Translator.translation_unit($2); System.out.println("!!!");  System.out.println($$.sval); }
 	;
 
 external_declaration
-	: function_definition                                   { $$ = Translator.external_declaration($1); }
-	| declaration                                           { $$ = Translator.external_declaration($1); }
+	: function_definition                                   {  $$ = Translator.external_declaration($1); }
+	| declaration                                           { System.out.println("external_declaration"); }
 	;
 
 function_definition
@@ -382,23 +382,10 @@ function_definition
     lexer = new Yylex(r, this);
   }
 
-  public static void ParseFile(String file) throws IOException {
-	System.out.println("Lexer:");
-	Parser yyparser;
-    yyparser = new Parser(new FileReader(file));
-    //Tokenize input file (for debug)
-	Yylex lexer = new Yylex(new FileReader(file));
-	    int i = 1;
-          while(i>0)
-          {
-              i = lexer.yylex();
-              System.out.print(Parser.yyname[i]);
-              System.out.print(" ");
-          }
-    System.out.println();
+  public void doParse() {
+  	yyparse();
+  }
 
-	System.out.println("Parser:");
-
-  	//yyparser.yydebug = true;
-  	yyparser.yyparse(); //Parsing goes here
+  public void printTree() {
+  	// return yyval;
   }
