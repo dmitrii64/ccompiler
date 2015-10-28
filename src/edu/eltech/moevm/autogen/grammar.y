@@ -14,6 +14,7 @@
 %{
   import java.io.*;
   import edu.eltech.moevm.*;
+  import edu.eltech.moevm.grammar.*;
 %}
       
 %token IDENTIFIER CONSTANT STRING_LITERAL SIZEOF
@@ -35,327 +36,328 @@
 %%
 
 primary_expression
-	: IDENTIFIER                                                                { $$ = new ParserVal($1.sval); }
-	| CONSTANT                                                                  { $$ = new ParserVal($1.sval); }
-	| STRING_LITERAL                                                            { $$ = new ParserVal($1.sval); }
-	| RBLEFT expression RBRIGHT
+	: IDENTIFIER                { $$ = new PrimaryExpression($1); }
+	| CONSTANT                  { $$ = new PrimaryExpression($1); }
+	| STRING_LITERAL            { $$ = new PrimaryExpression($1); }
+	| RBLEFT expression RBRIGHT { $$ = new PrimaryExpression((Expression)$2); }
 	;
 
 postfix_expression
-	: primary_expression                                                        { $$ = new ParserVal($1.sval); }
-	| postfix_expression BRACKETLEFT expression BRACKETRIGHT                    { $$ = Translator.postfix_expression2($1,$3); }
-	| postfix_expression RBLEFT RBRIGHT                                         { $$ = Translator.postfix_expression3($1); }
-	| postfix_expression RBLEFT argument_expression_list RBRIGHT                { $$ = Translator.postfix_expression4($1,$3); }
-	| postfix_expression DOT IDENTIFIER
-	| postfix_expression PTR_OP IDENTIFIER
-	| postfix_expression INC_OP
-	| postfix_expression DEC_OP
+	: primary_expression                                         { $$ = new PostfixExpression((PrimaryExpression)$1); }
+	| postfix_expression BRACKETLEFT expression BRACKETRIGHT     { $$ = new PostfixExpression((PostfixExpression)$1, (Expression)$3); }
+	| postfix_expression RBLEFT RBRIGHT                          { $$ = new PostfixExpression((PostfixExpression)$1); }
+	| postfix_expression RBLEFT argument_expression_list RBRIGHT { $$ = new PostfixExpression((PostfixExpression)$1, (ArgumentExpressionList)$3); }
+	| postfix_expression DOT IDENTIFIER                          { $$ = new PostfixExpression((PostfixExpression)$1, $3); }
+	| postfix_expression PTR_OP IDENTIFIER                       { $$ = new PostfixExpression((PostfixExpression)$1, $3); }
+	| postfix_expression INC_OP                                  { $$ = new PostfixExpression((PostfixExpression)$1); }
+	| postfix_expression DEC_OP                                  { $$ = new PostfixExpression((PostfixExpression)$1); }
 	;
 
 argument_expression_list
-	: assignment_expression                                                         { $$ = Translator.argument_expression_list1($1); }
-	| argument_expression_list COMMA assignment_expression                          { $$ = Translator.argument_expression_list2($1,$3); }
+	: assignment_expression                                { $$ = new ArgumentExpressionList((AssignmentExpression)$1); }
+	| argument_expression_list COMMA assignment_expression { $$ = new ArgumentExpressionList((ArgumentExpressionList)$1, (AssignmentExpression)$3); }
 	;
 
 unary_expression
-	: postfix_expression                                                            { $$ = Translator.unary_expression1($1); }
-	| INC_OP unary_expression                                                       { $$ = Translator.unary_expression2($2); }
-	| DEC_OP unary_expression                                                       { $$ = Translator.unary_expression3($2); }
-	| unary_operator cast_expression                                                { $$ = Translator.unary_expression4($1,$2); }
-	| SIZEOF unary_expression                                                       { $$ = Translator.unary_expression5($2); }
-	| SIZEOF RBLEFT type_name RBRIGHT                                               { $$ = Translator.unary_expression6($3); }
+	: postfix_expression              { $$ = new UnaryExpression((PostfixExpression)$1); }
+	| INC_OP unary_expression         { $$ = new UnaryExpression((UnaryExpression)$2); }
+	| DEC_OP unary_expression         { $$ = new UnaryExpression((UnaryExpression)$2); }
+	| unary_operator cast_expression  { $$ = new UnaryExpression((UnaryOperator)$1, (CastExpression)$2); }
+	| SIZEOF unary_expression         { $$ = new UnaryExpression((UnaryExpression)$2); }
+	| SIZEOF RBLEFT type_name RBRIGHT { $$ = new UnaryExpression((TypeName)$3); }
 	;
 
 unary_operator
-	: AMP                                                                           { $$ = new ParserVal("&"); }
-	| STAR                                                                          { $$ = new ParserVal("*"); }
-	| PLUS                                                                          { $$ = new ParserVal("+"); }
-	| MINUS                                                                         { $$ = new ParserVal("-"); }
-	| EXCL                                                                          { $$ = new ParserVal("!"); }
+	: AMP   { $$ = new UnaryOperator(); }
+	| STAR  { $$ = new UnaryOperator(); }
+	| PLUS  { $$ = new UnaryOperator(); }
+	| MINUS { $$ = new UnaryOperator(); }
+	| EXCL  { $$ = new UnaryOperator(); }
 	;
 
 cast_expression
-	: unary_expression                                                                       { $$ = new ParserVal($1.sval); }
-	| RBLEFT type_name RBRIGHT cast_expression
+	: unary_expression                         { $$ = new CastExpression((UnaryExpression)$1); }
+	| RBLEFT type_name RBRIGHT cast_expression { $$ = new CastExpression((TypeName)$2, (CastExpression)$4); }
 	;
 
 multiplicative_expression
-	: cast_expression                                                                        { $$ = new ParserVal($1.sval); }
-	| multiplicative_expression STAR cast_expression                                         { $$ = Translator.multiplicative_expression2($1,$3); }
-	| multiplicative_expression SLASH cast_expression
-	| multiplicative_expression PERCENT cast_expression
+	: cast_expression                                   { $$ = new MultiplicativeExpression((CastExpression)$1); }
+	| multiplicative_expression STAR cast_expression    { $$ = new MultiplicativeExpression((MultiplicativeExpression)$1, (CastExpression)$3); }
+	| multiplicative_expression SLASH cast_expression   { $$ = new MultiplicativeExpression((MultiplicativeExpression)$1, (CastExpression)$3); }
+	| multiplicative_expression PERCENT cast_expression { $$ = new MultiplicativeExpression((MultiplicativeExpression)$1, (CastExpression)$3); }
 	;
 
 additive_expression
-	: multiplicative_expression                                                              { $$ = new ParserVal($1.sval); }
-	| additive_expression PLUS multiplicative_expression                                     { $$ = Translator.additive_expression2($1,$3); }
-	| additive_expression MINUS multiplicative_expression                                    { $$ = Translator.additive_expression3($1,$3); }
+	: multiplicative_expression                           { $$ = new AdditiveExpression((MultiplicativeExpression)$1); }
+	| additive_expression PLUS multiplicative_expression  { $$ = new AdditiveExpression((AdditiveExpression)$1, (MultiplicativeExpression)$3); }
+	| additive_expression MINUS multiplicative_expression { $$ = new AdditiveExpression((AdditiveExpression)$1, (MultiplicativeExpression)$3); }
 	;
 
 shift_expression
-	: additive_expression                                                                    { $$ = new ParserVal($1.sval); }
-	| shift_expression LEFT_OP additive_expression
-	| shift_expression RIGHT_OP additive_expression
+	: additive_expression                           { $$ = new ShiftExpression((AdditiveExpression)$1); }
+	| shift_expression LEFT_OP additive_expression  { $$ = new ShiftExpression((ShiftExpression)$1, (AdditiveExpression)$3); }
+	| shift_expression RIGHT_OP additive_expression { $$ = new ShiftExpression((ShiftExpression)$1, (AdditiveExpression)$3); }
 	;
 
 relational_expression
-	: shift_expression                                                                       { $$ = new ParserVal($1.sval); }
-	| relational_expression LESS shift_expression
-	| relational_expression GREATER shift_expression
-	| relational_expression LE_OP shift_expression
-	| relational_expression GE_OP shift_expression
+	: shift_expression                               { $$ = new RelationalExpression((ShiftExpression)$1); }
+	| relational_expression LESS shift_expression    { $$ = new RelationalExpression((RelationalExpression)$1, (ShiftExpression)$3); }
+	| relational_expression GREATER shift_expression { $$ = new RelationalExpression((RelationalExpression)$1, (ShiftExpression)$3); }
+	| relational_expression LE_OP shift_expression   { $$ = new RelationalExpression((RelationalExpression)$1, (ShiftExpression)$3); }
+	| relational_expression GE_OP shift_expression   { $$ = new RelationalExpression((RelationalExpression)$1, (ShiftExpression)$3); }
 	;
 
 equality_expression
-	: relational_expression                                                                  { $$ = new ParserVal($1.sval); }
-	| equality_expression EQ_OP relational_expression
-	| equality_expression NE_OP relational_expression
+	: relational_expression                           { $$ = new EqualityExpression((RelationalExpression)$1); }
+	| equality_expression EQ_OP relational_expression { $$ = new EqualityExpression((EqualityExpression)$1, (RelationalExpression)$3); }
+	| equality_expression NE_OP relational_expression { $$ = new EqualityExpression((EqualityExpression)$1, (RelationalExpression)$3); }
 	;
 
 and_expression
-	: equality_expression                                                                    { $$ = new ParserVal($1.sval); }
-	| and_expression AMP equality_expression
+	: equality_expression                    { $$ = new AndExpression((EqualityExpression)$1); }
+	| and_expression AMP equality_expression { $$ = new AndExpression((AndExpression)$1, (EqualityExpression)$3); }
 	;
 
 exclusive_or_expression
-	: and_expression                                                                         { $$ = new ParserVal($1.sval); }
-	| exclusive_or_expression CARET and_expression
+	: and_expression                               { $$ = new ExclusiveOrExpression((AndExpression)$1); }
+	| exclusive_or_expression CARET and_expression { $$ = new ExclusiveOrExpression((ExclusiveOrExpression)$1, (AndExpression)$3); }
 	;
 
 inclusive_or_expression
-	: exclusive_or_expression                                                                { $$ = new ParserVal($1.sval); }
-	| inclusive_or_expression BAR exclusive_or_expression
+	: exclusive_or_expression                             { $$ = new InclusiveOrExpression((ExclusiveOrExpression)$1); }
+	| inclusive_or_expression BAR exclusive_or_expression { $$ = new InclusiveOrExpression((InclusiveOrExpression)$1, (ExclusiveOrExpression)$3); }
 	;
 
 logical_and_expression
-	: inclusive_or_expression                                                                { $$ = new ParserVal($1.sval); }
-	| logical_and_expression AND_OP inclusive_or_expression                                  { $$ = Translator.logical_and_expression2($1,$3); }
+	: inclusive_or_expression                               { $$ = new LogicalAndExpression((InclusiveOrExpression)$1); }
+	| logical_and_expression AND_OP inclusive_or_expression { $$ = new LogicalAndExpression((LogicalAndExpression)$1, (InclusiveOrExpression)$3); }
 	;
 
 logical_or_expression
-	: logical_and_expression                                                                 { $$ = new ParserVal($1.sval); }
-	| logical_or_expression OR_OP logical_and_expression                                     { $$ = Translator.logical_or_expression2($1,$3); }
+	: logical_and_expression                             { $$ = new LogicalOrExpression((LogicalAndExpression)$1); }
+	| logical_or_expression OR_OP logical_and_expression { $$ = new LogicalOrExpression((LogicalOrExpression)$1, (LogicalAndExpression)$3); }
 	;
 
 conditional_expression
-	: logical_or_expression                                                                  { $$ = new ParserVal($1.sval); }
-	| logical_or_expression QUESTION expression COLON conditional_expression                 { $$ = Translator.conditional_expression2($1,$2,$3); }
+	: logical_or_expression                                                  { $$ = new ConditionalExpression((LogicalOrExpression)$1); }
+	| logical_or_expression QUESTION expression COLON conditional_expression { $$ = new ConditionalExpression((LogicalOrExpression)$1, (Expression)$3, (ConditionalExpression)$5); }
 	;
 
 assignment_expression
-	: conditional_expression                                                                 { $$ = new ParserVal($1.sval); }
-	| unary_expression EQUAL assignment_expression                                           { $$ = Translator.assignment_expression2($1,$3); }
+	: conditional_expression                       { $$ = new AssignmentExpression((ConditionalExpression)$1); }
+	| unary_expression EQUAL assignment_expression { $$ = new AssignmentExpression((UnaryExpression)$1, (AssignmentExpression)$3); }
 	;
 
 expression
-	: assignment_expression                                                                 { $$ = new ParserVal($1.sval); }
-	| expression COMMA assignment_expression                                                { $$ = new ParserVal($1.sval+"\n"+$2.sval); }
+	: assignment_expression                  { $$ = new Expression((AssignmentExpression)$1); }
+	| expression COMMA assignment_expression { $$ = new Expression((Expression)$1, (AssignmentExpression)$3); }
 	;
 
 constant_expression
-	: conditional_expression
+	: conditional_expression { $$ = new ConstantExpression((ConditionalExpression)$1); }
 	;
 
 declaration
-	: declaration_specifiers SEMICOLON                                                      { $$ = Translator.declaration1($1); }
-	| declaration_specifiers init_declarator_list SEMICOLON                                 { $$ = Translator.declaration2($1,$2); }
+	: declaration_specifiers SEMICOLON                      { $$ = new Declaration((DeclarationSpecifiers)$1); }
+	| declaration_specifiers init_declarator_list SEMICOLON { $$ = new Declaration((DeclarationSpecifiers)$1, (InitDeclaratorList)$2); }
 	;
 
 declaration_specifiers
-	: storage_class_specifier                                                               { $$ = new ParserVal($1.sval); }
-	| storage_class_specifier declaration_specifiers                                        { $$ = new ParserVal($1.sval+" "+$2.sval); }
-	| type_specifier                                                                        { $$ = new ParserVal($1.sval); }
-	| type_specifier declaration_specifiers                                                 { $$ = new ParserVal($1.sval+" "+$2.sval); }
-	| CONST                                                                                 { $$ = new ParserVal($1.sval); }
-	| CONST declaration_specifiers                                                          { $$ = new ParserVal($1.sval+" "+$2.sval); }
+	: storage_class_specifier                        { $$ = new DeclarationSpecifiers((StorageClassSpecifier)$1); }
+	| storage_class_specifier declaration_specifiers { $$ = new DeclarationSpecifiers((StorageClassSpecifier)$1, (DeclarationSpecifiers)$2); }
+	| type_specifier                                 { $$ = new DeclarationSpecifiers((TypeSpecifier)$1); }
+	| type_specifier declaration_specifiers          { $$ = new DeclarationSpecifiers((TypeSpecifier)$1, (DeclarationSpecifiers)$2); }
+	| CONST                                          { $$ = new DeclarationSpecifiers(); }
+	| CONST declaration_specifiers                   { $$ = new DeclarationSpecifiers((DeclarationSpecifiers)$2); }
 	;
 
 init_declarator_list
-	: init_declarator                                                                       { $$ = Translator.init_declarator_list1($1); }
-	| init_declarator_list COMMA init_declarator                                            { $$ = Translator.init_declarator_list2($1,$3); }
+	: init_declarator                            { $$ = new InitDeclaratorList((InitDeclarator)$1); }
+	| init_declarator_list COMMA init_declarator { $$ = new InitDeclaratorList((InitDeclaratorList)$1, (InitDeclarator)$3); }
 	;
 
 init_declarator
-	: declarator                                                                            { $$ = Translator.init_declarator1($1); }
-	| declarator EQUAL initializer                                                          { $$ = Translator.init_declarator2($1,$3); }
+	: declarator                   { $$ = new InitDeclarator((Declarator)$1); }
+	| declarator EQUAL initializer { $$ = new InitDeclarator((Declarator)$1, (Initializer)$3); }
 	;
 
 storage_class_specifier
-	: TYPEDEF
-	| STATIC
-	| AUTO
-	| REGISTER
+	: TYPEDEF  { $$ = new StorageClassSpecifier(); }
+	| STATIC   { $$ = new StorageClassSpecifier(); }
+	| AUTO     { $$ = new StorageClassSpecifier(); }
+	| REGISTER { $$ = new StorageClassSpecifier(); }
 	;
 
 type_specifier
-	: VOID                                                                  { $$ = new ParserVal("VOID"); }
-	| CHAR                                                                  { $$ = new ParserVal("CHAR"); }
-	| SHORT                                                                 { $$ = new ParserVal("SHORT"); }
-	| INT                                                                   { $$ = new ParserVal("INT"); }
-	| LONG                                                                  { $$ = new ParserVal("LONG"); }
-	| FLOAT                                                                 { $$ = new ParserVal("FLOAT"); }
-	| DOUBLE                                                                { $$ = new ParserVal("DOUBLE"); }
-	| SIGNED                                                                { $$ = new ParserVal("SIGNED"); }
-	| UNSIGNED                                                              { $$ = new ParserVal("UNSIGNED"); }
-	| TYPE_NAME                                                             { $$ = new ParserVal($1); }
+	: VOID      { $$ = new TypeSpecifier(); }
+	| CHAR      { $$ = new TypeSpecifier(); }
+	| SHORT     { $$ = new TypeSpecifier(); }
+	| INT       { $$ = new TypeSpecifier(); }
+	| LONG      { $$ = new TypeSpecifier(); }
+	| FLOAT     { $$ = new TypeSpecifier(); }
+	| DOUBLE    { $$ = new TypeSpecifier(); }
+	| SIGNED    { $$ = new TypeSpecifier(); }
+	| UNSIGNED  { $$ = new TypeSpecifier(); }
+	| TYPE_NAME { $$ = new TypeSpecifier(); }
 	;
 
 specifier_qualifier_list
-	: type_specifier specifier_qualifier_list
-	| type_specifier
-	| CONST specifier_qualifier_list
-	| CONST
+	: type_specifier specifier_qualifier_list { $$ = new SpecifierQualifierList((TypeSpecifier)$1, (SpecifierQualifierList)$2); }
+	| type_specifier                          { $$ = new SpecifierQualifierList((TypeSpecifier)$1); }
+	| CONST specifier_qualifier_list          { $$ = new SpecifierQualifierList((SpecifierQualifierList)$2); }
+	| CONST                                   { $$ = new SpecifierQualifierList(); }
 	;
 
 declarator
-	: pointer direct_declarator                                         { $$ = Translator.declarator1($1,$2); }
-	| direct_declarator                                                 { $$ = Translator.declarator2($1); }
+	: pointer direct_declarator { $$ = new Declarator((Pointer)$1, (DirectDeclarator)$2); }
+	| direct_declarator         { $$ = new Declarator((DirectDeclarator)$1); }
 	;
 
 direct_declarator
-	: IDENTIFIER                                                        { $$ = new ParserVal($1.sval); }
-	| RBLEFT declarator RBRIGHT                                         { $$ = Translator.direct_declarator2($2); }
-	| direct_declarator BRACKETLEFT constant_expression BRACKETRIGHT
-	| direct_declarator BRACKETLEFT BRACKETRIGHT
-	| direct_declarator RBLEFT parameter_type_list RBRIGHT              { $$ = Translator.direct_declarator5($1,$3); }
-	| direct_declarator RBLEFT identifier_list RBRIGHT
-	| direct_declarator RBLEFT RBRIGHT
+	: IDENTIFIER                                                     { $$ = new DirectDeclarator($1); }
+	| RBLEFT declarator RBRIGHT                                      { $$ = new DirectDeclarator((Declarator)$2); }
+	| direct_declarator BRACKETLEFT constant_expression BRACKETRIGHT { $$ = new DirectDeclarator((DirectDeclarator)$1, (ConstantExpression)$3); }
+	| direct_declarator BRACKETLEFT BRACKETRIGHT                     { $$ = new DirectDeclarator((DirectDeclarator)$1); }
+	| direct_declarator RBLEFT parameter_type_list RBRIGHT           { $$ = new DirectDeclarator((DirectDeclarator)$1, (ParameterTypeList)$3); }
+	| direct_declarator RBLEFT identifier_list RBRIGHT               { $$ = new DirectDeclarator((DirectDeclarator)$1, (IdentifierList)$3); }
+	| direct_declarator RBLEFT RBRIGHT                               { $$ = new DirectDeclarator((DirectDeclarator)$1); }
 	;
 
 pointer
-	: STAR
-	| STAR CONST
-	| STAR pointer
-	| STAR CONST pointer
+	: STAR               { $$ = new Pointer(); }
+	| STAR CONST         { $$ = new Pointer(); }
+	| STAR pointer       { $$ = new Pointer((Pointer)$2); }
+	| STAR CONST pointer { $$ = new Pointer((Pointer)$3); }
 	;
 
 parameter_type_list
-	: parameter_list                                                                { $$ = new ParserVal($1.sval); }
-	| parameter_list COMMA ELLIPSIS                                                 { $$ = new ParserVal($1.sval); }
+	: parameter_list                { $$ = new ParameterTypeList((ParameterList)$1); }
+	| parameter_list COMMA ELLIPSIS { $$ = new ParameterTypeList((ParameterList)$1); }
 	;
 
 parameter_list
-	: parameter_declaration                                                         { $$ = new ParserVal($1.sval); }
-	| parameter_list COMMA parameter_declaration                                    { $$ = new ParserVal($1.sval+" "+$3.sval); }
+	: parameter_declaration                      { $$ = new ParameterList((ParameterDeclaration)$1); }
+	| parameter_list COMMA parameter_declaration { $$ = new ParameterList((ParameterList)$1, (ParameterDeclaration)$3); }
 	;
 
 parameter_declaration
-	: declaration_specifiers declarator                                             { $$ = Translator.parameter_declaration1($1,$2); }
-	| declaration_specifiers abstract_declarator                                    { $$ = Translator.parameter_declaration2($1,$2); }
-	| declaration_specifiers                                                        { $$ = Translator.parameter_declaration3($1); }
+	: declaration_specifiers declarator          { $$ = new ParameterDeclaration((DeclarationSpecifiers)$1, (Declarator)$2); }
+	| declaration_specifiers abstract_declarator { $$ = new ParameterDeclaration((DeclarationSpecifiers)$1, (AbstractDeclarator)$2); }
+	| declaration_specifiers                     { $$ = new ParameterDeclaration((DeclarationSpecifiers)$1); }
 	;
 
 identifier_list
-	: IDENTIFIER                                                                                { $$ = Translator.identifier_list1($1); }
-	| identifier_list COMMA IDENTIFIER                                                          { $$ = Translator.identifier_list2($1,$3); }
+	: IDENTIFIER                       { $$ = new IdentifierList($1); }
+	| identifier_list COMMA IDENTIFIER { $$ = new IdentifierList((IdentifierList)$1, $3); }
 	;
 
 type_name
-	: specifier_qualifier_list
-	| specifier_qualifier_list abstract_declarator
+	: specifier_qualifier_list                     { $$ = new TypeName((SpecifierQualifierList)$1); }
+	| specifier_qualifier_list abstract_declarator { $$ = new TypeName((SpecifierQualifierList)$1, (AbstractDeclarator)$2); }
 	;
 
 abstract_declarator
-	: pointer
-	| direct_abstract_declarator
-	| pointer direct_abstract_declarator
+	: pointer                            { $$ = new AbstractDeclarator((Pointer)$1); }
+	| direct_abstract_declarator         { $$ = new AbstractDeclarator((DirectAbstractDeclarator)$1); }
+	| pointer direct_abstract_declarator { $$ = new AbstractDeclarator((Pointer)$1, (DirectAbstractDeclarator)$2); }
 	;
 
 direct_abstract_declarator
-	: RBLEFT abstract_declarator RBRIGHT
-	| BRACKETLEFT BRACKETRIGHT
-	| BRACKETLEFT constant_expression BRACKETRIGHT
-	| direct_abstract_declarator BRACKETLEFT BRACKETRIGHT
-	| direct_abstract_declarator BRACKETLEFT constant_expression BRACKETRIGHT
-	| RBLEFT RBRIGHT
-	| RBLEFT parameter_type_list RBRIGHT
-	| direct_abstract_declarator RBLEFT RBRIGHT
-	| direct_abstract_declarator RBLEFT parameter_type_list RBRIGHT
+	: RBLEFT abstract_declarator RBRIGHT                                      { $$ = new DirectAbstractDeclarator((AbstractDeclarator)$2); }
+	| BRACKETLEFT BRACKETRIGHT                                                { $$ = new DirectAbstractDeclarator(); }
+	| BRACKETLEFT constant_expression BRACKETRIGHT                            { $$ = new DirectAbstractDeclarator((ConstantExpression)$2); }
+	| direct_abstract_declarator BRACKETLEFT BRACKETRIGHT                     { $$ = new DirectAbstractDeclarator((DirectAbstractDeclarator)$1); }
+	| direct_abstract_declarator BRACKETLEFT constant_expression BRACKETRIGHT { $$ = new DirectAbstractDeclarator((DirectAbstractDeclarator)$1, (ConstantExpression)$3); }
+	| RBLEFT RBRIGHT                                                          { $$ = new DirectAbstractDeclarator(); }
+	| RBLEFT parameter_type_list RBRIGHT                                      { $$ = new DirectAbstractDeclarator((ParameterTypeList)$2); }
+	| direct_abstract_declarator RBLEFT RBRIGHT                               { $$ = new DirectAbstractDeclarator((DirectAbstractDeclarator)$1); }
+	| direct_abstract_declarator RBLEFT parameter_type_list RBRIGHT           { $$ = new DirectAbstractDeclarator((DirectAbstractDeclarator)$1, (ParameterTypeList)$3); }
 	;
 
 initializer
-	: assignment_expression                                                                     { $$ = Translator.initializer1($1); }
-	| BRACELEFT initializer_list BRACERIGHT                                                     { $$ = Translator.initializer2($2); }
-	| BRACELEFT initializer_list COMMA BRACERIGHT                                               { $$ = Translator.initializer3($2); }
+	: assignment_expression                       { $$ = new Initializer((AssignmentExpression)$1); }
+	| BRACELEFT initializer_list BRACERIGHT       { $$ = new Initializer((InitializerList)$2); }
+	| BRACELEFT initializer_list COMMA BRACERIGHT { $$ = new Initializer((InitializerList)$2); }
 	;
 
 initializer_list
-	: initializer                                                                               { $$ = Translator.initializer_list1($1); }
-	| initializer_list COMMA initializer                                                        { $$ = Translator.initializer_list2($1,$3); }
+	: initializer                        { $$ = new InitializerList((Initializer)$1); }
+	| initializer_list COMMA initializer { $$ = new InitializerList((InitializerList)$1, (Initializer)$3); }
 	;
 
 statement
-	: labeled_statement                                                                         { $$ = new ParserVal($1.sval); }
-	| compound_statement                                                                        { $$ = new ParserVal($1.sval); }
-	| expression_statement                                                                      { $$ = new ParserVal($1.sval); }
-	| selection_statement                                                                       { $$ = new ParserVal($1.sval); }
-	| iteration_statement                                                                       { $$ = new ParserVal($1.sval); }
-	| jump_statement                                                                            { $$ = new ParserVal($1.sval); }
+	: labeled_statement    { $$ = new Statement((LabeledStatement)$1); }
+	| compound_statement   { $$ = new Statement((CompoundStatement)$1); }
+	| expression_statement { $$ = new Statement((ExpressionStatement)$1); }
+	| selection_statement  { $$ = new Statement((SelectionStatement)$1); }
+	| iteration_statement  { $$ = new Statement((IterationStatement)$1); }
+	| jump_statement       { $$ = new Statement((JumpStatement)$1); }
 	;
 
 labeled_statement
-	: IDENTIFIER COLON statement
-	| CASE constant_expression COLON statement
-	| DEFAULT COLON statement
+	: IDENTIFIER COLON statement               { $$ = new LabeledStatement($1, (Statement)$3); }
+	| CASE constant_expression COLON statement { $$ = new LabeledStatement((ConstantExpression)$2, (Statement)$4); }
+	| DEFAULT COLON statement                  { $$ = new LabeledStatement((Statement)$3); }
 	;
 
 compound_statement
-	: BRACELEFT BRACERIGHT                                              { $$ = Translator.compound_statement1(); }
-	| BRACELEFT statement_list BRACERIGHT                               { $$ = Translator.compound_statement2($2); }
-	| BRACELEFT declaration_list BRACERIGHT                             { $$ = Translator.compound_statement3($2); }
-	| BRACELEFT declaration_list statement_list BRACERIGHT              { $$ = Translator.compound_statement4($2,$3); }
+	: BRACELEFT BRACERIGHT                                 { $$ = new CompoundStatement(); }
+	| BRACELEFT statement_list BRACERIGHT                  { $$ = new CompoundStatement((StatementList)$2); }
+	| BRACELEFT declaration_list BRACERIGHT                { $$ = new CompoundStatement((DeclarationList)$2); }
+	| BRACELEFT declaration_list statement_list BRACERIGHT { $$ = new CompoundStatement((DeclarationList)$2, (StatementList)$3); }
 	;
 
 declaration_list
-	: declaration                                                       { $$ = Translator.declaration_list1($1); }
-	| declaration_list declaration                                      { $$ = Translator.declaration_list2($1,$2); }
+	: declaration                  { $$ = new DeclarationList((Declaration)$1); }
+	| declaration_list declaration { $$ = new DeclarationList((DeclarationList)$1, (Declaration)$2); }
 	;
 
 statement_list
-	: statement                                                         { $$ = Translator.statement_list1($1); }
-	| statement_list statement                                          { $$ = Translator.statement_list2($1,$2); }
+	: statement                { $$ = new StatementList((Statement)$1); }
+	| statement_list statement { $$ = new StatementList((StatementList)$1, (Statement)$2); }
 	;
 
 expression_statement
-	: SEMICOLON
-	| expression SEMICOLON
+	: SEMICOLON            { $$ = new ExpressionStatement(); }
+	| expression SEMICOLON { $$ = new ExpressionStatement((Expression)$1); }
 	;
 
 selection_statement
-	: IF RBLEFT expression RBRIGHT statement ELSE statement
-	| SWITCH RBLEFT expression RBRIGHT statement
+	: IF RBLEFT expression RBRIGHT statement ELSE statement { $$ = new SelectionStatement((Expression)$3, (Statement)$5, (Statement)$7); }
+	| SWITCH RBLEFT expression RBRIGHT statement            { $$ = new SelectionStatement((Expression)$3, (Statement)$5); }
 	;
 
 iteration_statement
-	: WHILE RBLEFT expression RBRIGHT statement
-	| DO statement WHILE RBLEFT expression RBRIGHT SEMICOLON
-	| FOR RBLEFT expression_statement expression_statement RBRIGHT statement
-	| FOR RBLEFT expression_statement expression_statement expression RBRIGHT statement
+	: WHILE RBLEFT expression RBRIGHT statement                                         { $$ = new IterationStatement((Expression)$3, (Statement)$5); }
+	| DO statement WHILE RBLEFT expression RBRIGHT SEMICOLON                            { $$ = new IterationStatement((Statement)$2, (Expression)$5); }
+	| FOR RBLEFT expression_statement expression_statement RBRIGHT statement            { $$ = new IterationStatement((ExpressionStatement)$3, (ExpressionStatement)$4, (Statement)$6); }
+	| FOR RBLEFT expression_statement expression_statement expression RBRIGHT statement { $$ = new IterationStatement((ExpressionStatement)$3, (ExpressionStatement)$4, (Expression)$5, (Statement)$7); }
 	;
 
 jump_statement
-	: GOTO IDENTIFIER SEMICOLON                             { $$ = Translator.jump_statement1($2); }
-	| BREAK SEMICOLON                                       { $$ = Translator.jump_statement2(); }
-	| RETURN SEMICOLON                                      { $$ = Translator.jump_statement3(); }
-	| RETURN expression SEMICOLON                           { $$ = Translator.jump_statement4($2); }
+	: GOTO IDENTIFIER SEMICOLON   { $$ = new JumpStatement($2); }
+	| BREAK SEMICOLON             { $$ = new JumpStatement(); }
+	| RETURN SEMICOLON            { $$ = new JumpStatement(); }
+	| RETURN expression SEMICOLON { $$ = new JumpStatement((Expression)$2); }
 	;
 
 translation_unit
-	: external_declaration                                  { $$ = Translator.translation_unit($1); System.out.println($$.sval); }
-	| translation_unit external_declaration                 { $$ = Translator.translation_unit($2); System.out.println($$.sval); }
+	: external_declaration                  { $$ = new TranslationUnit((ExternalDeclaration)$1); }
+	| translation_unit external_declaration { $$ = new TranslationUnit((TranslationUnit)$1, (ExternalDeclaration)$2); }
 	;
 
 external_declaration
-	: function_definition                                   { $$ = Translator.external_declaration($1); }
-	| declaration                                           { $$ = Translator.external_declaration($1); }
+	: function_definition { $$ = new ExternalDeclaration((FunctionDefinition)$1); }
+	| declaration         { $$ = new ExternalDeclaration((Declaration)$1); }
 	;
 
 function_definition
-	: declaration_specifiers declarator declaration_list compound_statement                 { $$ = Translator.function_definition1($1,$2,$3,$4); }
-	| declaration_specifiers declarator compound_statement                                  { $$ = Translator.function_definition2($1,$2,$3); }
-	| declarator declaration_list compound_statement                                        { $$ = Translator.function_definition3($1,$2,$3); }
-	| declarator compound_statement                                                         { $$ = Translator.function_definition4($1,$2); }
+	: declaration_specifiers declarator declaration_list compound_statement { $$ = new FunctionDefinition((DeclarationSpecifiers)$1, (Declarator)$2, (DeclarationList)$3, (CompoundStatement)$4); }
+	| declaration_specifiers declarator compound_statement                  { $$ = new FunctionDefinition((DeclarationSpecifiers)$1, (Declarator)$2, (CompoundStatement)$3); }
+	| declarator declaration_list compound_statement                        { $$ = new FunctionDefinition((Declarator)$1, (DeclarationList)$2, (CompoundStatement)$3); }
+	| declarator compound_statement                                         { $$ = new FunctionDefinition((Declarator)$1, (CompoundStatement)$2); }
 	;
+
 %%
 
   private Yylex lexer;
