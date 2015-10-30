@@ -36,7 +36,7 @@
 %%
 
 primary_expression
-	: IDENTIFIER                { System.out.println("PrimaryExpression"); }
+	: IDENTIFIER                { System.out.println("PrimaryExpression ID = "+$1.sval); }
 	| CONSTANT                  { System.out.println("PrimaryExpression"); }
 	| STRING_LITERAL            { System.out.println("PrimaryExpression"); }
 	| RBLEFT expression RBRIGHT { System.out.println("PrimaryExpression"); }
@@ -189,10 +189,10 @@ storage_class_specifier
 	;
 
 type_specifier
-	: VOID      { System.out.println("TypeSpecifier"); }
+	: VOID      { System.out.println("TypeSpecifier VOID"); }
 	| CHAR      { System.out.println("TypeSpecifier"); }
 	| SHORT     { System.out.println("TypeSpecifier"); }
-	| INT       { System.out.println("TypeSpecifier"); }
+	| INT       { System.out.println("TypeSpecifier INT"); }
 	| LONG      { System.out.println("TypeSpecifier"); }
 	| FLOAT     { System.out.println("TypeSpecifier"); }
 	| DOUBLE    { System.out.println("TypeSpecifier"); }
@@ -214,7 +214,7 @@ declarator
 	;
 
 direct_declarator
-	: IDENTIFIER                                                     { System.out.println("DirectDeclarator"); }
+	: IDENTIFIER                                                     { System.out.println("DirectDeclarator ID = "+$1.sval); }
 	| RBLEFT declarator RBRIGHT                                      { System.out.println("DirectDeclarator"); }
 	| direct_declarator BRACKETLEFT constant_expression BRACKETRIGHT { System.out.println("DirectDeclarator"); }
 	| direct_declarator BRACKETLEFT BRACKETRIGHT                     { System.out.println("DirectDeclarator"); }
@@ -342,7 +342,7 @@ jump_statement
 	;
 
 translation_unit
-	: external_declaration                  { System.out.println("TranslationUnit"); }
+	: external_declaration                  { System.out.println("TranslationUnit"); $$ = new ParserVal("test"); }
 	| translation_unit external_declaration { System.out.println("TranslationUnit"); }
 	;
 
@@ -403,4 +403,5 @@ function_definition
 
   	//yyparser.yydebug = true;
   	yyparser.yyparse(); //Parsing goes here
+  	System.out.print(yyparser.yyval.sval );
   }

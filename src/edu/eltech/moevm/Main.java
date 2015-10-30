@@ -12,7 +12,7 @@ public class Main {
         System.out.println("BYACC/Java C compiler");
 
         try {
-            Parser.ParseFile("test2.c");
+            Parser.ParseFile("test.c");
         } catch (IOException e) {
             e.printStackTrace();
         }
