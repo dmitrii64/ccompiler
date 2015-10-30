@@ -34,7 +34,6 @@ IS = (u|U|l|L)*
 
 "/*"			{  }
 
-"auto"			{ return Parser.AUTO; }
 "break"			{ return Parser.BREAK; }
 "case"			{ return Parser.CASE; }
 "char"			{ return Parser.CHAR; }
@@ -43,24 +42,17 @@ IS = (u|U|l|L)*
 "do"			{ return Parser.DO; }
 "double"		{ return Parser.DOUBLE; }
 "else"			{ return Parser.ELSE; }
-"enum"			{ return Parser.ENUM; }
 "float"			{ return Parser.FLOAT; }
 "for"			{ return Parser.FOR; }
 "goto"			{ return Parser.GOTO; }
 "if"			{ return Parser.IF; }
 "int"			{ return Parser.INT; }
 "long"			{ return Parser.LONG; }
-"register"		{ return Parser.REGISTER; }
 "return"		{ return Parser.RETURN; }
 "short"			{ return Parser.SHORT; }
-"signed"		{ return Parser.SIGNED; }
 "sizeof"		{ return Parser.SIZEOF; }
 "static"		{ return Parser.STATIC; }
-"struct"		{ return Parser.STRUCT; }
 "switch"		{ return Parser.SWITCH; }
-"typedef"		{ return Parser.TYPEDEF; }
-"union"			{ return Parser.UNION; }
-"unsigned"		{ return Parser.UNSIGNED; }
 "void"			{ return Parser.VOID; }
 "while"			{ return Parser.WHILE; }
 
@@ -77,7 +69,6 @@ L?'(\\.|[^\\'])+'	{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext())
 
 \".*\"     { return Parser.STRING_LITERAL; }
 
-"..."			{ return Parser.ELLIPSIS; }
 ">>"			{ return Parser.RIGHT_OP; }
 "<<"			{ return Parser.LEFT_OP; }
 "++"			{ return Parser.INC_OP; }

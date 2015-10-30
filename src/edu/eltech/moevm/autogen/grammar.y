@@ -20,11 +20,9 @@
 %token IDENTIFIER CONSTANT STRING_LITERAL SIZEOF
 %token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
 %token AND_OP OR_OP
-%token TYPE_NAME
 
-%token TYPEDEF STATIC AUTO REGISTER
-%token CHAR SHORT INT LONG SIGNED UNSIGNED FLOAT DOUBLE CONST VOID
-%token STRUCT UNION ENUM ELLIPSIS
+%token STATIC
+%token CHAR SHORT INT LONG FLOAT DOUBLE CONST VOID
 
 %token CASE DEFAULT IF ELSE SWITCH WHILE DO FOR GOTO BREAK RETURN
 
@@ -177,15 +175,12 @@ init_declarator_list
 	;
 
 init_declarator
-	: declarator                   { System.out.println("InitDeclarator"); }
-	| declarator EQUAL initializer { System.out.println("InitDeclarator"); }
+	: direct_declarator                   { System.out.println("InitDeclarator"); }
+	| direct_declarator EQUAL initializer { System.out.println("InitDeclarator"); }
 	;
 
 storage_class_specifier
-	: TYPEDEF  { System.out.println("StorageClassSpecifier"); }
-	| STATIC   { System.out.println("StorageClassSpecifier"); }
-	| AUTO     { System.out.println("StorageClassSpecifier"); }
-	| REGISTER { System.out.println("StorageClassSpecifier"); }
+	: STATIC   { System.out.println("StorageClassSpecifier"); }
 	;
 
 type_specifier
@@ -196,9 +191,6 @@ type_specifier
 	| LONG      { System.out.println("TypeSpecifier"); }
 	| FLOAT     { System.out.println("TypeSpecifier"); }
 	| DOUBLE    { System.out.println("TypeSpecifier"); }
-	| SIGNED    { System.out.println("TypeSpecifier"); }
-	| UNSIGNED  { System.out.println("TypeSpecifier"); }
-	| TYPE_NAME { System.out.println("TypeSpecifier"); }
 	;
 
 specifier_qualifier_list
@@ -208,31 +200,14 @@ specifier_qualifier_list
 	| CONST                                   { System.out.println("SpecifierQualifierList"); }
 	;
 
-declarator
-	: pointer direct_declarator { System.out.println("Declarator"); }
-	| direct_declarator         { System.out.println("Declarator"); }
-	;
-
 direct_declarator
 	: IDENTIFIER                                                     { System.out.println("DirectDeclarator ID = "+$1.sval); }
-	| RBLEFT declarator RBRIGHT                                      { System.out.println("DirectDeclarator"); }
+	| RBLEFT direct_declarator RBRIGHT                                      { System.out.println("DirectDeclarator"); }
 	| direct_declarator BRACKETLEFT constant_expression BRACKETRIGHT { System.out.println("DirectDeclarator"); }
 	| direct_declarator BRACKETLEFT BRACKETRIGHT                     { System.out.println("DirectDeclarator"); }
-	| direct_declarator RBLEFT parameter_type_list RBRIGHT           { System.out.println("DirectDeclarator"); }
+	| direct_declarator RBLEFT parameter_list RBRIGHT           { System.out.println("DirectDeclarator"); }
 	| direct_declarator RBLEFT identifier_list RBRIGHT               { System.out.println("DirectDeclarator"); }
 	| direct_declarator RBLEFT RBRIGHT                               { System.out.println("DirectDeclarator"); }
-	;
-
-pointer
-	: STAR               { System.out.println("Pointer"); }
-	| STAR CONST         { System.out.println("Pointer"); }
-	| STAR pointer       { System.out.println("Pointer"); }
-	| STAR CONST pointer { System.out.println("Pointer"); }
-	;
-
-parameter_type_list
-	: parameter_list                { System.out.println("ParameterTypeList"); }
-	| parameter_list COMMA ELLIPSIS { System.out.println("ParameterTypeList"); }
 	;
 
 parameter_list
@@ -241,7 +216,7 @@ parameter_list
 	;
 
 parameter_declaration
-	: declaration_specifiers declarator          { System.out.println("ParameterDeclaration"); }
+	: declaration_specifiers direct_declarator          { System.out.println("ParameterDeclaration"); }
 	| declaration_specifiers abstract_declarator { System.out.println("ParameterDeclaration"); }
 	| declaration_specifiers                     { System.out.println("ParameterDeclaration"); }
 	;
@@ -257,9 +232,7 @@ type_name
 	;
 
 abstract_declarator
-	: pointer                            { System.out.println("AbstractDeclarator"); }
-	| direct_abstract_declarator         { System.out.println("AbstractDeclarator"); }
-	| pointer direct_abstract_declarator { System.out.println("AbstractDeclarator"); }
+	: direct_abstract_declarator         { System.out.println("AbstractDeclarator"); }
 	;
 
 direct_abstract_declarator
@@ -269,9 +242,9 @@ direct_abstract_declarator
 	| direct_abstract_declarator BRACKETLEFT BRACKETRIGHT                     { System.out.println("DirectAbstractDeclarator"); }
 	| direct_abstract_declarator BRACKETLEFT constant_expression BRACKETRIGHT { System.out.println("DirectAbstractDeclarator"); }
 	| RBLEFT RBRIGHT                                                          { System.out.println("DirectAbstractDeclarator"); }
-	| RBLEFT parameter_type_list RBRIGHT                                      { System.out.println("DirectAbstractDeclarator"); }
+	| RBLEFT parameter_list RBRIGHT                                      { System.out.println("DirectAbstractDeclarator"); }
 	| direct_abstract_declarator RBLEFT RBRIGHT                               { System.out.println("DirectAbstractDeclarator"); }
-	| direct_abstract_declarator RBLEFT parameter_type_list RBRIGHT           { System.out.println("DirectAbstractDeclarator"); }
+	| direct_abstract_declarator RBLEFT parameter_list RBRIGHT           { System.out.println("DirectAbstractDeclarator"); }
 	;
 
 initializer
@@ -352,10 +325,10 @@ external_declaration
 	;
 
 function_definition
-	: declaration_specifiers declarator declaration_list compound_statement { System.out.println("FunctionDefinition"); }
-	| declaration_specifiers declarator compound_statement                  { System.out.println("FunctionDefinition"); }
-	| declarator declaration_list compound_statement                        { System.out.println("FunctionDefinition"); }
-	| declarator compound_statement                                         { System.out.println("FunctionDefinition"); }
+	: declaration_specifiers direct_declarator declaration_list compound_statement { System.out.println("FunctionDefinition"); }
+	| declaration_specifiers direct_declarator compound_statement                  { System.out.println("FunctionDefinition"); }
+	| direct_declarator declaration_list compound_statement                        { System.out.println("FunctionDefinition"); }
+	| direct_declarator compound_statement                                         { System.out.println("FunctionDefinition"); }
 	;
 
 %%
