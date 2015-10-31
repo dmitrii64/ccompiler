@@ -14,7 +14,6 @@
 %{
   import java.io.*;
   import edu.eltech.moevm.*;
-  import edu.eltech.moevm.grammar.*;
   import edu.eltech.moevm.syntax_tree.*;
 %}
       
