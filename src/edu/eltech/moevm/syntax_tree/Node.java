@@ -14,7 +14,6 @@ public class Node extends TreeElement {
 
     public Node(Operation operation, ParserVal... elements) {
         this.operation = operation;
-        setUpValue(operation);
         this.elements = new ArrayList<TreeElement>();
         for (ParserVal obj : elements) {
             this.elements.add((TreeElement) obj.obj);
@@ -32,7 +31,9 @@ public class Node extends TreeElement {
         return elements;
     }
 
-    private void setUpValue(Operation operation) {
+    @Override
+    public String getValue() {
+        String value = null;
         switch (operation) {
             case PLUS:
                 value = "+";
@@ -77,6 +78,7 @@ public class Node extends TreeElement {
                 value = "<=";
                 break;
         }
+        return value;
     }
 
 }

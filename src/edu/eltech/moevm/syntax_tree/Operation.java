@@ -17,7 +17,19 @@ public enum Operation {
     ASSIGNMENT, //=
     NOT_EQ, //!=
     GRAND_OR_EQ,    //>=
-    LESS_OR_EQ  //<=
+    LESS_OR_EQ,  //<=
 
+    WHILE,
+    DO,
+    FOR,
+    IF,
+    ELSE,
+    SWITCH,
+    CASE,
+    DEFAULT,
+    GOTO,
+    BREAK,
+    RETURN,
 
+    NEW
 }
