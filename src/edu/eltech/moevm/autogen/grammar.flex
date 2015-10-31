@@ -32,7 +32,7 @@ IS = (u|U|l|L)*
 
 %%
 
-"/*"			{  }
+"//".*			{ }
 
 "bool"			{ return Parser.BOOL; }
 "break"			{ return Parser.BREAK; }
