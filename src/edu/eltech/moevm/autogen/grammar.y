@@ -36,312 +36,312 @@
 %%
 
 primary_expression
-	: IDENTIFIER                { System.out.println("PrimaryExpression ID = "+$1.sval); }
-	| CONSTANT                  { System.out.println("PrimaryExpression"); }
-	| STRING_LITERAL            { System.out.println("PrimaryExpression"); }
-	| RBLEFT expression RBRIGHT { System.out.println("PrimaryExpression"); }
+	: IDENTIFIER                { $$ = new Node("primary_expression", $1); }
+	| CONSTANT                  { $$ = new Node("primary_expression", $1); }
+	| STRING_LITERAL            { $$ = new Node("primary_expression", $1); }
+	| RBLEFT expression RBRIGHT { $$ = new Node("primary_expression", $1, $2, $3); }
 	;
 
 postfix_expression
-	: primary_expression                                         { System.out.println("PostfixExpression"); }
-	| postfix_expression BRACKETLEFT expression BRACKETRIGHT     { System.out.println("PostfixExpression"); }
-	| postfix_expression RBLEFT RBRIGHT                          { System.out.println("PostfixExpression"); }
-	| postfix_expression RBLEFT argument_expression_list RBRIGHT { System.out.println("PostfixExpression"); }
-	| postfix_expression DOT IDENTIFIER                          { System.out.println("PostfixExpression"); }
-	| postfix_expression INC_OP                                  { System.out.println("PostfixExpression"); }
-	| postfix_expression DEC_OP                                  { System.out.println("PostfixExpression"); }
+	: primary_expression                                         { $$ = new Node("postfix_expression", $1); }
+	| postfix_expression BRACKETLEFT expression BRACKETRIGHT     { $$ = new Node("postfix_expression", $1, $2, $3, $4); }
+	| postfix_expression RBLEFT RBRIGHT                          { $$ = new Node("postfix_expression", $1, $2, $3); }
+	| postfix_expression RBLEFT argument_expression_list RBRIGHT { $$ = new Node("postfix_expression", $1, $2, $3, $4); }
+	| postfix_expression DOT IDENTIFIER                          { $$ = new Node("postfix_expression", $1, $2, $3); }
+	| postfix_expression INC_OP                                  { $$ = new Node("postfix_expression", $1, $2); }
+	| postfix_expression DEC_OP                                  { $$ = new Node("postfix_expression", $1, $2); }
 	;
 
 argument_expression_list
-	: assignment_expression                                { System.out.println("ArgumentExpressionList"); }
-	| argument_expression_list COMMA assignment_expression { System.out.println("ArgumentExpressionList"); }
+	: assignment_expression                                { $$ = new Node("argument_expression_list", $1); }
+	| argument_expression_list COMMA assignment_expression { $$ = new Node("argument_expression_list", $1, $2, $3); }
 	;
 
 unary_expression
-	: postfix_expression              { System.out.println("UnaryExpression"); }
-	| INC_OP unary_expression         { System.out.println("UnaryExpression"); }
-	| DEC_OP unary_expression         { System.out.println("UnaryExpression"); }
-	| unary_operator cast_expression  { System.out.println("UnaryExpression"); }
-	| SIZEOF unary_expression         { System.out.println("UnaryExpression"); }
-	| SIZEOF RBLEFT type_name RBRIGHT { System.out.println("UnaryExpression"); }
-	| RE RBLEFT CONSTANT RBRIGHT      { System.out.println("UnaryExpression"); }
-	| RE RBLEFT IDENTIFIER RBRIGHT    { System.out.println("UnaryExpression"); }
-	| IM RBLEFT CONSTANT RBRIGHT      { System.out.println("UnaryExpression"); }
-	| IM RBLEFT IDENTIFIER RBRIGHT    { System.out.println("UnaryExpression"); }
-	| MOD RBLEFT CONSTANT RBRIGHT     { System.out.println("UnaryExpression"); }
-	| MOD RBLEFT IDENTIFIER RBRIGHT   { System.out.println("UnaryExpression"); }
+	: postfix_expression              { $$ = new Node("unary_expression", $1); }
+	| INC_OP unary_expression         { $$ = new Node("unary_expression", $1, $2); }
+	| DEC_OP unary_expression         { $$ = new Node("unary_expression", $1, $2); }
+	| unary_operator cast_expression  { $$ = new Node("unary_expression", $1, $2); }
+	| SIZEOF unary_expression         { $$ = new Node("unary_expression", $1, $2); }
+	| SIZEOF RBLEFT type_name RBRIGHT { $$ = new Node("unary_expression", $1, $2, $3, $4); }
+	| RE RBLEFT CONSTANT RBRIGHT      { $$ = new Node("unary_expression", $1, $2, $3, $4); }
+	| RE RBLEFT IDENTIFIER RBRIGHT    { $$ = new Node("unary_expression", $1, $2, $3, $4); }
+	| IM RBLEFT CONSTANT RBRIGHT      { $$ = new Node("unary_expression", $1, $2, $3, $4); }
+	| IM RBLEFT IDENTIFIER RBRIGHT    { $$ = new Node("unary_expression", $1, $2, $3, $4); }
+	| MOD RBLEFT CONSTANT RBRIGHT     { $$ = new Node("unary_expression", $1, $2, $3, $4); }
+	| MOD RBLEFT IDENTIFIER RBRIGHT   { $$ = new Node("unary_expression", $1, $2, $3, $4); }
 	;
 
 unary_operator
-	: AMP   { System.out.println("UnaryOperator"); }
-	| STAR  { System.out.println("UnaryOperator"); }
-	| PLUS  { System.out.println("UnaryOperator"); }
-	| MINUS { System.out.println("UnaryOperator"); }
-	| EXCL  { System.out.println("UnaryOperator"); }
+	: AMP   { $$ = new Node("unary_operator", $1); }
+	| STAR  { $$ = new Node("unary_operator", $1); }
+	| PLUS  { $$ = new Node("unary_operator", $1); }
+	| MINUS { $$ = new Node("unary_operator", $1); }
+	| EXCL  { $$ = new Node("unary_operator", $1); }
 	;
 
 cast_expression
-	: unary_expression                         { System.out.println("CastExpression"); }
-	| RBLEFT type_name RBRIGHT cast_expression { System.out.println("CastExpression"); }
+	: unary_expression                         { $$ = new Node("cast_expression", $1); }
+	| RBLEFT type_name RBRIGHT cast_expression { $$ = new Node("cast_expression", $1, $2, $3, $4); }
 	;
 
 multiplicative_expression
-	: cast_expression                                   { System.out.println("MultiplicativeExpression"); }
-	| multiplicative_expression STAR cast_expression    { System.out.println("MultiplicativeExpression"); }
-	| multiplicative_expression SLASH cast_expression   { System.out.println("MultiplicativeExpression"); }
-	| multiplicative_expression PERCENT cast_expression { System.out.println("MultiplicativeExpression"); }
+	: cast_expression                                   { $$ = new Node("multiplicative_expression", $1); }
+	| multiplicative_expression STAR cast_expression    { $$ = new Node("multiplicative_expression", $1, $2, $3); }
+	| multiplicative_expression SLASH cast_expression   { $$ = new Node("multiplicative_expression", $1, $2, $3); }
+	| multiplicative_expression PERCENT cast_expression { $$ = new Node("multiplicative_expression", $1, $2, $3); }
 	;
 
 additive_expression
-	: multiplicative_expression                           { System.out.println("AdditiveExpression"); }
-	| additive_expression PLUS multiplicative_expression  { System.out.println("AdditiveExpression"); }
-	| additive_expression MINUS multiplicative_expression { System.out.println("AdditiveExpression"); }
+	: multiplicative_expression                           { $$ = new Node("additive_expression", $1); }
+	| additive_expression PLUS multiplicative_expression  { $$ = new Node("additive_expression", $1, $2, $3); }
+	| additive_expression MINUS multiplicative_expression { $$ = new Node("additive_expression", $1, $2, $3); }
 	;
 
 shift_expression
-	: additive_expression                           { System.out.println("ShiftExpression"); }
-	| shift_expression LEFT_OP additive_expression  { System.out.println("ShiftExpression"); }
-	| shift_expression RIGHT_OP additive_expression { System.out.println("ShiftExpression"); }
+	: additive_expression                           { $$ = new Node("shift_expression", $1); }
+	| shift_expression LEFT_OP additive_expression  { $$ = new Node("shift_expression", $1, $2, $3); }
+	| shift_expression RIGHT_OP additive_expression { $$ = new Node("shift_expression", $1, $2, $3); }
 	;
 
 relational_expression
-	: shift_expression                               { System.out.println("RelationalExpression"); }
-	| relational_expression LESS shift_expression    { System.out.println("RelationalExpression"); }
-	| relational_expression GREATER shift_expression { System.out.println("RelationalExpression"); }
-	| relational_expression LE_OP shift_expression   { System.out.println("RelationalExpression"); }
-	| relational_expression GE_OP shift_expression   { System.out.println("RelationalExpression"); }
+	: shift_expression                               { $$ = new Node("relational_expression", $1); }
+	| relational_expression LESS shift_expression    { $$ = new Node("relational_expression", $1, $2, $3); }
+	| relational_expression GREATER shift_expression { $$ = new Node("relational_expression", $1, $2, $3); }
+	| relational_expression LE_OP shift_expression   { $$ = new Node("relational_expression", $1, $2, $3); }
+	| relational_expression GE_OP shift_expression   { $$ = new Node("relational_expression", $1, $2, $3); }
 	;
 
 equality_expression
-	: relational_expression                           { System.out.println("EqualityExpression"); }
-	| equality_expression EQ_OP relational_expression { System.out.println("EqualityExpression"); }
-	| equality_expression NE_OP relational_expression { System.out.println("EqualityExpression"); }
+	: relational_expression                           { $$ = new Node("equality_expression", $1); }
+	| equality_expression EQ_OP relational_expression { $$ = new Node("equality_expression", $1, $2, $3); }
+	| equality_expression NE_OP relational_expression { $$ = new Node("equality_expression", $1, $2, $3); }
 	;
 
 and_expression
-	: equality_expression                    { System.out.println("AndExpression"); }
-	| and_expression AMP equality_expression { System.out.println("AndExpression"); }
+	: equality_expression                    { $$ = new Node("and_expression", $1); }
+	| and_expression AMP equality_expression { $$ = new Node("and_expression", $1, $2, $3); }
 	;
 
 exclusive_or_expression
-	: and_expression                               { System.out.println("ExclusiveOrExpression"); }
-	| exclusive_or_expression CARET and_expression { System.out.println("ExclusiveOrExpression"); }
+	: and_expression                               { $$ = new Node("exclusive_or_expression", $1); }
+	| exclusive_or_expression CARET and_expression { $$ = new Node("exclusive_or_expression", $1, $2, $3); }
 	;
 
 inclusive_or_expression
-	: exclusive_or_expression                             { System.out.println("InclusiveOrExpression"); }
-	| inclusive_or_expression BAR exclusive_or_expression { System.out.println("InclusiveOrExpression"); }
+	: exclusive_or_expression                             { $$ = new Node("inclusive_or_expression", $1); }
+	| inclusive_or_expression BAR exclusive_or_expression { $$ = new Node("inclusive_or_expression", $1, $2, $3); }
 	;
 
 logical_and_expression
-	: inclusive_or_expression                               { System.out.println("LogicalAndExpression"); }
-	| logical_and_expression AND_OP inclusive_or_expression { System.out.println("LogicalAndExpression"); }
+	: inclusive_or_expression                               { $$ = new Node("logical_and_expression", $1); }
+	| logical_and_expression AND_OP inclusive_or_expression { $$ = new Node("logical_and_expression", $1, $2, $3); }
 	;
 
 logical_or_expression
-	: logical_and_expression                             { System.out.println("LogicalOrExpression"); }
-	| logical_or_expression OR_OP logical_and_expression { System.out.println("LogicalOrExpression"); }
+	: logical_and_expression                             { $$ = new Node("logical_or_expression", $1); }
+	| logical_or_expression OR_OP logical_and_expression { $$ = new Node("logical_or_expression", $1, $2, $3); }
 	;
 
 conditional_expression
-	: logical_or_expression                                                  { System.out.println("ConditionalExpression"); }
-	| logical_or_expression QUESTION expression COLON conditional_expression { System.out.println("ConditionalExpression"); }
+	: logical_or_expression                                                  { $$ = new Node("conditional_expression", $1); }
+	| logical_or_expression QUESTION expression COLON conditional_expression { $$ = new Node("conditional_expression", $1, $2, $3, $4, $5); }
 	;
 
 assignment_expression
-	: conditional_expression                       { System.out.println("AssignmentExpression"); }
-	| unary_expression EQUAL assignment_expression { System.out.println("AssignmentExpression"); }
+	: conditional_expression                       { $$ = new Node("assignment_expression", $1); }
+	| unary_expression EQUAL assignment_expression { $$ = new Node("assignment_expression", $1, $2, $3); }
 	;
 
 expression
-	: assignment_expression                  { System.out.println("Expression"); }
-	| expression COMMA assignment_expression { System.out.println("Expression"); }
+	: assignment_expression                  { $$ = new Node("expression", $1); }
+	| expression COMMA assignment_expression { $$ = new Node("expression", $1, $2, $3); }
 	;
 
 constant_expression
-	: conditional_expression { System.out.println("ConstantExpression"); }
+	: conditional_expression { $$ = new Node("constant_expression", $1); }
 	;
 
 declaration
-	: declaration_specifiers SEMICOLON                      { System.out.println("Declaration"); }
-	| declaration_specifiers init_declarator_list SEMICOLON { System.out.println("Declaration"); }
+	: declaration_specifiers SEMICOLON                      { $$ = new Node("declaration", $1, $2); }
+	| declaration_specifiers init_declarator_list SEMICOLON { $$ = new Node("declaration", $1, $2, $3); }
 	;
 
 declaration_specifiers
-	: storage_class_specifier                        { System.out.println("DeclarationSpecifiers"); }
-	| storage_class_specifier declaration_specifiers { System.out.println("DeclarationSpecifiers"); }
-	| type_specifier                                 { System.out.println("DeclarationSpecifiers"); }
-	| type_specifier declaration_specifiers          { System.out.println("DeclarationSpecifiers"); }
-	| CONST                                          { System.out.println("DeclarationSpecifiers"); }
-	| CONST declaration_specifiers                   { System.out.println("DeclarationSpecifiers"); }
+	: storage_class_specifier                        { $$ = new Node("declaration_specifiers", $1); }
+	| storage_class_specifier declaration_specifiers { $$ = new Node("declaration_specifiers", $1, $2); }
+	| type_specifier                                 { $$ = new Node("declaration_specifiers", $1); }
+	| type_specifier declaration_specifiers          { $$ = new Node("declaration_specifiers", $1, $2); }
+	| CONST                                          { $$ = new Node("declaration_specifiers", $1); }
+	| CONST declaration_specifiers                   { $$ = new Node("declaration_specifiers", $1, $2); }
 	;
 
 init_declarator_list
-	: init_declarator                            { System.out.println("InitDeclaratorList"); }
-	| init_declarator_list COMMA init_declarator { System.out.println("InitDeclaratorList"); }
+	: init_declarator                            { $$ = new Node("init_declarator_list", $1); }
+	| init_declarator_list COMMA init_declarator { $$ = new Node("init_declarator_list", $1, $2, $3); }
 	;
 
 init_declarator
-	: direct_declarator                   { System.out.println("InitDeclarator"); }
-	| direct_declarator EQUAL initializer { System.out.println("InitDeclarator"); }
+	: direct_declarator                   { $$ = new Node("init_declarator", $1); }
+	| direct_declarator EQUAL initializer { $$ = new Node("init_declarator", $1, $2, $3); }
 	;
 
 storage_class_specifier
-	: STATIC   { System.out.println("StorageClassSpecifier"); }
+	: STATIC { $$ = new Node("storage_class_specifier", $1); }
 	;
 
 type_specifier
-	: VOID      { System.out.println("TypeSpecifier VOID"); }
-	| COMPLEX   { System.out.println("TypeSpecifier COMPLEX"); }
-	| CHAR      { System.out.println("TypeSpecifier"); }
-	| SHORT     { System.out.println("TypeSpecifier"); }
-	| INT       { System.out.println("TypeSpecifier INT"); }
-	| LONG      { System.out.println("TypeSpecifier"); }
-	| FLOAT     { System.out.println("TypeSpecifier"); }
-	| DOUBLE    { System.out.println("TypeSpecifier"); }
-	| BOOL      { System.out.println("TypeSpecifier BOOL"); }
+	: VOID    { $$ = new Node("type_specifier", $1); }
+	| COMPLEX { $$ = new Node("type_specifier", $1); }
+	| CHAR    { $$ = new Node("type_specifier", $1); }
+	| SHORT   { $$ = new Node("type_specifier", $1); }
+	| INT     { $$ = new Node("type_specifier", $1); }
+	| LONG    { $$ = new Node("type_specifier", $1); }
+	| FLOAT   { $$ = new Node("type_specifier", $1); }
+	| DOUBLE  { $$ = new Node("type_specifier", $1); }
+	| BOOL    { $$ = new Node("type_specifier", $1); }
 	;
 
 specifier_qualifier_list
-	: type_specifier specifier_qualifier_list { System.out.println("SpecifierQualifierList"); }
-	| type_specifier                          { System.out.println("SpecifierQualifierList"); }
-	| CONST specifier_qualifier_list          { System.out.println("SpecifierQualifierList"); }
-	| CONST                                   { System.out.println("SpecifierQualifierList"); }
+	: type_specifier specifier_qualifier_list { $$ = new Node("specifier_qualifier_list", $1, $2); }
+	| type_specifier                          { $$ = new Node("specifier_qualifier_list", $1); }
+	| CONST specifier_qualifier_list          { $$ = new Node("specifier_qualifier_list", $1, $2); }
+	| CONST                                   { $$ = new Node("specifier_qualifier_list", $1); }
 	;
 
 direct_declarator
-	: IDENTIFIER                                                     { System.out.println("DirectDeclarator ID = "+$1.sval); }
-	| RBLEFT direct_declarator RBRIGHT                                      { System.out.println("DirectDeclarator"); }
-	| direct_declarator BRACKETLEFT constant_expression BRACKETRIGHT { System.out.println("DirectDeclarator"); }
-	| direct_declarator BRACKETLEFT BRACKETRIGHT                     { System.out.println("DirectDeclarator"); }
-	| direct_declarator RBLEFT parameter_list RBRIGHT           { System.out.println("DirectDeclarator"); }
-	| direct_declarator RBLEFT identifier_list RBRIGHT               { System.out.println("DirectDeclarator"); }
-	| direct_declarator RBLEFT RBRIGHT                               { System.out.println("DirectDeclarator"); }
+	: IDENTIFIER                                                     { $$ = new Node("direct_declarator", $1); }
+	| RBLEFT direct_declarator RBRIGHT                               { $$ = new Node("direct_declarator", $1, $2, $3); }
+	| direct_declarator BRACKETLEFT constant_expression BRACKETRIGHT { $$ = new Node("direct_declarator", $1, $2, $3, $4); }
+	| direct_declarator BRACKETLEFT BRACKETRIGHT                     { $$ = new Node("direct_declarator", $1, $2, $3); }
+	| direct_declarator RBLEFT parameter_list RBRIGHT                { $$ = new Node("direct_declarator", $1, $2, $3, $4); }
+	| direct_declarator RBLEFT identifier_list RBRIGHT               { $$ = new Node("direct_declarator", $1, $2, $3, $4); }
+	| direct_declarator RBLEFT RBRIGHT                               { $$ = new Node("direct_declarator", $1, $2, $3); }
 	;
 
 parameter_list
-	: parameter_declaration                      { System.out.println("ParameterList"); }
-	| parameter_list COMMA parameter_declaration { System.out.println("ParameterList"); }
+	: parameter_declaration                      { $$ = new Node("parameter_list", $1); }
+	| parameter_list COMMA parameter_declaration { $$ = new Node("parameter_list", $1, $2, $3); }
 	;
 
 parameter_declaration
-	: declaration_specifiers direct_declarator          { System.out.println("ParameterDeclaration"); }
-	| declaration_specifiers abstract_declarator { System.out.println("ParameterDeclaration"); }
-	| declaration_specifiers                     { System.out.println("ParameterDeclaration"); }
+	: declaration_specifiers direct_declarator   { $$ = new Node("parameter_declaration", $1, $2); }
+	| declaration_specifiers abstract_declarator { $$ = new Node("parameter_declaration", $1, $2); }
+	| declaration_specifiers                     { $$ = new Node("parameter_declaration", $1); }
 	;
 
 identifier_list
-	: IDENTIFIER                       { System.out.println("IdentifierList"); }
-	| identifier_list COMMA IDENTIFIER { System.out.println("IdentifierList"); }
+	: IDENTIFIER                       { $$ = new Node("identifier_list", $1); }
+	| identifier_list COMMA IDENTIFIER { $$ = new Node("identifier_list", $1, $2, $3); }
 	;
 
 type_name
-	: specifier_qualifier_list                     { System.out.println("TypeName"); }
-	| specifier_qualifier_list abstract_declarator { System.out.println("TypeName"); }
+	: specifier_qualifier_list                     { $$ = new Node("type_name", $1); }
+	| specifier_qualifier_list abstract_declarator { $$ = new Node("type_name", $1, $2); }
 	;
 
 abstract_declarator
-	: direct_abstract_declarator         { System.out.println("AbstractDeclarator"); }
+	: direct_abstract_declarator { $$ = new Node("abstract_declarator", $1); }
 	;
 
 direct_abstract_declarator
-	: RBLEFT abstract_declarator RBRIGHT                                      { System.out.println("DirectAbstractDeclarator"); }
-	| BRACKETLEFT BRACKETRIGHT                                                { System.out.println("DirectAbstractDeclarator"); }
-	| BRACKETLEFT constant_expression BRACKETRIGHT                            { System.out.println("DirectAbstractDeclarator"); }
-	| direct_abstract_declarator BRACKETLEFT BRACKETRIGHT                     { System.out.println("DirectAbstractDeclarator"); }
-	| direct_abstract_declarator BRACKETLEFT constant_expression BRACKETRIGHT { System.out.println("DirectAbstractDeclarator"); }
-	| RBLEFT RBRIGHT                                                          { System.out.println("DirectAbstractDeclarator"); }
-	| RBLEFT parameter_list RBRIGHT                                      { System.out.println("DirectAbstractDeclarator"); }
-	| direct_abstract_declarator RBLEFT RBRIGHT                               { System.out.println("DirectAbstractDeclarator"); }
-	| direct_abstract_declarator RBLEFT parameter_list RBRIGHT           { System.out.println("DirectAbstractDeclarator"); }
+	: RBLEFT abstract_declarator RBRIGHT                                      { $$ = new Node("direct_abstract_declarator", $1, $2, $3); }
+	| BRACKETLEFT BRACKETRIGHT                                                { $$ = new Node("direct_abstract_declarator", $1, $2); }
+	| BRACKETLEFT constant_expression BRACKETRIGHT                            { $$ = new Node("direct_abstract_declarator", $1, $2, $3); }
+	| direct_abstract_declarator BRACKETLEFT BRACKETRIGHT                     { $$ = new Node("direct_abstract_declarator", $1, $2, $3); }
+	| direct_abstract_declarator BRACKETLEFT constant_expression BRACKETRIGHT { $$ = new Node("direct_abstract_declarator", $1, $2, $3, $4); }
+	| RBLEFT RBRIGHT                                                          { $$ = new Node("direct_abstract_declarator", $1, $2); }
+	| RBLEFT parameter_list RBRIGHT                                           { $$ = new Node("direct_abstract_declarator", $1, $2, $3); }
+	| direct_abstract_declarator RBLEFT RBRIGHT                               { $$ = new Node("direct_abstract_declarator", $1, $2, $3); }
+	| direct_abstract_declarator RBLEFT parameter_list RBRIGHT                { $$ = new Node("direct_abstract_declarator", $1, $2, $3, $4); }
 	;
 
 initializer
-	: assignment_expression                       { System.out.println("Initializer"); }
-	| BRACELEFT initializer_list BRACERIGHT       { System.out.println("Initializer"); }
-	| BRACELEFT initializer_list COMMA BRACERIGHT { System.out.println("Initializer"); }
+	: assignment_expression                       { $$ = new Node("initializer", $1); }
+	| BRACELEFT initializer_list BRACERIGHT       { $$ = new Node("initializer", $1, $2, $3); }
+	| BRACELEFT initializer_list COMMA BRACERIGHT { $$ = new Node("initializer", $1, $2, $3, $4); }
 	;
 
 initializer_list
-	: initializer                        { System.out.println("InitializerList"); }
-	| initializer_list COMMA initializer { System.out.println("InitializerList"); }
+	: initializer                        { $$ = new Node("initializer_list", $1); }
+	| initializer_list COMMA initializer { $$ = new Node("initializer_list", $1, $2, $3); }
 	;
 
 statement
-	: labeled_statement    { System.out.println("Statement"); }
-	| compound_statement   { System.out.println("Statement"); }
-	| expression_statement { System.out.println("Statement"); }
-	| selection_statement  { System.out.println("Statement"); }
-	| iteration_statement  { System.out.println("Statement"); }
-	| jump_statement       { System.out.println("Statement"); }
+	: labeled_statement    { $$ = new Node("statement", $1); }
+	| compound_statement   { $$ = new Node("statement", $1); }
+	| expression_statement { $$ = new Node("statement", $1); }
+	| selection_statement  { $$ = new Node("statement", $1); }
+	| iteration_statement  { $$ = new Node("statement", $1); }
+	| jump_statement       { $$ = new Node("statement", $1); }
 	;
 
 labeled_statement
-	: IDENTIFIER COLON statement               { System.out.println("LabeledStatement"); }
-	| CASE constant_expression COLON statement { System.out.println("LabeledStatement"); }
-	| DEFAULT COLON statement                  { System.out.println("LabeledStatement"); }
+	: IDENTIFIER COLON statement               { $$ = new Node("labeled_statement", $1, $2, $3); }
+	| CASE constant_expression COLON statement { $$ = new Node("labeled_statement", $1, $2, $3, $4); }
+	| DEFAULT COLON statement                  { $$ = new Node("labeled_statement", $1, $2, $3); }
 	;
 
 compound_statement
-	: BRACELEFT BRACERIGHT                                 { System.out.println("CompoundStatement"); }
-	| BRACELEFT statement_list BRACERIGHT                  { System.out.println("CompoundStatement"); }
-	| BRACELEFT declaration_list BRACERIGHT                { System.out.println("CompoundStatement"); }
-	| BRACELEFT declaration_list statement_list BRACERIGHT { System.out.println("CompoundStatement"); }
+	: BRACELEFT BRACERIGHT                                 { $$ = new Node("compound_statement", $1, $2); }
+	| BRACELEFT statement_list BRACERIGHT                  { $$ = new Node("compound_statement", $1, $2, $3); }
+	| BRACELEFT declaration_list BRACERIGHT                { $$ = new Node("compound_statement", $1, $2, $3); }
+	| BRACELEFT declaration_list statement_list BRACERIGHT { $$ = new Node("compound_statement", $1, $2, $3, $4); }
 	;
 
 declaration_list
-	: declaration                  { System.out.println("DeclarationList"); }
-	| declaration_list declaration { System.out.println("DeclarationList"); }
+	: declaration                  { $$ = new Node("declaration_list", $1); }
+	| declaration_list declaration { $$ = new Node("declaration_list", $1, $2); }
 	;
 
 statement_list
-	: statement                { System.out.println("StatementList"); }
-	| statement_list statement { System.out.println("StatementList"); }
+	: statement                { $$ = new Node("statement_list", $1); }
+	| statement_list statement { $$ = new Node("statement_list", $1, $2); }
 	;
 
 expression_statement
-	: SEMICOLON            { System.out.println("ExpressionStatement"); }
-	| expression SEMICOLON { System.out.println("ExpressionStatement"); }
+	: SEMICOLON            { $$ = new Node("expression_statement", $1); }
+	| expression SEMICOLON { $$ = new Node("expression_statement", $1, $2); }
 	;
 
 selection_statement
-	: IF RBLEFT expression RBRIGHT statement ELSE statement { System.out.println("SelectionStatement"); }
-	| SWITCH RBLEFT expression RBRIGHT statement            { System.out.println("SelectionStatement"); }
+	: IF RBLEFT expression RBRIGHT statement ELSE statement { $$ = new Node("selection_statement", $1, $2, $3, $4, $5, $6, $7); }
+	| SWITCH RBLEFT expression RBRIGHT statement            { $$ = new Node("selection_statement", $1, $2, $3, $4, $5); }
 	;
 
 iteration_statement
-	: WHILE RBLEFT expression RBRIGHT statement                                         { System.out.println("IterationStatement"); }
-	| DO statement WHILE RBLEFT expression RBRIGHT SEMICOLON                            { System.out.println("IterationStatement"); }
-	| FOR RBLEFT expression_statement expression_statement RBRIGHT statement            { System.out.println("IterationStatement"); }
-	| FOR RBLEFT expression_statement expression_statement expression RBRIGHT statement { System.out.println("IterationStatement"); }
+	: WHILE RBLEFT expression RBRIGHT statement                                         { $$ = new Node("iteration_statement", $1, $2, $3, $4, $5); }
+	| DO statement WHILE RBLEFT expression RBRIGHT SEMICOLON                            { $$ = new Node("iteration_statement", $1, $2, $3, $4, $5, $6, $7); }
+	| FOR RBLEFT expression_statement expression_statement RBRIGHT statement            { $$ = new Node("iteration_statement", $1, $2, $3, $4, $5, $6); }
+	| FOR RBLEFT expression_statement expression_statement expression RBRIGHT statement { $$ = new Node("iteration_statement", $1, $2, $3, $4, $5, $6, $7); }
 	;
 
 jump_statement
-	: GOTO IDENTIFIER SEMICOLON   { System.out.println("JumpStatement"); }
-	| BREAK SEMICOLON             { System.out.println("JumpStatement"); }
-	| RETURN SEMICOLON            { System.out.println("JumpStatement"); }
-	| RETURN expression SEMICOLON { System.out.println("JumpStatement"); }
+	: GOTO IDENTIFIER SEMICOLON   { $$ = new Node("jump_statement", $1, $2, $3); }
+	| BREAK SEMICOLON             { $$ = new Node("jump_statement", $1, $2); }
+	| RETURN SEMICOLON            { $$ = new Node("jump_statement", $1, $2); }
+	| RETURN expression SEMICOLON { $$ = new Node("jump_statement", $1, $2, $3); }
 	;
 
 root
-	: translation_unit;							{ $$ = new ParserVal(new Node(Operation.ROOT,$1)); }
+	: translation_unit { $$ = new Node("root", $1); }
 	;
 
 translation_unit
-	: external_declaration                  { System.out.println("TranslationUnit"); $$ = new ParserVal("test"); }
-	| translation_unit external_declaration { System.out.println("TranslationUnit"); }
+	: external_declaration                  { $$ = new Node("translation_unit", $1); }
+	| translation_unit external_declaration { $$ = new Node("translation_unit", $1, $2); }
 	;
 
 external_declaration
-	: function_definition { System.out.println("ExternalDeclaration"); }
-	| declaration         { System.out.println("ExternalDeclaration"); }
+	: function_definition { $$ = new Node("external_declaration", $1); }
+	| declaration         { $$ = new Node("external_declaration", $1); }
 	;
 
 function_definition
-	: declaration_specifiers direct_declarator declaration_list compound_statement { System.out.println("FunctionDefinition"); }
-	| declaration_specifiers direct_declarator compound_statement                  { System.out.println("FunctionDefinition"); }
-	| direct_declarator declaration_list compound_statement                        { System.out.println("FunctionDefinition"); }
-	| direct_declarator compound_statement                                         { System.out.println("FunctionDefinition"); }
+	: declaration_specifiers direct_declarator declaration_list compound_statement { $$ = new Node("function_definition", $1, $2, $3, $4); }
+	| declaration_specifiers direct_declarator compound_statement                  { $$ = new Node("function_definition", $1, $2, $3); }
+	| direct_declarator declaration_list compound_statement                        { $$ = new Node("function_definition", $1, $2, $3); }
+	| direct_declarator compound_statement                                         { $$ = new Node("function_definition", $1, $2); }
 	;
 
 %%
