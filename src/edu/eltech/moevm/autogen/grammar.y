@@ -18,7 +18,7 @@
 %}
       
 %token IDENTIFIER CONSTANT STRING_LITERAL SIZEOF
-%token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
+%token INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
 %token AND_OP OR_OP
 
 %token STATIC
@@ -48,7 +48,6 @@ postfix_expression
 	| postfix_expression RBLEFT RBRIGHT                          { System.out.println("PostfixExpression"); }
 	| postfix_expression RBLEFT argument_expression_list RBRIGHT { System.out.println("PostfixExpression"); }
 	| postfix_expression DOT IDENTIFIER                          { System.out.println("PostfixExpression"); }
-	| postfix_expression PTR_OP IDENTIFIER                       { System.out.println("PostfixExpression"); }
 	| postfix_expression INC_OP                                  { System.out.println("PostfixExpression"); }
 	| postfix_expression DEC_OP                                  { System.out.println("PostfixExpression"); }
 	;
