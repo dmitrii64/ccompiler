@@ -5,6 +5,7 @@ import edu.eltech.moevm.autogen.ParserVal;
 import edu.eltech.moevm.syntax_tree.Leaf;
 import edu.eltech.moevm.syntax_tree.Node;
 import edu.eltech.moevm.syntax_tree.Operation;
+import edu.eltech.moevm.syntax_tree.SyntaxTree;
 
 
 public class Main {
@@ -24,5 +25,6 @@ public class Main {
         Node mul = new Node(Operation.MULTIPLY, new ParserVal(b), new ParserVal(uminus));
         Node plus = new Node(Operation.PLUS, new ParserVal(a), new ParserVal(mul));
 
+        new SyntaxTree(plus).visit();
     }
 }
