@@ -31,5 +31,7 @@ public enum Operation {
     BREAK,
     RETURN,
 
-    NEW
+    NEW,
+
+    ROOT
 }

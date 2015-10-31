@@ -21,6 +21,10 @@ public class Node extends TreeElement {
 
     }
 
+    public Operation getOperation() {
+        return operation;
+    }
+
     @Override
     public void add(TreeElement element) throws UnsupportedOperationException {
         element.add(element);

@@ -15,6 +15,7 @@
   import java.io.*;
   import edu.eltech.moevm.*;
   import edu.eltech.moevm.grammar.*;
+  import edu.eltech.moevm.syntax_tree.*;
 %}
       
 %token IDENTIFIER CONSTANT STRING_LITERAL SIZEOF
@@ -32,7 +33,7 @@
 %token BRACKETRIGHT DOT AMP EXCL MINUS PLUS STAR SLASH PERCENT LESS GREATER
 %token CARET BAR QUESTION
 
-%start translation_unit
+%start root
 %%
 
 primary_expression
@@ -324,6 +325,10 @@ jump_statement
 	| RETURN expression SEMICOLON { System.out.println("JumpStatement"); }
 	;
 
+root
+	: translation_unit;							{ $$ = new ParserVal(new Node(Operation.ROOT,$1)); }
+	;
+
 translation_unit
 	: external_declaration                  { System.out.println("TranslationUnit"); $$ = new ParserVal("test"); }
 	| translation_unit external_declaration { System.out.println("TranslationUnit"); }
@@ -367,7 +372,7 @@ function_definition
     lexer = new Yylex(r, this);
   }
 
-  public static void ParseFile(String file) throws IOException {
+  public static ParserVal ParseFile(String file) throws IOException {
 	System.out.println("Lexer:");
 	Parser yyparser;
     yyparser = new Parser(new FileReader(file));
@@ -386,5 +391,5 @@ function_definition
 
   	//yyparser.yydebug = true;
   	yyparser.yyparse(); //Parsing goes here
-  	System.out.print(yyparser.yyval.sval );
+  	return yyparser.yyval;
   }

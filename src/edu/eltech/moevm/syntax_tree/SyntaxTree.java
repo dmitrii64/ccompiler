@@ -17,6 +17,7 @@ public class SyntaxTree {
     private void visit(TreeElement node) {
         try {
             for (TreeElement e : node.getElements()) {
+                if(e!=null)
                 visit(e);
             }
         } catch (UnsupportedOperationException ignored) {
@@ -26,6 +27,10 @@ public class SyntaxTree {
     }
 
     private void print(TreeElement e) {
-        System.out.print(e.getValue());
+
+        if(e instanceof Leaf)
+            System.out.println(((Leaf) e).getValue());
+        else
+            System.out.println(((Node) e).getOperation());
     }
 }
