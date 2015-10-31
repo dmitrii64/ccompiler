@@ -67,29 +67,29 @@ IS = (u|U|l|L)*
 {L}({L}|{D})*	{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.IDENTIFIER; }
 
 0[xX]{H}+{IS}?		{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
-0{D}+{IS}?		{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
-{D}+{IS}?		{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
+0{D}+{IS}?			{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
+{D}+{IS}?			{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
 L?'(\\.|[^\\'])+'	{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
 
-{D}+{E}{FS}?		{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
+{D}+{E}{FS}?			{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
 {D}*"."{D}+({E})?{FS}?	{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
 {D}+"."{D}*({E})?{FS}?	{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
 
 /* Complex type */
 ((0[xX]{H}+{IS}?|0{D}+{IS}?|{D}+{IS}?|{D}+{E}{FS}?|{D}*"."{D}+({E})?{FS}?|{D}+"."{D}*({E})?{FS}?)" "*[+-]" "*)?(0[xX]{H}+{IS}?|0{D}+{IS}?|{D}+{IS}?|{D}+{E}{FS}?|{D}*"."{D}+({E})?{FS}?|{D}+"."{D}*({E})?{FS}?)"i" { if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
 
-\".*\"     { return Parser.STRING_LITERAL; }
+\".*\"		{ return Parser.STRING_LITERAL; }
 
-">>"			{ return Parser.RIGHT_OP; }
-"<<"			{ return Parser.LEFT_OP; }
-"++"			{ return Parser.INC_OP; }
-"--"			{ return Parser.DEC_OP; }
-"&&"			{ return Parser.AND_OP; }
-"||"			{ return Parser.OR_OP; }
-"<="			{ return Parser.LE_OP; }
-">="			{ return Parser.GE_OP; }
-"=="			{ return Parser.EQ_OP; }
-"!="			{ return Parser.NE_OP; }
+">>"		{ return Parser.RIGHT_OP; }
+"<<"		{ return Parser.LEFT_OP; }
+"++"		{ return Parser.INC_OP; }
+"--"		{ return Parser.DEC_OP; }
+"&&"		{ return Parser.AND_OP; }
+"||"		{ return Parser.OR_OP; }
+"<="		{ return Parser.LE_OP; }
+">="		{ return Parser.GE_OP; }
+"=="		{ return Parser.EQ_OP; }
+"!="		{ return Parser.NE_OP; }
 ";"			{ return Parser.SEMICOLON; }
 "\{"		{ return Parser.BRACELEFT; }
 "\}"		{ return Parser.BRACERIGHT; }
@@ -98,8 +98,8 @@ L?'(\\.|[^\\'])+'	{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext())
 "="			{ return Parser.EQUAL; }
 "("			{ return Parser.RBLEFT; }
 ")"			{ return Parser.RBRIGHT; }
-"["         { return Parser.BRACKETLEFT; }
-"]"         { return Parser.BRACKETRIGHT; }
+"["			{ return Parser.BRACKETLEFT; }
+"]"			{ return Parser.BRACKETRIGHT; }
 "."			{ return Parser.DOT; }
 "&"			{ return Parser.AMP; }
 "!"			{ return Parser.EXCL; }
@@ -115,4 +115,4 @@ L?'(\\.|[^\\'])+'	{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext())
 "?"			{ return Parser.QUESTION; }
 
 [ \t\v\n\f]	{ }
-.           { }
+.			{ }
