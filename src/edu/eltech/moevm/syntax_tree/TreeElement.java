@@ -8,11 +8,7 @@ import java.util.List;
 public abstract class TreeElement {
     protected TreeElement parent;
     protected Type type;
-    protected String value;
 
-    public final String getValue() {
-        return value;
-    }
 
     public final Type getType() {
         return type;
@@ -34,7 +30,6 @@ public abstract class TreeElement {
         this.type = type;
     }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
+    public abstract String getValue();
+
 }
