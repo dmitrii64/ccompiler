@@ -84,7 +84,6 @@ L?'(\\.|[^\\'])+'	{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext())
 "<<"			{ return Parser.LEFT_OP; }
 "++"			{ return Parser.INC_OP; }
 "--"			{ return Parser.DEC_OP; }
-"->"			{ return Parser.PTR_OP; }
 "&&"			{ return Parser.AND_OP; }
 "||"			{ return Parser.OR_OP; }
 "<="			{ return Parser.LE_OP; }
