@@ -22,7 +22,9 @@
 %token AND_OP OR_OP
 
 %token STATIC
-%token CHAR SHORT INT LONG FLOAT DOUBLE CONST VOID
+%token CHAR SHORT INT LONG FLOAT DOUBLE CONST VOID COMPLEX
+
+%token RE IM MOD
 
 %token CASE DEFAULT IF ELSE SWITCH WHILE DO FOR GOTO BREAK RETURN
 
@@ -63,6 +65,12 @@ unary_expression
 	| unary_operator cast_expression  { System.out.println("UnaryExpression"); }
 	| SIZEOF unary_expression         { System.out.println("UnaryExpression"); }
 	| SIZEOF RBLEFT type_name RBRIGHT { System.out.println("UnaryExpression"); }
+	| RE RBLEFT CONSTANT RBRIGHT      { System.out.println("UnaryExpression"); }
+	| RE RBLEFT IDENTIFIER RBRIGHT    { System.out.println("UnaryExpression"); }
+	| IM RBLEFT CONSTANT RBRIGHT      { System.out.println("UnaryExpression"); }
+	| IM RBLEFT IDENTIFIER RBRIGHT    { System.out.println("UnaryExpression"); }
+	| MOD RBLEFT CONSTANT RBRIGHT     { System.out.println("UnaryExpression"); }
+	| MOD RBLEFT IDENTIFIER RBRIGHT   { System.out.println("UnaryExpression"); }
 	;
 
 unary_operator
@@ -185,6 +193,7 @@ storage_class_specifier
 
 type_specifier
 	: VOID      { System.out.println("TypeSpecifier VOID"); }
+	| COMPLEX   { System.out.println("TypeSpecifier COMPLEX"); }
 	| CHAR      { System.out.println("TypeSpecifier"); }
 	| SHORT     { System.out.println("TypeSpecifier"); }
 	| INT       { System.out.println("TypeSpecifier INT"); }

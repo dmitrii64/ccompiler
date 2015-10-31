@@ -37,6 +37,7 @@ IS = (u|U|l|L)*
 "break"			{ return Parser.BREAK; }
 "case"			{ return Parser.CASE; }
 "char"			{ return Parser.CHAR; }
+"complex"		{ return Parser.COMPLEX; }
 "const"			{ return Parser.CONST; }
 "default"		{ return Parser.DEFAULT; }
 "do"			{ return Parser.DO; }
@@ -46,8 +47,11 @@ IS = (u|U|l|L)*
 "for"			{ return Parser.FOR; }
 "goto"			{ return Parser.GOTO; }
 "if"			{ return Parser.IF; }
+"im"			{ return Parser.IM; }
 "int"			{ return Parser.INT; }
 "long"			{ return Parser.LONG; }
+"mod"			{ return Parser.MOD; }
+"re"			{ return Parser.RE; }
 "return"		{ return Parser.RETURN; }
 "short"			{ return Parser.SHORT; }
 "sizeof"		{ return Parser.SIZEOF; }
@@ -66,6 +70,10 @@ L?'(\\.|[^\\'])+'	{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext())
 {D}+{E}{FS}?		{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
 {D}*"."{D}+({E})?{FS}?	{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
 {D}+"."{D}*({E})?{FS}?	{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
+
+/* Complex type */
+((0[xX]{H}+{IS}?|0{D}+{IS}?|{D}+{IS}?|{D}+{E}{FS}?|{D}*"."{D}+({E})?{FS}?|{D}+"."{D}*({E})?{FS}?)" "*[+-]" "*)?(0[xX]{H}+{IS}?|0{D}+{IS}?|{D}+{IS}?|{D}+{E}{FS}?|{D}*"."{D}+({E})?{FS}?|{D}+"."{D}*({E})?{FS}?)"i" { if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
+
 
 \".*\"     { return Parser.STRING_LITERAL; }
 
