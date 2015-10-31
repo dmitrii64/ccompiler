@@ -22,7 +22,7 @@
 %token AND_OP OR_OP
 
 %token STATIC
-%token CHAR SHORT INT LONG FLOAT DOUBLE CONST VOID COMPLEX
+%token CHAR SHORT INT LONG FLOAT DOUBLE CONST VOID COMPLEX BOOL
 
 %token RE IM MOD
 
@@ -200,6 +200,7 @@ type_specifier
 	| LONG      { System.out.println("TypeSpecifier"); }
 	| FLOAT     { System.out.println("TypeSpecifier"); }
 	| DOUBLE    { System.out.println("TypeSpecifier"); }
+	| BOOL      { System.out.println("TypeSpecifier BOOL"); }
 	;
 
 specifier_qualifier_list

@@ -34,6 +34,7 @@ IS = (u|U|l|L)*
 
 "/*"			{  }
 
+"bool"			{ return Parser.BOOL; }
 "break"			{ return Parser.BREAK; }
 "case"			{ return Parser.CASE; }
 "char"			{ return Parser.CHAR; }
@@ -60,6 +61,9 @@ IS = (u|U|l|L)*
 "void"			{ return Parser.VOID; }
 "while"			{ return Parser.WHILE; }
 
+/* boolean type */
+"false"|"true"	{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
+
 {L}({L}|{D})*	{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.IDENTIFIER; }
 
 0[xX]{H}+{IS}?		{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
@@ -73,7 +77,6 @@ L?'(\\.|[^\\'])+'	{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext())
 
 /* Complex type */
 ((0[xX]{H}+{IS}?|0{D}+{IS}?|{D}+{IS}?|{D}+{E}{FS}?|{D}*"."{D}+({E})?{FS}?|{D}+"."{D}*({E})?{FS}?)" "*[+-]" "*)?(0[xX]{H}+{IS}?|0{D}+{IS}?|{D}+{IS}?|{D}+{E}{FS}?|{D}*"."{D}+({E})?{FS}?|{D}+"."{D}*({E})?{FS}?)"i" { if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
-
 
 \".*\"     { return Parser.STRING_LITERAL; }
 
