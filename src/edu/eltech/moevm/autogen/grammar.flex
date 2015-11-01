@@ -79,7 +79,6 @@ L?'(\\.|[^\\'])+'	{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext())
 "\{"		{ return Parser.BRACELEFT; }
 "\}"		{ return Parser.BRACERIGHT; }
 ","			{ return Parser.COMMA; }
-":="		{ return Parser.COLON_EQUAL; }
 ":"			{ return Parser.COLON; }
 "="			{ return Parser.EQUAL; }
 "("			{ return Parser.RBLEFT; }

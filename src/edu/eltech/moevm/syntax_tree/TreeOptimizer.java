@@ -29,8 +29,6 @@ public class TreeOptimizer implements TreeCallback {
         if (node.getOperation() == Operation.FUNCTION_DEFINITION) {
             while (node.haveAny(Operation.DIRECT_DEC_FUNC))
                 reduce(node, Operation.FUNCTION_DEFINITION, Operation.DIRECT_DEC_FUNC);
-
-
             Leaf id = (Leaf) node.getElements().get(0);
             node.setValue(id.getValue());
             node.remove(id);
