@@ -10,19 +10,34 @@ public class SyntaxTree {
         this.root = root;
     }
 
-    public void visit(TreeCallback c) {
-        visit(c, root);
+    public void postfixVisit(TreeCallback c) {
+        postfixVisit(c, root);
     }
 
-    private void visit(TreeCallback c, TreeElement node) {
+    private void postfixVisit(TreeCallback c, TreeElement node) {
         try {
             for (TreeElement e : node.getElements()) {
                 if (e != null)
-                    visit(c, e);
+                    postfixVisit(c, e);
             }
         } catch (UnsupportedOperationException ignored) {
         } finally {
             c.processElement(node);
+        }
+    }
+
+    public void infixVisit(TreeCallback c) {
+        infixVisit(c, root);
+    }
+
+    private void infixVisit(TreeCallback c, TreeElement node) {
+        c.processElement(node);
+        try {
+            for (TreeElement e : node.getElements()) {
+                if (e != null)
+                    infixVisit(c, e);
+            }
+        } catch (UnsupportedOperationException ignored) {
         }
     }
 }

@@ -16,6 +16,4 @@ public enum Operand {
     SHORT,
     DOUBLE,
     LONG
-
-
 }
