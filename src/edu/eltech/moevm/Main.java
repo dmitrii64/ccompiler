@@ -19,13 +19,17 @@ public class Main {
             Node root;
             root = (Node) Parser.ParseFile("test.c").obj;
             SyntaxTree tree = new SyntaxTree(root);
-            tree.visit(new TreeCallback() {
+            tree.infixVisit(new TreeCallback() {
                 @Override
-                public void processElement(TreeElement e) {
-                    if(e instanceof Leaf)
-                        System.out.println("leaf ["+((Leaf) e).getOperand()+"] value = "+((Leaf) e).getValue());
+                public void processElement(TreeElement e, int level) {
+                    System.out.print("|");
+                    for (int i = 0; i < level; i++) {
+                        System.out.print("--");
+                    }
+                    if (e instanceof Leaf)
+                        System.out.println("leaf [" + ((Leaf) e).getOperand() + "] value = " + ((Leaf) e).getValue());
                     else
-                        System.out.println("node ["+((Node) e).getOperation()+"]");
+                        System.out.println("node [" + ((Node) e).getOperation() + "]");
                 }
             });
 

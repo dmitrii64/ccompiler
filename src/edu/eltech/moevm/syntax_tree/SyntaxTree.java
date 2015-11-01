@@ -11,31 +11,31 @@ public class SyntaxTree {
     }
 
     public void postfixVisit(TreeCallback c) {
-        postfixVisit(c, root);
+        postfixVisit(c, root, 0);
     }
 
-    private void postfixVisit(TreeCallback c, TreeElement node) {
+    private void postfixVisit(TreeCallback c, TreeElement node, int level) {
         try {
             for (TreeElement e : node.getElements()) {
                 if (e != null)
-                    postfixVisit(c, e);
+                    postfixVisit(c, e, level+1);
             }
         } catch (UnsupportedOperationException ignored) {
         } finally {
-            c.processElement(node);
+            c.processElement(node, level);
         }
     }
 
     public void infixVisit(TreeCallback c) {
-        infixVisit(c, root);
+        infixVisit(c, root, 0);
     }
 
-    private void infixVisit(TreeCallback c, TreeElement node) {
-        c.processElement(node);
+    private void infixVisit(TreeCallback c, TreeElement node, int level) {
+        c.processElement(node, level);
         try {
             for (TreeElement e : node.getElements()) {
                 if (e != null)
-                    infixVisit(c, e);
+                    infixVisit(c, e, level+1);
             }
         } catch (UnsupportedOperationException ignored) {
         }
