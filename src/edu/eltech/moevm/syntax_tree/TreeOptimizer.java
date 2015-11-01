@@ -44,8 +44,8 @@ public class TreeOptimizer implements TreeCallback {
     private void reduce(Node node, Operation op1, Operation op2) throws UnsupportedOperationException {
         if(node.getOperation()==op1)
         {
-            ArrayList<TreeElement> addlist = new ArrayList<>();
-            ArrayList<TreeElement> rmlist = new ArrayList<>();
+            ArrayList<TreeElement> addlist = new ArrayList<TreeElement>();
+            ArrayList<TreeElement> rmlist = new ArrayList<TreeElement>();
             for(TreeElement child : node.getElements())
             {
                 if(child instanceof Node)
