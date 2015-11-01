@@ -18,6 +18,7 @@ public class Node extends TreeElement {
         this.elements = new ArrayList<TreeElement>();
         for (ParserVal obj : elements) {
             this.elements.add((TreeElement) obj.obj);
+            ((TreeElement) obj.obj).setParent(this);
         }
 
     }

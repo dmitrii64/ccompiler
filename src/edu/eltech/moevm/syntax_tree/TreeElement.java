@@ -6,6 +6,7 @@ import java.util.List;
  * Created by vladimir on 31.10.15.
  */
 public abstract class TreeElement {
+
     protected TreeElement parent;
     protected Type type;
 
@@ -24,6 +25,10 @@ public abstract class TreeElement {
 
     public final TreeElement getParent() {
         return parent;
+    }
+
+    public void setParent(TreeElement parent) {
+        this.parent = parent;
     }
 
     public void setType(Type type) {
