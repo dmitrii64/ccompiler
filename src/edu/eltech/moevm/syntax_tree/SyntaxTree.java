@@ -29,8 +29,8 @@ public class SyntaxTree {
     private void print(TreeElement e) {
 
         if(e instanceof Leaf)
-            System.out.println(((Leaf) e).getValue());
+            System.out.println("leaf ["+((Leaf) e).getOperand()+"] value = "+((Leaf) e).getValue());
         else
-            System.out.println(((Node) e).getOperation());
+            System.out.println("node ["+((Node) e).getOperation()+"]");
     }
 }
