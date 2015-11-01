@@ -256,7 +256,7 @@ labeled_statement
 	;
 
 compound_statement
-	: BRACELEFT BRACERIGHT                                 { $$ = new ParserVal(new Node(Operation.EMPTY_BODY)); }
+	: BRACELEFT BRACERIGHT                                 { $$ = new ParserVal(new Leaf(Operand.EMPTY_BODY,"")); }
 	| BRACELEFT statement_list BRACERIGHT                  { $$ = new ParserVal(new Node(Operation.COMP_STATEMENT, $2)); }
 	| BRACELEFT declaration_list BRACERIGHT                { $$ = new ParserVal(new Node(Operation.COMP_STATEMENT, $2)); }
 	| BRACELEFT declaration_list statement_list BRACERIGHT { $$ = new ParserVal(new Node(Operation.COMP_STATEMENT, $2, $3)); }
@@ -273,7 +273,7 @@ statement_list
 	;
 
 expression_statement
-	: SEMICOLON            { $$ = new ParserVal(new Node(Operation.EMPTY_EXPR)); }
+	: SEMICOLON            { $$ = new ParserVal(new Leaf(Operand.EMPTY_EXPR,"")); }
 	| expression SEMICOLON { $$ = $1; }
 	;
 

@@ -27,6 +27,17 @@ public class Node extends TreeElement {
         return operation;
     }
 
+    public boolean haveAny(Operation op)
+    {
+        for(TreeElement e : elements)
+        if(e instanceof Node)
+        {
+            if(((Node)e).getOperation()==op)
+                return true;
+        }
+        return false;
+    }
+
     @Override
     public void add(TreeElement element) throws UnsupportedOperationException {
         elements.add(element);
@@ -35,6 +46,11 @@ public class Node extends TreeElement {
     @Override
     public void remove(TreeElement element) throws UnsupportedOperationException {
         elements.remove(element);
+    }
+
+    @Override
+    public void clear() throws UnsupportedOperationException {
+        elements.clear();
     }
 
     @Override

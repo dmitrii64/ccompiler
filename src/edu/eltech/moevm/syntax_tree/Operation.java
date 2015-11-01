@@ -61,8 +61,6 @@ public enum Operation {
     LABELED,
 
     COMP_STATEMENT,
-    EMPTY_BODY,
-    EMPTY_EXPR,
 
     DECL_LIST,
     STAT_LIST,

@@ -23,6 +23,10 @@ public abstract class TreeElement {
         throw new UnsupportedOperationException();
     }
 
+    public void clear() throws UnsupportedOperationException {
+        throw new UnsupportedOperationException();
+    }
+
     public List<TreeElement> getElements() throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
