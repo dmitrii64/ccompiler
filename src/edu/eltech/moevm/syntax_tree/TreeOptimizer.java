@@ -43,6 +43,16 @@ public class TreeOptimizer implements TreeCallback {
             node.remove(id);
         }
 
+        if (node.getOperation() == Operation.VARIABLE_DECLARATION) {
+            Leaf type = (Leaf) node.getElements().get(0);
+            if (node.getElements().get(node.getElements().size() - 1) instanceof Leaf) {
+                Leaf id = (Leaf) (node.getElements().get(node.getElements().size() - 1));
+                id.setType(Type.valueOf(type.getOperand().name()));
+                node.remove(type);
+            }
+
+        }
+
         if (node.getOperation() == Operation.DECLARATIONS) {
             while (node.haveAny(Operation.DECLARATIONS))
                 reduce(node, Operation.DECLARATIONS, Operation.DECLARATIONS);
@@ -52,6 +62,7 @@ public class TreeOptimizer implements TreeCallback {
             while (node.haveAny(Operation.STATEMENTS))
                 reduce(node, Operation.STATEMENTS, Operation.STATEMENTS);
         }
+
 
     }
 

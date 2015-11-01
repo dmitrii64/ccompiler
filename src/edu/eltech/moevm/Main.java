@@ -26,18 +26,21 @@ public class Main {
                     for (int i = 0; i < level; i++) {
                         System.out.print("--");
                     }
-                    if (e instanceof Leaf)
-                        if (((Leaf) e).getValue() == null)
-                            System.out.println("leaf [" + ((Leaf) e).getOperand() + "]");
-                        else
-                            System.out.println("leaf [" + ((Leaf) e).getOperand() + "] (" + ((Leaf) e).getValue() + ")");
-                    else {
-                        if (((Node) e).getValue() == null)
-                            System.out.println("node [" + ((Node) e).getOperation() + "]");
-                        else
-                            System.out.println("node [" + ((Node) e).getOperation() + "] (" + ((Node) e).getValue() + ")");
+                    if (e instanceof Leaf) {
+                        System.out.print("leaf [" + ((Leaf) e).getOperand() + "]");
+                        if (((Leaf) e).getValue() != null)
+                            System.out.print(" (" + ((Leaf) e).getValue() + ")");
+                        if (((Leaf) e).getType() != null)
+                            System.out.print(" <" + ((Leaf) e).getType() + ">");
                     }
-
+                    else {
+                        System.out.print("node [" + ((Node) e).getOperation() + "]");
+                        if (((Node) e).getValue() != null)
+                            System.out.print(" (" + ((Node) e).getValue() + ")");
+                        if (((Node) e).getType() != null)
+                            System.out.print(" <" + ((Node) e).getType() + ">");
+                    }
+                    System.out.println();
 
                 }
             });
