@@ -33,6 +33,9 @@ public class TreeOptimizer implements TreeCallback {
             Leaf id = (Leaf) node.getElements().get(0);
             node.setValue(id.getValue());
             node.remove(id);
+            Leaf type = (Leaf) node.getElements().get(0);
+            node.setType(Type.valueOf(type.getOperand().name()));
+            node.remove(type);
         }
 
         if (node.getOperation() == Operation.FUNC_CALL) {
