@@ -14,14 +14,12 @@ public class Node extends TreeElement {
     private ArrayList<TreeElement> elements;
 
     public Node(Operation operation, ParserVal... elements) {
-
         this.operation = operation;
         this.elements = new ArrayList<TreeElement>();
         for (ParserVal obj : elements) {
             this.elements.add((TreeElement) obj.obj);
             ((TreeElement) obj.obj).setParent(this);
         }
-
     }
 
     public Operation getOperation() {
@@ -58,7 +56,6 @@ public class Node extends TreeElement {
     public List<TreeElement> getElements() throws UnsupportedOperationException {
         return elements;
     }
-
 
     public String getValue() {
         return value;

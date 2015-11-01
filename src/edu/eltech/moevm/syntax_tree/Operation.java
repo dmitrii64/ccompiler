@@ -73,7 +73,6 @@ public enum Operation {
     FNDEF_1,
     FNDEF_2,
     FNDEF_3,
-    FNDEF_4,
 
 
     WHILE,
