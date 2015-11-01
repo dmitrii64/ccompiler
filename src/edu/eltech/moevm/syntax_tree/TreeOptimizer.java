@@ -37,9 +37,14 @@ public class TreeOptimizer implements TreeCallback {
                 node.setType(Type.valueOf(type.getOperand().name()));
                 node.remove(type);
             } else {
-                Leaf type = (Leaf) node.getElements().get(1);
-                node.setType(Type.valueOf(type.getOperand().name()));
-                node.remove(type);
+                for (TreeElement te : node.getElements())
+                    if (te instanceof Leaf)
+                        if (Type.valueOf(((Leaf) te).getOperand().name()) != null) {
+                            Leaf type = (Leaf) node.getElements().get(1);
+                            node.setType(Type.valueOf(type.getOperand().name()));
+                            node.remove(type);
+                        }
+
             }
         }
 
@@ -60,13 +65,19 @@ public class TreeOptimizer implements TreeCallback {
             }
         }
 
-        if (node.getOperation() == Operation.FUNCTION_PARAMETER) {
-            Leaf type = (Leaf) node.getElements().get(0);
-            if (node.getElements().get(node.getElements().size() - 1) instanceof Leaf) {
-                Leaf id = (Leaf) (node.getElements().get(node.getElements().size() - 1));
-                id.setType(Type.valueOf(type.getOperand().name()));
-                node.remove(type);
+        if (node.getOperation() == Operation.PARAM_LIST) {
+
+            for (TreeElement par : node.getElements()) {
+                Leaf type = (Leaf) par.getElements().get(0);
+                if (par.getElements().get(par.getElements().size() - 1) instanceof Leaf) {
+                    Leaf id = (Leaf) (par.getElements().get(par.getElements().size() - 1));
+                    id.setType(Type.valueOf(type.getOperand().name()));
+                    par.remove(type);
+                }
             }
+            while (node.haveAny(Operation.FUNCTION_PARAMETER))
+                reduce(node, Operation.PARAM_LIST, Operation.FUNCTION_PARAMETER);
+
         }
 
         if (node.getOperation() == Operation.DECLARATIONS) {
