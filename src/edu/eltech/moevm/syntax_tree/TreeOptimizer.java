@@ -30,6 +30,7 @@ public class TreeOptimizer implements TreeCallback {
             while (node.haveAny(Operation.DIRECT_DEC_FUNC))
                 reduce(node, Operation.FUNCTION_DEFINITION, Operation.DIRECT_DEC_FUNC);
 
+
             Leaf id = (Leaf) node.getElements().get(0);
             node.setValue(id.getValue());
             node.remove(id);
@@ -47,9 +48,11 @@ public class TreeOptimizer implements TreeCallback {
                             node.remove(type);
                         }
                     }
-
-
             }
+
+            while (node.haveAny(Operation.PARAM_LIST))
+                reduce(node, Operation.FUNCTION_DEFINITION, Operation.PARAM_LIST);
+
             ArrayList<TreeElement> addlist = new ArrayList<TreeElement>();
             ArrayList<TreeElement> rmlist = new ArrayList<TreeElement>();
             for (TreeElement te : node.getElements())
@@ -92,7 +95,6 @@ public class TreeOptimizer implements TreeCallback {
         }
 
         if (node.getOperation() == Operation.PARAM_LIST) {
-
             for (TreeElement par : node.getElements()) {
                 Leaf type = (Leaf) par.getElements().get(0);
                 if (par.getElements().get(par.getElements().size() - 1) instanceof Leaf) {
@@ -103,6 +105,7 @@ public class TreeOptimizer implements TreeCallback {
             }
             while (node.haveAny(Operation.FUNCTION_PARAMETER))
                 reduce(node, Operation.PARAM_LIST, Operation.FUNCTION_PARAMETER);
+
         }
 
         if (node.getOperation() == Operation.FUNCTION_PARAMETER) {
