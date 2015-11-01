@@ -309,9 +309,7 @@ external_declaration
 	;
 
 function_definition
-	: declaration_specifiers direct_declarator declaration_list compound_statement { $$ = new ParserVal(new Node(Operation.FNDEF_1, $1, $2, $3, $4)); }
-	| declaration_specifiers direct_declarator compound_statement                  { $$ = new ParserVal(new Node(Operation.FNDEF_2, $1, $2, $3)); }
-	| direct_declarator declaration_list compound_statement                        { $$ = new ParserVal(new Node(Operation.FNDEF_3, $1, $2, $3)); }
+	: declaration_specifiers direct_declarator compound_statement                  { $$ = new ParserVal(new Node(Operation.FUNCTION_DEFINITION, $1, $2, $3)); }
 	;
 
 %%

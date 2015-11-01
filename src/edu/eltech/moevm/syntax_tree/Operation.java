@@ -70,9 +70,7 @@ public enum Operation {
     FUNC_DEF,
     EXT_DECL,
 
-    FNDEF_1,
-    FNDEF_2,
-    FNDEF_3,
+    FUNCTION_DEFINITION,
 
 
     WHILE,
