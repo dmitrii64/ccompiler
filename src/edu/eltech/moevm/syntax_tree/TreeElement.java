@@ -6,10 +6,8 @@ import java.util.List;
  * Created by vladimir on 31.10.15.
  */
 public abstract class TreeElement {
-
     protected TreeElement parent;
     protected Type type;
-
 
     public final Type getType() {
         return type;

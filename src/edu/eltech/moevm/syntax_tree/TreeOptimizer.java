@@ -16,7 +16,6 @@ public class TreeOptimizer implements TreeCallback {
             }
         else
             optimizeLeaf((Leaf) e);
-
     }
 
     private void optimizeNode(Node node) throws UnsupportedOperationException {
@@ -33,9 +32,15 @@ public class TreeOptimizer implements TreeCallback {
             Leaf id = (Leaf) node.getElements().get(0);
             node.setValue(id.getValue());
             node.remove(id);
-            Leaf type = (Leaf) node.getElements().get(0);
-            node.setType(Type.valueOf(type.getOperand().name()));
-            node.remove(type);
+            if (node.getElements().get(0) instanceof Leaf) {
+                Leaf type = (Leaf) node.getElements().get(0);
+                node.setType(Type.valueOf(type.getOperand().name()));
+                node.remove(type);
+            } else {
+                Leaf type = (Leaf) node.getElements().get(1);
+                node.setType(Type.valueOf(type.getOperand().name()));
+                node.remove(type);
+            }
         }
 
         if (node.getOperation() == Operation.FUNC_CALL) {
@@ -53,7 +58,15 @@ public class TreeOptimizer implements TreeCallback {
                 id.setType(Type.valueOf(type.getOperand().name()));
                 node.remove(type);
             }
+        }
 
+        if (node.getOperation() == Operation.FUNCTION_PARAMETER) {
+            Leaf type = (Leaf) node.getElements().get(0);
+            if (node.getElements().get(node.getElements().size() - 1) instanceof Leaf) {
+                Leaf id = (Leaf) (node.getElements().get(node.getElements().size() - 1));
+                id.setType(Type.valueOf(type.getOperand().name()));
+                node.remove(type);
+            }
         }
 
         if (node.getOperation() == Operation.DECLARATIONS) {
@@ -65,8 +78,6 @@ public class TreeOptimizer implements TreeCallback {
             while (node.haveAny(Operation.STATEMENTS))
                 reduce(node, Operation.STATEMENTS, Operation.STATEMENTS);
         }
-
-
     }
 
     private void reduce(Node node, Operation op1, Operation op2) throws UnsupportedOperationException {

@@ -1,22 +1,11 @@
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Copyright (C) 2000 Gerwin Klein <lsf@jflex.de>                          *
- * All rights reserved.                                                    *
- *                                                                         *
- * Thanks to Larry Bell and Bob Jamison for suggestions and comments.      *
- *                                                                         *
- * License: BSD                                                            *
- *                                                                         *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 package edu.eltech.moevm.autogen;
 
 %%
 
-/* This is not an error! */
 %byaccj
 
 %{
   private Parser yyparser;
-
   public Yylex(java.io.Reader r, Parser yyparser) {
     this(r);
     this.yyparser = yyparser;

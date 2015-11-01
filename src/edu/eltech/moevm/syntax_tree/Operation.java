@@ -72,7 +72,6 @@ public enum Operation {
 
     FUNCTION_DEFINITION,
 
-
     WHILE,
     DO,
     FOR,
