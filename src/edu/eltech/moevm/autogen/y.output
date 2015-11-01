@@ -103,96 +103,89 @@
   78                 | DOUBLE
   79                 | BOOL
 
-  80  specifier_qualifier_list : type_specifier specifier_qualifier_list
-  81                           | type_specifier
+  80  direct_declarator : IDENTIFIER
+  81                    | RBLEFT direct_declarator RBRIGHT
+  82                    | direct_declarator BRACKETLEFT constant_expression BRACKETRIGHT
+  83                    | direct_declarator BRACKETLEFT BRACKETRIGHT
+  84                    | direct_declarator RBLEFT parameter_list RBRIGHT
+  85                    | direct_declarator RBLEFT identifier_list RBRIGHT
+  86                    | direct_declarator RBLEFT RBRIGHT
 
-  82  direct_declarator : IDENTIFIER
-  83                    | RBLEFT direct_declarator RBRIGHT
-  84                    | direct_declarator BRACKETLEFT constant_expression BRACKETRIGHT
-  85                    | direct_declarator BRACKETLEFT BRACKETRIGHT
-  86                    | direct_declarator RBLEFT parameter_list RBRIGHT
-  87                    | direct_declarator RBLEFT identifier_list RBRIGHT
-  88                    | direct_declarator RBLEFT RBRIGHT
+  87  parameter_list : parameter_declaration
+  88                 | parameter_list COMMA parameter_declaration
 
-  89  parameter_list : parameter_declaration
-  90                 | parameter_list COMMA parameter_declaration
+  89  parameter_declaration : declaration_specifiers direct_declarator
+  90                        | declaration_specifiers abstract_declarator
+  91                        | declaration_specifiers
 
-  91  parameter_declaration : declaration_specifiers direct_declarator
-  92                        | declaration_specifiers abstract_declarator
-  93                        | declaration_specifiers
+  92  identifier_list : IDENTIFIER
+  93                  | identifier_list COMMA IDENTIFIER
 
-  94  identifier_list : IDENTIFIER
-  95                  | identifier_list COMMA IDENTIFIER
+  94  abstract_declarator : direct_abstract_declarator
 
-  96  abstract_declarator : direct_abstract_declarator
+  95  direct_abstract_declarator : RBLEFT abstract_declarator RBRIGHT
+  96                             | BRACKETLEFT BRACKETRIGHT
+  97                             | BRACKETLEFT constant_expression BRACKETRIGHT
+  98                             | direct_abstract_declarator BRACKETLEFT BRACKETRIGHT
+  99                             | direct_abstract_declarator BRACKETLEFT constant_expression BRACKETRIGHT
+ 100                             | RBLEFT RBRIGHT
+ 101                             | RBLEFT parameter_list RBRIGHT
+ 102                             | direct_abstract_declarator RBLEFT RBRIGHT
+ 103                             | direct_abstract_declarator RBLEFT parameter_list RBRIGHT
 
-  97  direct_abstract_declarator : RBLEFT abstract_declarator RBRIGHT
-  98                             | BRACKETLEFT BRACKETRIGHT
-  99                             | BRACKETLEFT constant_expression BRACKETRIGHT
- 100                             | direct_abstract_declarator BRACKETLEFT BRACKETRIGHT
- 101                             | direct_abstract_declarator BRACKETLEFT constant_expression BRACKETRIGHT
- 102                             | RBLEFT RBRIGHT
- 103                             | RBLEFT parameter_list RBRIGHT
- 104                             | direct_abstract_declarator RBLEFT RBRIGHT
- 105                             | direct_abstract_declarator RBLEFT parameter_list RBRIGHT
+ 104  initializer : assignment_expression
+ 105              | BRACELEFT initializer_list BRACERIGHT
+ 106              | BRACELEFT initializer_list COMMA BRACERIGHT
 
- 106  initializer : assignment_expression
- 107              | BRACELEFT initializer_list BRACERIGHT
- 108              | BRACELEFT initializer_list COMMA BRACERIGHT
+ 107  initializer_list : initializer
+ 108                   | initializer_list COMMA initializer
 
- 109  initializer_list : initializer
- 110                   | initializer_list COMMA initializer
+ 109  statement : labeled_statement
+ 110            | compound_statement
+ 111            | expression_statement
+ 112            | selection_statement
+ 113            | iteration_statement
+ 114            | jump_statement
 
- 111  statement : labeled_statement
- 112            | compound_statement
- 113            | expression_statement
- 114            | selection_statement
- 115            | iteration_statement
- 116            | jump_statement
+ 115  labeled_statement : IDENTIFIER COLON statement
 
- 117  labeled_statement : IDENTIFIER COLON statement
- 118                    | CASE constant_expression COLON statement
- 119                    | DEFAULT COLON statement
+ 116  compound_statement : BRACELEFT BRACERIGHT
+ 117                     | BRACELEFT statement_list BRACERIGHT
+ 118                     | BRACELEFT declaration_list BRACERIGHT
+ 119                     | BRACELEFT declaration_list statement_list BRACERIGHT
 
- 120  compound_statement : BRACELEFT BRACERIGHT
- 121                     | BRACELEFT statement_list BRACERIGHT
- 122                     | BRACELEFT declaration_list BRACERIGHT
- 123                     | BRACELEFT declaration_list statement_list BRACERIGHT
+ 120  declaration_list : declaration
+ 121                   | declaration_list declaration
 
- 124  declaration_list : declaration
- 125                   | declaration_list declaration
+ 122  statement_list : statement
+ 123                 | statement_list statement
 
- 126  statement_list : statement
- 127                 | statement_list statement
+ 124  expression_statement : SEMICOLON
+ 125                       | expression SEMICOLON
 
- 128  expression_statement : SEMICOLON
- 129                       | expression SEMICOLON
+ 126  selection_statement : IF RBLEFT expression RBRIGHT statement ELSE statement
 
- 130  selection_statement : IF RBLEFT expression RBRIGHT statement ELSE statement
- 131                      | SWITCH RBLEFT expression RBRIGHT statement
+ 127  iteration_statement : WHILE RBLEFT expression RBRIGHT statement
+ 128                      | DO statement WHILE RBLEFT expression RBRIGHT SEMICOLON
+ 129                      | FOR RBLEFT expression_statement expression_statement expression RBRIGHT statement
 
- 132  iteration_statement : WHILE RBLEFT expression RBRIGHT statement
- 133                      | DO statement WHILE RBLEFT expression RBRIGHT SEMICOLON
- 134                      | FOR RBLEFT expression_statement expression_statement RBRIGHT statement
- 135                      | FOR RBLEFT expression_statement expression_statement expression RBRIGHT statement
+ 130  jump_statement : GOTO IDENTIFIER SEMICOLON
+ 131                 | BREAK SEMICOLON
+ 132                 | RETURN SEMICOLON
+ 133                 | RETURN expression SEMICOLON
 
- 136  jump_statement : GOTO IDENTIFIER SEMICOLON
- 137                 | BREAK SEMICOLON
- 138                 | RETURN SEMICOLON
- 139                 | RETURN expression SEMICOLON
+ 134  root : translation_unit
 
- 140  root : translation_unit
+ 135  translation_unit : external_declaration
+ 136                   | translation_unit external_declaration
 
- 141  translation_unit : external_declaration
- 142                   | translation_unit external_declaration
+ 137  external_declaration : function_definition
+ 138                       | declaration
 
- 143  external_declaration : function_definition
- 144                       | declaration
-
- 145  function_definition : declaration_specifiers direct_declarator declaration_list compound_statement
- 146                      | declaration_specifiers direct_declarator compound_statement
- 147                      | direct_declarator declaration_list compound_statement
- 148                      | direct_declarator compound_statement
+ 139  function_definition : declaration_specifiers direct_declarator declaration_list compound_statement
+ 140                      | declaration_specifiers direct_declarator compound_statement
+ 141                      | direct_declarator declaration_list compound_statement
+ 142                      | direct_declarator compound_statement
 
 state 0
 	$accept : . root $end  (0)
@@ -221,9 +214,9 @@ state 0
 
 
 state 1
-	direct_declarator : IDENTIFIER .  (82)
+	direct_declarator : IDENTIFIER .  (80)
 
-	.  reduce 82
+	.  reduce 80
 
 
 state 2
@@ -281,7 +274,7 @@ state 10
 
 
 state 11
-	direct_declarator : RBLEFT . direct_declarator RBRIGHT  (83)
+	direct_declarator : RBLEFT . direct_declarator RBRIGHT  (81)
 
 	IDENTIFIER  shift 1
 	RBLEFT  shift 11
@@ -321,16 +314,16 @@ state 13
 
 
 state 14
-	external_declaration : declaration .  (144)
+	external_declaration : declaration .  (138)
 
-	.  reduce 144
+	.  reduce 138
 
 
 state 15
 	declaration : declaration_specifiers . SEMICOLON  (63)
 	declaration : declaration_specifiers . init_declarator_list SEMICOLON  (64)
-	function_definition : declaration_specifiers . direct_declarator declaration_list compound_statement  (145)
-	function_definition : declaration_specifiers . direct_declarator compound_statement  (146)
+	function_definition : declaration_specifiers . direct_declarator declaration_list compound_statement  (139)
+	function_definition : declaration_specifiers . direct_declarator compound_statement  (140)
 
 	IDENTIFIER  shift 1
 	SEMICOLON  shift 22
@@ -343,13 +336,13 @@ state 15
 
 
 state 16
-	direct_declarator : direct_declarator . BRACKETLEFT constant_expression BRACKETRIGHT  (84)
-	direct_declarator : direct_declarator . BRACKETLEFT BRACKETRIGHT  (85)
-	direct_declarator : direct_declarator . RBLEFT parameter_list RBRIGHT  (86)
-	direct_declarator : direct_declarator . RBLEFT identifier_list RBRIGHT  (87)
-	direct_declarator : direct_declarator . RBLEFT RBRIGHT  (88)
-	function_definition : direct_declarator . declaration_list compound_statement  (147)
-	function_definition : direct_declarator . compound_statement  (148)
+	direct_declarator : direct_declarator . BRACKETLEFT constant_expression BRACKETRIGHT  (82)
+	direct_declarator : direct_declarator . BRACKETLEFT BRACKETRIGHT  (83)
+	direct_declarator : direct_declarator . RBLEFT parameter_list RBRIGHT  (84)
+	direct_declarator : direct_declarator . RBLEFT identifier_list RBRIGHT  (85)
+	direct_declarator : direct_declarator . RBLEFT RBRIGHT  (86)
+	function_definition : direct_declarator . declaration_list compound_statement  (141)
+	function_definition : direct_declarator . compound_statement  (142)
 
 	CHAR  shift 2
 	SHORT  shift 3
@@ -373,8 +366,8 @@ state 16
 
 
 state 17
-	root : translation_unit .  (140)
-	translation_unit : translation_unit . external_declaration  (142)
+	root : translation_unit .  (134)
+	translation_unit : translation_unit . external_declaration  (136)
 
 	IDENTIFIER  shift 1
 	CHAR  shift 2
@@ -387,7 +380,7 @@ state 17
 	COMPLEX  shift 9
 	BOOL  shift 10
 	RBLEFT  shift 11
-	$end  reduce 140
+	$end  reduce 134
 
 	type_specifier  goto 13
 	declaration  goto 14
@@ -398,24 +391,24 @@ state 17
 
 
 state 18
-	translation_unit : external_declaration .  (141)
+	translation_unit : external_declaration .  (135)
 
-	.  reduce 141
+	.  reduce 135
 
 
 state 19
-	external_declaration : function_definition .  (143)
+	external_declaration : function_definition .  (137)
 
-	.  reduce 143
+	.  reduce 137
 
 
 state 20
-	direct_declarator : RBLEFT direct_declarator . RBRIGHT  (83)
-	direct_declarator : direct_declarator . BRACKETLEFT constant_expression BRACKETRIGHT  (84)
-	direct_declarator : direct_declarator . BRACKETLEFT BRACKETRIGHT  (85)
-	direct_declarator : direct_declarator . RBLEFT parameter_list RBRIGHT  (86)
-	direct_declarator : direct_declarator . RBLEFT identifier_list RBRIGHT  (87)
-	direct_declarator : direct_declarator . RBLEFT RBRIGHT  (88)
+	direct_declarator : RBLEFT direct_declarator . RBRIGHT  (81)
+	direct_declarator : direct_declarator . BRACKETLEFT constant_expression BRACKETRIGHT  (82)
+	direct_declarator : direct_declarator . BRACKETLEFT BRACKETRIGHT  (83)
+	direct_declarator : direct_declarator . RBLEFT parameter_list RBRIGHT  (84)
+	direct_declarator : direct_declarator . RBLEFT identifier_list RBRIGHT  (85)
+	direct_declarator : direct_declarator . RBLEFT RBRIGHT  (86)
 
 	RBLEFT  shift 27
 	RBRIGHT  shift 34
@@ -453,13 +446,13 @@ state 24
 state 25
 	init_declarator : direct_declarator .  (69)
 	init_declarator : direct_declarator . EQUAL initializer  (70)
-	direct_declarator : direct_declarator . BRACKETLEFT constant_expression BRACKETRIGHT  (84)
-	direct_declarator : direct_declarator . BRACKETLEFT BRACKETRIGHT  (85)
-	direct_declarator : direct_declarator . RBLEFT parameter_list RBRIGHT  (86)
-	direct_declarator : direct_declarator . RBLEFT identifier_list RBRIGHT  (87)
-	direct_declarator : direct_declarator . RBLEFT RBRIGHT  (88)
-	function_definition : declaration_specifiers direct_declarator . declaration_list compound_statement  (145)
-	function_definition : declaration_specifiers direct_declarator . compound_statement  (146)
+	direct_declarator : direct_declarator . BRACKETLEFT constant_expression BRACKETRIGHT  (82)
+	direct_declarator : direct_declarator . BRACKETLEFT BRACKETRIGHT  (83)
+	direct_declarator : direct_declarator . RBLEFT parameter_list RBRIGHT  (84)
+	direct_declarator : direct_declarator . RBLEFT identifier_list RBRIGHT  (85)
+	direct_declarator : direct_declarator . RBLEFT RBRIGHT  (86)
+	function_definition : declaration_specifiers direct_declarator . declaration_list compound_statement  (139)
+	function_definition : declaration_specifiers direct_declarator . compound_statement  (140)
 
 	CHAR  shift 2
 	SHORT  shift 3
@@ -485,10 +478,10 @@ state 25
 
 
 state 26
-	compound_statement : BRACELEFT . BRACERIGHT  (120)
-	compound_statement : BRACELEFT . statement_list BRACERIGHT  (121)
-	compound_statement : BRACELEFT . declaration_list BRACERIGHT  (122)
-	compound_statement : BRACELEFT . declaration_list statement_list BRACERIGHT  (123)
+	compound_statement : BRACELEFT . BRACERIGHT  (116)
+	compound_statement : BRACELEFT . statement_list BRACERIGHT  (117)
+	compound_statement : BRACELEFT . declaration_list BRACERIGHT  (118)
+	compound_statement : BRACELEFT . declaration_list statement_list BRACERIGHT  (119)
 
 	IDENTIFIER  shift 40
 	CONSTANT  shift 41
@@ -508,61 +501,58 @@ state 26
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	CASE  shift 49
-	DEFAULT  shift 50
-	IF  shift 51
-	SWITCH  shift 52
-	WHILE  shift 53
-	DO  shift 54
-	FOR  shift 55
-	GOTO  shift 56
-	BREAK  shift 57
-	RETURN  shift 58
-	SEMICOLON  shift 59
+	IF  shift 49
+	WHILE  shift 50
+	DO  shift 51
+	FOR  shift 52
+	GOTO  shift 53
+	BREAK  shift 54
+	RETURN  shift 55
+	SEMICOLON  shift 56
 	BRACELEFT  shift 26
-	BRACERIGHT  shift 60
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	BRACERIGHT  shift 57
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	expression  goto 65
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
+	primary_expression  goto 61
+	expression  goto 62
+	postfix_expression  goto 63
+	assignment_expression  goto 64
+	unary_expression  goto 65
+	cast_expression  goto 66
 	type_specifier  goto 13
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
 	declaration  goto 29
 	declaration_specifiers  goto 30
-	statement  goto 81
-	labeled_statement  goto 82
-	compound_statement  goto 83
-	expression_statement  goto 84
-	selection_statement  goto 85
-	iteration_statement  goto 86
-	jump_statement  goto 87
-	statement_list  goto 88
-	declaration_list  goto 89
+	statement  goto 78
+	labeled_statement  goto 79
+	compound_statement  goto 80
+	expression_statement  goto 81
+	selection_statement  goto 82
+	iteration_statement  goto 83
+	jump_statement  goto 84
+	statement_list  goto 85
+	declaration_list  goto 86
 
 
 state 27
-	direct_declarator : direct_declarator RBLEFT . parameter_list RBRIGHT  (86)
-	direct_declarator : direct_declarator RBLEFT . identifier_list RBRIGHT  (87)
-	direct_declarator : direct_declarator RBLEFT . RBRIGHT  (88)
+	direct_declarator : direct_declarator RBLEFT . parameter_list RBRIGHT  (84)
+	direct_declarator : direct_declarator RBLEFT . identifier_list RBRIGHT  (85)
+	direct_declarator : direct_declarator RBLEFT . RBRIGHT  (86)
 
-	IDENTIFIER  shift 90
+	IDENTIFIER  shift 87
 	CHAR  shift 2
 	SHORT  shift 3
 	INT  shift 4
@@ -572,21 +562,21 @@ state 27
 	VOID  shift 8
 	COMPLEX  shift 9
 	BOOL  shift 10
-	RBRIGHT  shift 91
+	RBRIGHT  shift 88
 	.  error
 
 	type_specifier  goto 13
-	declaration_specifiers  goto 92
-	parameter_list  goto 93
-	identifier_list  goto 94
-	parameter_declaration  goto 95
+	declaration_specifiers  goto 89
+	parameter_list  goto 90
+	identifier_list  goto 91
+	parameter_declaration  goto 92
 
 
 state 28
-	direct_declarator : direct_declarator BRACKETLEFT . constant_expression BRACKETRIGHT  (84)
-	direct_declarator : direct_declarator BRACKETLEFT . BRACKETRIGHT  (85)
+	direct_declarator : direct_declarator BRACKETLEFT . constant_expression BRACKETRIGHT  (82)
+	direct_declarator : direct_declarator BRACKETLEFT . BRACKETRIGHT  (83)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -595,34 +585,34 @@ state 28
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	BRACKETRIGHT  shift 97
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	BRACKETRIGHT  shift 94
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 99
-	constant_expression  goto 100
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 95
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 96
+	constant_expression  goto 97
 
 
 state 29
-	declaration_list : declaration .  (124)
+	declaration_list : declaration .  (120)
 
-	.  reduce 124
+	.  reduce 120
 
 
 state 30
@@ -636,18 +626,18 @@ state 30
 
 	init_declarator_list  goto 23
 	init_declarator  goto 24
-	direct_declarator  goto 101
+	direct_declarator  goto 98
 
 
 state 31
-	function_definition : direct_declarator compound_statement .  (148)
+	function_definition : direct_declarator compound_statement .  (142)
 
-	.  reduce 148
+	.  reduce 142
 
 
 state 32
-	declaration_list : declaration_list . declaration  (125)
-	function_definition : direct_declarator declaration_list . compound_statement  (147)
+	declaration_list : declaration_list . declaration  (121)
+	function_definition : direct_declarator declaration_list . compound_statement  (141)
 
 	CHAR  shift 2
 	SHORT  shift 3
@@ -662,21 +652,21 @@ state 32
 	.  error
 
 	type_specifier  goto 13
-	declaration  goto 102
+	declaration  goto 99
 	declaration_specifiers  goto 30
-	compound_statement  goto 103
+	compound_statement  goto 100
 
 
 state 33
-	translation_unit : translation_unit external_declaration .  (142)
+	translation_unit : translation_unit external_declaration .  (136)
 
-	.  reduce 142
+	.  reduce 136
 
 
 state 34
-	direct_declarator : RBLEFT direct_declarator RBRIGHT .  (83)
+	direct_declarator : RBLEFT direct_declarator RBRIGHT .  (81)
 
-	.  reduce 83
+	.  reduce 81
 
 
 state 35
@@ -692,14 +682,14 @@ state 36
 	RBLEFT  shift 11
 	.  error
 
-	init_declarator  goto 104
-	direct_declarator  goto 101
+	init_declarator  goto 101
+	direct_declarator  goto 98
 
 
 state 37
 	init_declarator : direct_declarator EQUAL . initializer  (70)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -708,40 +698,40 @@ state 37
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	BRACELEFT  shift 105
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	BRACELEFT  shift 102
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	assignment_expression  goto 106
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
-	initializer  goto 107
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	assignment_expression  goto 103
+	unary_expression  goto 65
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
+	initializer  goto 104
 
 
 state 38
-	function_definition : declaration_specifiers direct_declarator compound_statement .  (146)
+	function_definition : declaration_specifiers direct_declarator compound_statement .  (140)
 
-	.  reduce 146
+	.  reduce 140
 
 
 state 39
-	declaration_list : declaration_list . declaration  (125)
-	function_definition : declaration_specifiers direct_declarator declaration_list . compound_statement  (145)
+	declaration_list : declaration_list . declaration  (121)
+	function_definition : declaration_specifiers direct_declarator declaration_list . compound_statement  (139)
 
 	CHAR  shift 2
 	SHORT  shift 3
@@ -756,16 +746,16 @@ state 39
 	.  error
 
 	type_specifier  goto 13
-	declaration  goto 102
+	declaration  goto 99
 	declaration_specifiers  goto 30
-	compound_statement  goto 108
+	compound_statement  goto 105
 
 
 state 40
 	primary_expression : IDENTIFIER .  (1)
-	labeled_statement : IDENTIFIER . COLON statement  (117)
+	labeled_statement : IDENTIFIER . COLON statement  (115)
 
-	COLON  shift 109
+	COLON  shift 106
 	INC_OP  reduce 1
 	DEC_OP  reduce 1
 	LEFT_OP  reduce 1
@@ -810,7 +800,7 @@ state 43
 	unary_expression : SIZEOF . unary_expression  (18)
 	unary_expression : SIZEOF . RBLEFT type_specifier RBRIGHT  (19)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -819,20 +809,20 @@ state 43
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 110
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 107
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 111
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 108
 
 
 state 44
 	unary_expression : INC_OP . unary_expression  (14)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -841,20 +831,20 @@ state 44
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 112
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 109
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 113
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 110
 
 
 state 45
 	unary_expression : DEC_OP . unary_expression  (15)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -863,21 +853,21 @@ state 45
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 112
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 109
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 114
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 111
 
 
 state 46
 	unary_expression : RE . RBLEFT CONSTANT RBRIGHT  (20)
 	unary_expression : RE . RBLEFT IDENTIFIER RBRIGHT  (21)
 
-	RBLEFT  shift 115
+	RBLEFT  shift 112
 	.  error
 
 
@@ -885,7 +875,7 @@ state 47
 	unary_expression : IM . RBLEFT CONSTANT RBRIGHT  (22)
 	unary_expression : IM . RBLEFT IDENTIFIER RBRIGHT  (23)
 
-	RBLEFT  shift 116
+	RBLEFT  shift 113
 	.  error
 
 
@@ -893,75 +883,26 @@ state 48
 	unary_expression : MOD . RBLEFT CONSTANT RBRIGHT  (24)
 	unary_expression : MOD . RBLEFT IDENTIFIER RBRIGHT  (25)
 
-	RBLEFT  shift 117
+	RBLEFT  shift 114
 	.  error
 
 
 state 49
-	labeled_statement : CASE . constant_expression COLON statement  (118)
+	selection_statement : IF . RBLEFT expression RBRIGHT statement ELSE statement  (126)
 
-	IDENTIFIER  shift 96
-	CONSTANT  shift 41
-	STRING_LITERAL  shift 42
-	SIZEOF  shift 43
-	INC_OP  shift 44
-	DEC_OP  shift 45
-	RE  shift 46
-	IM  shift 47
-	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 115
 	.  error
-
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 99
-	constant_expression  goto 118
 
 
 state 50
-	labeled_statement : DEFAULT . COLON statement  (119)
+	iteration_statement : WHILE . RBLEFT expression RBRIGHT statement  (127)
 
-	COLON  shift 119
+	RBLEFT  shift 116
 	.  error
 
 
 state 51
-	selection_statement : IF . RBLEFT expression RBRIGHT statement ELSE statement  (130)
-
-	RBLEFT  shift 120
-	.  error
-
-
-state 52
-	selection_statement : SWITCH . RBLEFT expression RBRIGHT statement  (131)
-
-	RBLEFT  shift 121
-	.  error
-
-
-state 53
-	iteration_statement : WHILE . RBLEFT expression RBRIGHT statement  (132)
-
-	RBLEFT  shift 122
-	.  error
-
-
-state 54
-	iteration_statement : DO . statement WHILE RBLEFT expression RBRIGHT SEMICOLON  (133)
+	iteration_statement : DO . statement WHILE RBLEFT expression RBRIGHT SEMICOLON  (128)
 
 	IDENTIFIER  shift 40
 	CONSTANT  shift 41
@@ -972,76 +913,72 @@ state 54
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	CASE  shift 49
-	DEFAULT  shift 50
-	IF  shift 51
-	SWITCH  shift 52
-	WHILE  shift 53
-	DO  shift 54
-	FOR  shift 55
-	GOTO  shift 56
-	BREAK  shift 57
-	RETURN  shift 58
-	SEMICOLON  shift 59
+	IF  shift 49
+	WHILE  shift 50
+	DO  shift 51
+	FOR  shift 52
+	GOTO  shift 53
+	BREAK  shift 54
+	RETURN  shift 55
+	SEMICOLON  shift 56
 	BRACELEFT  shift 26
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	expression  goto 65
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
-	statement  goto 123
-	labeled_statement  goto 82
-	compound_statement  goto 83
-	expression_statement  goto 84
-	selection_statement  goto 85
-	iteration_statement  goto 86
-	jump_statement  goto 87
+	primary_expression  goto 61
+	expression  goto 62
+	postfix_expression  goto 63
+	assignment_expression  goto 64
+	unary_expression  goto 65
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
+	statement  goto 117
+	labeled_statement  goto 79
+	compound_statement  goto 80
+	expression_statement  goto 81
+	selection_statement  goto 82
+	iteration_statement  goto 83
+	jump_statement  goto 84
+
+
+state 52
+	iteration_statement : FOR . RBLEFT expression_statement expression_statement expression RBRIGHT statement  (129)
+
+	RBLEFT  shift 118
+	.  error
+
+
+state 53
+	jump_statement : GOTO . IDENTIFIER SEMICOLON  (130)
+
+	IDENTIFIER  shift 119
+	.  error
+
+
+state 54
+	jump_statement : BREAK . SEMICOLON  (131)
+
+	SEMICOLON  shift 120
+	.  error
 
 
 state 55
-	iteration_statement : FOR . RBLEFT expression_statement expression_statement RBRIGHT statement  (134)
-	iteration_statement : FOR . RBLEFT expression_statement expression_statement expression RBRIGHT statement  (135)
+	jump_statement : RETURN . SEMICOLON  (132)
+	jump_statement : RETURN . expression SEMICOLON  (133)
 
-	RBLEFT  shift 124
-	.  error
-
-
-state 56
-	jump_statement : GOTO . IDENTIFIER SEMICOLON  (136)
-
-	IDENTIFIER  shift 125
-	.  error
-
-
-state 57
-	jump_statement : BREAK . SEMICOLON  (137)
-
-	SEMICOLON  shift 126
-	.  error
-
-
-state 58
-	jump_statement : RETURN . SEMICOLON  (138)
-	jump_statement : RETURN . expression SEMICOLON  (139)
-
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -1050,48 +987,48 @@ state 58
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	SEMICOLON  shift 127
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	SEMICOLON  shift 121
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	expression  goto 128
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
+	primary_expression  goto 61
+	expression  goto 122
+	postfix_expression  goto 63
+	assignment_expression  goto 64
+	unary_expression  goto 65
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
 
 
-state 59
-	expression_statement : SEMICOLON .  (128)
+state 56
+	expression_statement : SEMICOLON .  (124)
 
-	.  reduce 128
-
-
-state 60
-	compound_statement : BRACELEFT BRACERIGHT .  (120)
-
-	.  reduce 120
+	.  reduce 124
 
 
-state 61
+state 57
+	compound_statement : BRACELEFT BRACERIGHT .  (116)
+
+	.  reduce 116
+
+
+state 58
 	primary_expression : RBLEFT . expression RBRIGHT  (4)
 	cast_expression : RBLEFT . type_specifier RBRIGHT cast_expression  (27)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -1109,35 +1046,35 @@ state 61
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	expression  goto 129
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
-	type_specifier  goto 130
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
+	primary_expression  goto 61
+	expression  goto 123
+	postfix_expression  goto 63
+	assignment_expression  goto 64
+	unary_expression  goto 65
+	cast_expression  goto 66
+	type_specifier  goto 124
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
 
 
-state 62
+state 59
 	unary_expression : EXCL . cast_expression  (17)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -1146,21 +1083,21 @@ state 62
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 131
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 95
+	cast_expression  goto 125
 
 
-state 63
+state 60
 	unary_expression : MINUS . cast_expression  (16)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -1169,33 +1106,33 @@ state 63
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 132
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 95
+	cast_expression  goto 126
 
 
-state 64
+state 61
 	postfix_expression : primary_expression .  (5)
 
 	.  reduce 5
 
 
-state 65
+state 62
 	expression : expression . COMMA assignment_expression  (61)
-	expression_statement : expression . SEMICOLON  (129)
+	expression_statement : expression . SEMICOLON  (125)
 
-	SEMICOLON  shift 133
-	COMMA  shift 134
+	SEMICOLON  shift 127
+	COMMA  shift 128
 	.  error
 
 
-state 66
+state 63
 	postfix_expression : postfix_expression . BRACKETLEFT expression BRACKETRIGHT  (6)
 	postfix_expression : postfix_expression . RBLEFT RBRIGHT  (7)
 	postfix_expression : postfix_expression . RBLEFT argument_expression_list RBRIGHT  (8)
@@ -1203,10 +1140,10 @@ state 66
 	postfix_expression : postfix_expression . DEC_OP  (10)
 	unary_expression : postfix_expression .  (13)
 
-	INC_OP  shift 135
-	DEC_OP  shift 136
-	RBLEFT  shift 137
-	BRACKETLEFT  shift 138
+	INC_OP  shift 129
+	DEC_OP  shift 130
+	RBLEFT  shift 131
+	BRACKETLEFT  shift 132
 	LEFT_OP  reduce 13
 	RIGHT_OP  reduce 13
 	LE_OP  reduce 13
@@ -1235,17 +1172,17 @@ state 66
 	QUESTION  reduce 13
 
 
-state 67
+state 64
 	expression : assignment_expression .  (60)
 
 	.  reduce 60
 
 
-state 68
+state 65
 	cast_expression : unary_expression .  (26)
 	assignment_expression : unary_expression . EQUAL assignment_expression  (59)
 
-	EQUAL  shift 139
+	EQUAL  shift 133
 	LEFT_OP  reduce 26
 	RIGHT_OP  reduce 26
 	LE_OP  reduce 26
@@ -1273,21 +1210,21 @@ state 68
 	QUESTION  reduce 26
 
 
-state 69
+state 66
 	multiplicative_expression : cast_expression .  (28)
 
 	.  reduce 28
 
 
-state 70
+state 67
 	multiplicative_expression : multiplicative_expression . STAR cast_expression  (29)
 	multiplicative_expression : multiplicative_expression . SLASH cast_expression  (30)
 	multiplicative_expression : multiplicative_expression . PERCENT cast_expression  (31)
 	additive_expression : multiplicative_expression .  (32)
 
-	STAR  shift 140
-	SLASH  shift 141
-	PERCENT  shift 142
+	STAR  shift 134
+	SLASH  shift 135
+	PERCENT  shift 136
 	LEFT_OP  reduce 32
 	RIGHT_OP  reduce 32
 	LE_OP  reduce 32
@@ -1312,13 +1249,13 @@ state 70
 	QUESTION  reduce 32
 
 
-state 71
+state 68
 	additive_expression : additive_expression . PLUS multiplicative_expression  (33)
 	additive_expression : additive_expression . MINUS multiplicative_expression  (34)
 	shift_expression : additive_expression .  (35)
 
-	MINUS  shift 143
-	PLUS  shift 144
+	MINUS  shift 137
+	PLUS  shift 138
 	LEFT_OP  reduce 35
 	RIGHT_OP  reduce 35
 	LE_OP  reduce 35
@@ -1341,13 +1278,13 @@ state 71
 	QUESTION  reduce 35
 
 
-state 72
+state 69
 	shift_expression : shift_expression . LEFT_OP additive_expression  (36)
 	shift_expression : shift_expression . RIGHT_OP additive_expression  (37)
 	relational_expression : shift_expression .  (38)
 
-	LEFT_OP  shift 145
-	RIGHT_OP  shift 146
+	LEFT_OP  shift 139
+	RIGHT_OP  shift 140
 	LE_OP  reduce 38
 	GE_OP  reduce 38
 	EQ_OP  reduce 38
@@ -1368,17 +1305,17 @@ state 72
 	QUESTION  reduce 38
 
 
-state 73
+state 70
 	relational_expression : relational_expression . LESS shift_expression  (39)
 	relational_expression : relational_expression . GREATER shift_expression  (40)
 	relational_expression : relational_expression . LE_OP shift_expression  (41)
 	relational_expression : relational_expression . GE_OP shift_expression  (42)
 	equality_expression : relational_expression .  (43)
 
-	LE_OP  shift 147
-	GE_OP  shift 148
-	LESS  shift 149
-	GREATER  shift 150
+	LE_OP  shift 141
+	GE_OP  shift 142
+	LESS  shift 143
+	GREATER  shift 144
 	EQ_OP  reduce 43
 	NE_OP  reduce 43
 	AND_OP  reduce 43
@@ -1395,13 +1332,13 @@ state 73
 	QUESTION  reduce 43
 
 
-state 74
+state 71
 	equality_expression : equality_expression . EQ_OP relational_expression  (44)
 	equality_expression : equality_expression . NE_OP relational_expression  (45)
 	and_expression : equality_expression .  (46)
 
-	EQ_OP  shift 151
-	NE_OP  shift 152
+	EQ_OP  shift 145
+	NE_OP  shift 146
 	AND_OP  reduce 46
 	OR_OP  reduce 46
 	SEMICOLON  reduce 46
@@ -1416,11 +1353,11 @@ state 74
 	QUESTION  reduce 46
 
 
-state 75
+state 72
 	and_expression : and_expression . AMP equality_expression  (47)
 	exclusive_or_expression : and_expression .  (48)
 
-	AMP  shift 153
+	AMP  shift 147
 	AND_OP  reduce 48
 	OR_OP  reduce 48
 	SEMICOLON  reduce 48
@@ -1434,11 +1371,11 @@ state 75
 	QUESTION  reduce 48
 
 
-state 76
+state 73
 	exclusive_or_expression : exclusive_or_expression . CARET and_expression  (49)
 	inclusive_or_expression : exclusive_or_expression .  (50)
 
-	CARET  shift 154
+	CARET  shift 148
 	AND_OP  reduce 50
 	OR_OP  reduce 50
 	SEMICOLON  reduce 50
@@ -1451,11 +1388,11 @@ state 76
 	QUESTION  reduce 50
 
 
-state 77
+state 74
 	inclusive_or_expression : inclusive_or_expression . BAR exclusive_or_expression  (51)
 	logical_and_expression : inclusive_or_expression .  (52)
 
-	BAR  shift 155
+	BAR  shift 149
 	AND_OP  reduce 52
 	OR_OP  reduce 52
 	SEMICOLON  reduce 52
@@ -1467,11 +1404,11 @@ state 77
 	QUESTION  reduce 52
 
 
-state 78
+state 75
 	logical_and_expression : logical_and_expression . AND_OP inclusive_or_expression  (53)
 	logical_or_expression : logical_and_expression .  (54)
 
-	AND_OP  shift 156
+	AND_OP  shift 150
 	OR_OP  reduce 54
 	SEMICOLON  reduce 54
 	BRACERIGHT  reduce 54
@@ -1482,13 +1419,13 @@ state 78
 	QUESTION  reduce 54
 
 
-state 79
+state 76
 	logical_or_expression : logical_or_expression . OR_OP logical_and_expression  (55)
 	conditional_expression : logical_or_expression .  (56)
 	conditional_expression : logical_or_expression . QUESTION expression COLON conditional_expression  (57)
 
-	OR_OP  shift 157
-	QUESTION  shift 158
+	OR_OP  shift 151
+	QUESTION  shift 152
 	SEMICOLON  reduce 56
 	BRACERIGHT  reduce 56
 	COMMA  reduce 56
@@ -1497,57 +1434,57 @@ state 79
 	BRACKETRIGHT  reduce 56
 
 
-state 80
+state 77
 	assignment_expression : conditional_expression .  (58)
 
 	.  reduce 58
 
 
+state 78
+	statement_list : statement .  (122)
+
+	.  reduce 122
+
+
+state 79
+	statement : labeled_statement .  (109)
+
+	.  reduce 109
+
+
+state 80
+	statement : compound_statement .  (110)
+
+	.  reduce 110
+
+
 state 81
-	statement_list : statement .  (126)
-
-	.  reduce 126
-
-
-state 82
-	statement : labeled_statement .  (111)
+	statement : expression_statement .  (111)
 
 	.  reduce 111
 
 
-state 83
-	statement : compound_statement .  (112)
+state 82
+	statement : selection_statement .  (112)
 
 	.  reduce 112
 
 
-state 84
-	statement : expression_statement .  (113)
+state 83
+	statement : iteration_statement .  (113)
 
 	.  reduce 113
 
 
-state 85
-	statement : selection_statement .  (114)
+state 84
+	statement : jump_statement .  (114)
 
 	.  reduce 114
 
 
-state 86
-	statement : iteration_statement .  (115)
-
-	.  reduce 115
-
-
-state 87
-	statement : jump_statement .  (116)
-
-	.  reduce 116
-
-
-state 88
-	compound_statement : BRACELEFT statement_list . BRACERIGHT  (121)
-	statement_list : statement_list . statement  (127)
+state 85
+	compound_statement : BRACELEFT statement_list . BRACERIGHT  (117)
+	statement_list : statement_list . statement  (123)
 
 	IDENTIFIER  shift 40
 	CONSTANT  shift 41
@@ -1558,54 +1495,51 @@ state 88
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	CASE  shift 49
-	DEFAULT  shift 50
-	IF  shift 51
-	SWITCH  shift 52
-	WHILE  shift 53
-	DO  shift 54
-	FOR  shift 55
-	GOTO  shift 56
-	BREAK  shift 57
-	RETURN  shift 58
-	SEMICOLON  shift 59
+	IF  shift 49
+	WHILE  shift 50
+	DO  shift 51
+	FOR  shift 52
+	GOTO  shift 53
+	BREAK  shift 54
+	RETURN  shift 55
+	SEMICOLON  shift 56
 	BRACELEFT  shift 26
-	BRACERIGHT  shift 159
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	BRACERIGHT  shift 153
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	expression  goto 65
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
-	statement  goto 160
-	labeled_statement  goto 82
-	compound_statement  goto 83
-	expression_statement  goto 84
-	selection_statement  goto 85
-	iteration_statement  goto 86
-	jump_statement  goto 87
+	primary_expression  goto 61
+	expression  goto 62
+	postfix_expression  goto 63
+	assignment_expression  goto 64
+	unary_expression  goto 65
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
+	statement  goto 154
+	labeled_statement  goto 79
+	compound_statement  goto 80
+	expression_statement  goto 81
+	selection_statement  goto 82
+	iteration_statement  goto 83
+	jump_statement  goto 84
 
 
-state 89
-	compound_statement : BRACELEFT declaration_list . BRACERIGHT  (122)
-	compound_statement : BRACELEFT declaration_list . statement_list BRACERIGHT  (123)
-	declaration_list : declaration_list . declaration  (125)
+state 86
+	compound_statement : BRACELEFT declaration_list . BRACERIGHT  (118)
+	compound_statement : BRACELEFT declaration_list . statement_list BRACERIGHT  (119)
+	declaration_list : declaration_list . declaration  (121)
 
 	IDENTIFIER  shift 40
 	CONSTANT  shift 41
@@ -1625,145 +1559,142 @@ state 89
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	CASE  shift 49
-	DEFAULT  shift 50
-	IF  shift 51
-	SWITCH  shift 52
-	WHILE  shift 53
-	DO  shift 54
-	FOR  shift 55
-	GOTO  shift 56
-	BREAK  shift 57
-	RETURN  shift 58
-	SEMICOLON  shift 59
+	IF  shift 49
+	WHILE  shift 50
+	DO  shift 51
+	FOR  shift 52
+	GOTO  shift 53
+	BREAK  shift 54
+	RETURN  shift 55
+	SEMICOLON  shift 56
 	BRACELEFT  shift 26
-	BRACERIGHT  shift 161
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	BRACERIGHT  shift 155
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	expression  goto 65
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
+	primary_expression  goto 61
+	expression  goto 62
+	postfix_expression  goto 63
+	assignment_expression  goto 64
+	unary_expression  goto 65
+	cast_expression  goto 66
 	type_specifier  goto 13
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
-	declaration  goto 102
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
+	declaration  goto 99
 	declaration_specifiers  goto 30
-	statement  goto 81
-	labeled_statement  goto 82
-	compound_statement  goto 83
-	expression_statement  goto 84
-	selection_statement  goto 85
-	iteration_statement  goto 86
-	jump_statement  goto 87
-	statement_list  goto 162
+	statement  goto 78
+	labeled_statement  goto 79
+	compound_statement  goto 80
+	expression_statement  goto 81
+	selection_statement  goto 82
+	iteration_statement  goto 83
+	jump_statement  goto 84
+	statement_list  goto 156
+
+
+state 87
+	identifier_list : IDENTIFIER .  (92)
+
+	.  reduce 92
+
+
+state 88
+	direct_declarator : direct_declarator RBLEFT RBRIGHT .  (86)
+
+	.  reduce 86
+
+
+state 89
+	parameter_declaration : declaration_specifiers . direct_declarator  (89)
+	parameter_declaration : declaration_specifiers . abstract_declarator  (90)
+	parameter_declaration : declaration_specifiers .  (91)
+
+	IDENTIFIER  shift 1
+	RBLEFT  shift 157
+	BRACKETLEFT  shift 158
+	COMMA  reduce 91
+	RBRIGHT  reduce 91
+
+	direct_declarator  goto 159
+	abstract_declarator  goto 160
+	direct_abstract_declarator  goto 161
 
 
 state 90
-	identifier_list : IDENTIFIER .  (94)
+	direct_declarator : direct_declarator RBLEFT parameter_list . RBRIGHT  (84)
+	parameter_list : parameter_list . COMMA parameter_declaration  (88)
 
-	.  reduce 94
+	COMMA  shift 162
+	RBRIGHT  shift 163
+	.  error
 
 
 state 91
-	direct_declarator : direct_declarator RBLEFT RBRIGHT .  (88)
+	direct_declarator : direct_declarator RBLEFT identifier_list . RBRIGHT  (85)
+	identifier_list : identifier_list . COMMA IDENTIFIER  (93)
 
-	.  reduce 88
+	COMMA  shift 164
+	RBRIGHT  shift 165
+	.  error
 
 
 state 92
-	parameter_declaration : declaration_specifiers . direct_declarator  (91)
-	parameter_declaration : declaration_specifiers . abstract_declarator  (92)
-	parameter_declaration : declaration_specifiers .  (93)
+	parameter_list : parameter_declaration .  (87)
 
-	IDENTIFIER  shift 1
-	RBLEFT  shift 163
-	BRACKETLEFT  shift 164
-	COMMA  reduce 93
-	RBRIGHT  reduce 93
-
-	direct_declarator  goto 165
-	abstract_declarator  goto 166
-	direct_abstract_declarator  goto 167
+	.  reduce 87
 
 
 state 93
-	direct_declarator : direct_declarator RBLEFT parameter_list . RBRIGHT  (86)
-	parameter_list : parameter_list . COMMA parameter_declaration  (90)
-
-	COMMA  shift 168
-	RBRIGHT  shift 169
-	.  error
-
-
-state 94
-	direct_declarator : direct_declarator RBLEFT identifier_list . RBRIGHT  (87)
-	identifier_list : identifier_list . COMMA IDENTIFIER  (95)
-
-	COMMA  shift 170
-	RBRIGHT  shift 171
-	.  error
-
-
-state 95
-	parameter_list : parameter_declaration .  (89)
-
-	.  reduce 89
-
-
-state 96
 	primary_expression : IDENTIFIER .  (1)
 
 	.  reduce 1
 
 
-state 97
-	direct_declarator : direct_declarator BRACKETLEFT BRACKETRIGHT .  (85)
+state 94
+	direct_declarator : direct_declarator BRACKETLEFT BRACKETRIGHT .  (83)
 
-	.  reduce 85
+	.  reduce 83
 
 
-state 98
+state 95
 	cast_expression : unary_expression .  (26)
 
 	.  reduce 26
 
 
-state 99
+state 96
 	constant_expression : conditional_expression .  (62)
 
 	.  reduce 62
 
 
-state 100
-	direct_declarator : direct_declarator BRACKETLEFT constant_expression . BRACKETRIGHT  (84)
+state 97
+	direct_declarator : direct_declarator BRACKETLEFT constant_expression . BRACKETRIGHT  (82)
 
-	BRACKETRIGHT  shift 172
+	BRACKETRIGHT  shift 166
 	.  error
 
 
-state 101
+state 98
 	init_declarator : direct_declarator .  (69)
 	init_declarator : direct_declarator . EQUAL initializer  (70)
-	direct_declarator : direct_declarator . BRACKETLEFT constant_expression BRACKETRIGHT  (84)
-	direct_declarator : direct_declarator . BRACKETLEFT BRACKETRIGHT  (85)
-	direct_declarator : direct_declarator . RBLEFT parameter_list RBRIGHT  (86)
-	direct_declarator : direct_declarator . RBLEFT identifier_list RBRIGHT  (87)
-	direct_declarator : direct_declarator . RBLEFT RBRIGHT  (88)
+	direct_declarator : direct_declarator . BRACKETLEFT constant_expression BRACKETRIGHT  (82)
+	direct_declarator : direct_declarator . BRACKETLEFT BRACKETRIGHT  (83)
+	direct_declarator : direct_declarator . RBLEFT parameter_list RBRIGHT  (84)
+	direct_declarator : direct_declarator . RBLEFT identifier_list RBRIGHT  (85)
+	direct_declarator : direct_declarator . RBLEFT RBRIGHT  (86)
 
 	EQUAL  shift 37
 	RBLEFT  shift 27
@@ -1772,29 +1703,29 @@ state 101
 	COMMA  reduce 69
 
 
-state 102
-	declaration_list : declaration_list declaration .  (125)
+state 99
+	declaration_list : declaration_list declaration .  (121)
 
-	.  reduce 125
-
-
-state 103
-	function_definition : direct_declarator declaration_list compound_statement .  (147)
-
-	.  reduce 147
+	.  reduce 121
 
 
-state 104
+state 100
+	function_definition : direct_declarator declaration_list compound_statement .  (141)
+
+	.  reduce 141
+
+
+state 101
 	init_declarator_list : init_declarator_list COMMA init_declarator .  (68)
 
 	.  reduce 68
 
 
-state 105
-	initializer : BRACELEFT . initializer_list BRACERIGHT  (107)
-	initializer : BRACELEFT . initializer_list COMMA BRACERIGHT  (108)
+state 102
+	initializer : BRACELEFT . initializer_list BRACERIGHT  (105)
+	initializer : BRACELEFT . initializer_list COMMA BRACERIGHT  (106)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -1803,52 +1734,52 @@ state 105
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	BRACELEFT  shift 105
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	BRACELEFT  shift 102
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	assignment_expression  goto 106
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
-	initializer  goto 173
-	initializer_list  goto 174
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	assignment_expression  goto 103
+	unary_expression  goto 65
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
+	initializer  goto 167
+	initializer_list  goto 168
 
 
-state 106
-	initializer : assignment_expression .  (106)
+state 103
+	initializer : assignment_expression .  (104)
 
-	.  reduce 106
+	.  reduce 104
 
 
-state 107
+state 104
 	init_declarator : direct_declarator EQUAL initializer .  (70)
 
 	.  reduce 70
 
 
-state 108
-	function_definition : declaration_specifiers direct_declarator declaration_list compound_statement .  (145)
+state 105
+	function_definition : declaration_specifiers direct_declarator declaration_list compound_statement .  (139)
 
-	.  reduce 145
+	.  reduce 139
 
 
-state 109
-	labeled_statement : IDENTIFIER COLON . statement  (117)
+state 106
+	labeled_statement : IDENTIFIER COLON . statement  (115)
 
 	IDENTIFIER  shift 40
 	CONSTANT  shift 41
@@ -1859,54 +1790,51 @@ state 109
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	CASE  shift 49
-	DEFAULT  shift 50
-	IF  shift 51
-	SWITCH  shift 52
-	WHILE  shift 53
-	DO  shift 54
-	FOR  shift 55
-	GOTO  shift 56
-	BREAK  shift 57
-	RETURN  shift 58
-	SEMICOLON  shift 59
+	IF  shift 49
+	WHILE  shift 50
+	DO  shift 51
+	FOR  shift 52
+	GOTO  shift 53
+	BREAK  shift 54
+	RETURN  shift 55
+	SEMICOLON  shift 56
 	BRACELEFT  shift 26
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	expression  goto 65
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
-	statement  goto 175
-	labeled_statement  goto 82
-	compound_statement  goto 83
-	expression_statement  goto 84
-	selection_statement  goto 85
-	iteration_statement  goto 86
-	jump_statement  goto 87
+	primary_expression  goto 61
+	expression  goto 62
+	postfix_expression  goto 63
+	assignment_expression  goto 64
+	unary_expression  goto 65
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
+	statement  goto 169
+	labeled_statement  goto 79
+	compound_statement  goto 80
+	expression_statement  goto 81
+	selection_statement  goto 82
+	iteration_statement  goto 83
+	jump_statement  goto 84
 
 
-state 110
+state 107
 	primary_expression : RBLEFT . expression RBRIGHT  (4)
 	unary_expression : SIZEOF RBLEFT . type_specifier RBRIGHT  (19)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -1924,41 +1852,41 @@ state 110
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	expression  goto 129
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
-	type_specifier  goto 176
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
+	primary_expression  goto 61
+	expression  goto 123
+	postfix_expression  goto 63
+	assignment_expression  goto 64
+	unary_expression  goto 65
+	cast_expression  goto 66
+	type_specifier  goto 170
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
 
 
-state 111
+state 108
 	unary_expression : SIZEOF unary_expression .  (18)
 
 	.  reduce 18
 
 
-state 112
+state 109
 	primary_expression : RBLEFT . expression RBRIGHT  (4)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -1967,351 +1895,252 @@ state 112
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	expression  goto 129
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
+	primary_expression  goto 61
+	expression  goto 123
+	postfix_expression  goto 63
+	assignment_expression  goto 64
+	unary_expression  goto 65
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
 
 
-state 113
+state 110
 	unary_expression : INC_OP unary_expression .  (14)
 
 	.  reduce 14
 
 
-state 114
+state 111
 	unary_expression : DEC_OP unary_expression .  (15)
 
 	.  reduce 15
 
 
-state 115
+state 112
 	unary_expression : RE RBLEFT . CONSTANT RBRIGHT  (20)
 	unary_expression : RE RBLEFT . IDENTIFIER RBRIGHT  (21)
 
-	IDENTIFIER  shift 177
-	CONSTANT  shift 178
+	IDENTIFIER  shift 171
+	CONSTANT  shift 172
 	.  error
 
 
-state 116
+state 113
 	unary_expression : IM RBLEFT . CONSTANT RBRIGHT  (22)
 	unary_expression : IM RBLEFT . IDENTIFIER RBRIGHT  (23)
 
-	IDENTIFIER  shift 179
-	CONSTANT  shift 180
+	IDENTIFIER  shift 173
+	CONSTANT  shift 174
 	.  error
 
 
-state 117
+state 114
 	unary_expression : MOD RBLEFT . CONSTANT RBRIGHT  (24)
 	unary_expression : MOD RBLEFT . IDENTIFIER RBRIGHT  (25)
 
-	IDENTIFIER  shift 181
-	CONSTANT  shift 182
+	IDENTIFIER  shift 175
+	CONSTANT  shift 176
+	.  error
+
+
+state 115
+	selection_statement : IF RBLEFT . expression RBRIGHT statement ELSE statement  (126)
+
+	IDENTIFIER  shift 93
+	CONSTANT  shift 41
+	STRING_LITERAL  shift 42
+	SIZEOF  shift 43
+	INC_OP  shift 44
+	DEC_OP  shift 45
+	RE  shift 46
+	IM  shift 47
+	MOD  shift 48
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
+	.  error
+
+	primary_expression  goto 61
+	expression  goto 177
+	postfix_expression  goto 63
+	assignment_expression  goto 64
+	unary_expression  goto 65
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
+
+
+state 116
+	iteration_statement : WHILE RBLEFT . expression RBRIGHT statement  (127)
+
+	IDENTIFIER  shift 93
+	CONSTANT  shift 41
+	STRING_LITERAL  shift 42
+	SIZEOF  shift 43
+	INC_OP  shift 44
+	DEC_OP  shift 45
+	RE  shift 46
+	IM  shift 47
+	MOD  shift 48
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
+	.  error
+
+	primary_expression  goto 61
+	expression  goto 178
+	postfix_expression  goto 63
+	assignment_expression  goto 64
+	unary_expression  goto 65
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
+
+
+state 117
+	iteration_statement : DO statement . WHILE RBLEFT expression RBRIGHT SEMICOLON  (128)
+
+	WHILE  shift 179
 	.  error
 
 
 state 118
-	labeled_statement : CASE constant_expression . COLON statement  (118)
+	iteration_statement : FOR RBLEFT . expression_statement expression_statement expression RBRIGHT statement  (129)
 
-	COLON  shift 183
+	IDENTIFIER  shift 93
+	CONSTANT  shift 41
+	STRING_LITERAL  shift 42
+	SIZEOF  shift 43
+	INC_OP  shift 44
+	DEC_OP  shift 45
+	RE  shift 46
+	IM  shift 47
+	MOD  shift 48
+	SEMICOLON  shift 56
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
+
+	primary_expression  goto 61
+	expression  goto 62
+	postfix_expression  goto 63
+	assignment_expression  goto 64
+	unary_expression  goto 65
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
+	expression_statement  goto 180
 
 
 state 119
-	labeled_statement : DEFAULT COLON . statement  (119)
+	jump_statement : GOTO IDENTIFIER . SEMICOLON  (130)
 
-	IDENTIFIER  shift 40
-	CONSTANT  shift 41
-	STRING_LITERAL  shift 42
-	SIZEOF  shift 43
-	INC_OP  shift 44
-	DEC_OP  shift 45
-	RE  shift 46
-	IM  shift 47
-	MOD  shift 48
-	CASE  shift 49
-	DEFAULT  shift 50
-	IF  shift 51
-	SWITCH  shift 52
-	WHILE  shift 53
-	DO  shift 54
-	FOR  shift 55
-	GOTO  shift 56
-	BREAK  shift 57
-	RETURN  shift 58
-	SEMICOLON  shift 59
-	BRACELEFT  shift 26
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	SEMICOLON  shift 181
 	.  error
-
-	primary_expression  goto 64
-	expression  goto 65
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
-	statement  goto 184
-	labeled_statement  goto 82
-	compound_statement  goto 83
-	expression_statement  goto 84
-	selection_statement  goto 85
-	iteration_statement  goto 86
-	jump_statement  goto 87
 
 
 state 120
-	selection_statement : IF RBLEFT . expression RBRIGHT statement ELSE statement  (130)
+	jump_statement : BREAK SEMICOLON .  (131)
 
-	IDENTIFIER  shift 96
-	CONSTANT  shift 41
-	STRING_LITERAL  shift 42
-	SIZEOF  shift 43
-	INC_OP  shift 44
-	DEC_OP  shift 45
-	RE  shift 46
-	IM  shift 47
-	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
-	.  error
-
-	primary_expression  goto 64
-	expression  goto 185
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
+	.  reduce 131
 
 
 state 121
-	selection_statement : SWITCH RBLEFT . expression RBRIGHT statement  (131)
+	jump_statement : RETURN SEMICOLON .  (132)
 
-	IDENTIFIER  shift 96
-	CONSTANT  shift 41
-	STRING_LITERAL  shift 42
-	SIZEOF  shift 43
-	INC_OP  shift 44
-	DEC_OP  shift 45
-	RE  shift 46
-	IM  shift 47
-	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
-	.  error
-
-	primary_expression  goto 64
-	expression  goto 186
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
+	.  reduce 132
 
 
 state 122
-	iteration_statement : WHILE RBLEFT . expression RBRIGHT statement  (132)
+	expression : expression . COMMA assignment_expression  (61)
+	jump_statement : RETURN expression . SEMICOLON  (133)
 
-	IDENTIFIER  shift 96
-	CONSTANT  shift 41
-	STRING_LITERAL  shift 42
-	SIZEOF  shift 43
-	INC_OP  shift 44
-	DEC_OP  shift 45
-	RE  shift 46
-	IM  shift 47
-	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	SEMICOLON  shift 182
+	COMMA  shift 128
 	.  error
-
-	primary_expression  goto 64
-	expression  goto 187
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
 
 
 state 123
-	iteration_statement : DO statement . WHILE RBLEFT expression RBRIGHT SEMICOLON  (133)
+	primary_expression : RBLEFT expression . RBRIGHT  (4)
+	expression : expression . COMMA assignment_expression  (61)
 
-	WHILE  shift 188
+	COMMA  shift 128
+	RBRIGHT  shift 183
 	.  error
 
 
 state 124
-	iteration_statement : FOR RBLEFT . expression_statement expression_statement RBRIGHT statement  (134)
-	iteration_statement : FOR RBLEFT . expression_statement expression_statement expression RBRIGHT statement  (135)
+	cast_expression : RBLEFT type_specifier . RBRIGHT cast_expression  (27)
 
-	IDENTIFIER  shift 96
-	CONSTANT  shift 41
-	STRING_LITERAL  shift 42
-	SIZEOF  shift 43
-	INC_OP  shift 44
-	DEC_OP  shift 45
-	RE  shift 46
-	IM  shift 47
-	MOD  shift 48
-	SEMICOLON  shift 59
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBRIGHT  shift 184
 	.  error
-
-	primary_expression  goto 64
-	expression  goto 65
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
-	expression_statement  goto 189
 
 
 state 125
-	jump_statement : GOTO IDENTIFIER . SEMICOLON  (136)
-
-	SEMICOLON  shift 190
-	.  error
-
-
-state 126
-	jump_statement : BREAK SEMICOLON .  (137)
-
-	.  reduce 137
-
-
-state 127
-	jump_statement : RETURN SEMICOLON .  (138)
-
-	.  reduce 138
-
-
-state 128
-	expression : expression . COMMA assignment_expression  (61)
-	jump_statement : RETURN expression . SEMICOLON  (139)
-
-	SEMICOLON  shift 191
-	COMMA  shift 134
-	.  error
-
-
-state 129
-	primary_expression : RBLEFT expression . RBRIGHT  (4)
-	expression : expression . COMMA assignment_expression  (61)
-
-	COMMA  shift 134
-	RBRIGHT  shift 192
-	.  error
-
-
-state 130
-	cast_expression : RBLEFT type_specifier . RBRIGHT cast_expression  (27)
-
-	RBRIGHT  shift 193
-	.  error
-
-
-state 131
 	unary_expression : EXCL cast_expression .  (17)
 
 	.  reduce 17
 
 
-state 132
+state 126
 	unary_expression : MINUS cast_expression .  (16)
 
 	.  reduce 16
 
 
-state 133
-	expression_statement : expression SEMICOLON .  (129)
+state 127
+	expression_statement : expression SEMICOLON .  (125)
 
-	.  reduce 129
+	.  reduce 125
 
 
-state 134
+state 128
 	expression : expression COMMA . assignment_expression  (61)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -2320,46 +2149,46 @@ state 134
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	assignment_expression  goto 194
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	assignment_expression  goto 185
+	unary_expression  goto 65
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
 
 
-state 135
+state 129
 	postfix_expression : postfix_expression INC_OP .  (9)
 
 	.  reduce 9
 
 
-state 136
+state 130
 	postfix_expression : postfix_expression DEC_OP .  (10)
 
 	.  reduce 10
 
 
-state 137
+state 131
 	postfix_expression : postfix_expression RBLEFT . RBRIGHT  (7)
 	postfix_expression : postfix_expression RBLEFT . argument_expression_list RBRIGHT  (8)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -2368,35 +2197,199 @@ state 137
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	RBRIGHT  shift 195
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	RBRIGHT  shift 186
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	argument_expression_list  goto 196
-	assignment_expression  goto 197
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	argument_expression_list  goto 187
+	assignment_expression  goto 188
+	unary_expression  goto 65
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
+
+
+state 132
+	postfix_expression : postfix_expression BRACKETLEFT . expression BRACKETRIGHT  (6)
+
+	IDENTIFIER  shift 93
+	CONSTANT  shift 41
+	STRING_LITERAL  shift 42
+	SIZEOF  shift 43
+	INC_OP  shift 44
+	DEC_OP  shift 45
+	RE  shift 46
+	IM  shift 47
+	MOD  shift 48
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
+	.  error
+
+	primary_expression  goto 61
+	expression  goto 189
+	postfix_expression  goto 63
+	assignment_expression  goto 64
+	unary_expression  goto 65
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
+
+
+state 133
+	assignment_expression : unary_expression EQUAL . assignment_expression  (59)
+
+	IDENTIFIER  shift 93
+	CONSTANT  shift 41
+	STRING_LITERAL  shift 42
+	SIZEOF  shift 43
+	INC_OP  shift 44
+	DEC_OP  shift 45
+	RE  shift 46
+	IM  shift 47
+	MOD  shift 48
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
+	.  error
+
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	assignment_expression  goto 190
+	unary_expression  goto 65
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
+
+
+state 134
+	multiplicative_expression : multiplicative_expression STAR . cast_expression  (29)
+
+	IDENTIFIER  shift 93
+	CONSTANT  shift 41
+	STRING_LITERAL  shift 42
+	SIZEOF  shift 43
+	INC_OP  shift 44
+	DEC_OP  shift 45
+	RE  shift 46
+	IM  shift 47
+	MOD  shift 48
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
+	.  error
+
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 95
+	cast_expression  goto 191
+
+
+state 135
+	multiplicative_expression : multiplicative_expression SLASH . cast_expression  (30)
+
+	IDENTIFIER  shift 93
+	CONSTANT  shift 41
+	STRING_LITERAL  shift 42
+	SIZEOF  shift 43
+	INC_OP  shift 44
+	DEC_OP  shift 45
+	RE  shift 46
+	IM  shift 47
+	MOD  shift 48
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
+	.  error
+
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 95
+	cast_expression  goto 192
+
+
+state 136
+	multiplicative_expression : multiplicative_expression PERCENT . cast_expression  (31)
+
+	IDENTIFIER  shift 93
+	CONSTANT  shift 41
+	STRING_LITERAL  shift 42
+	SIZEOF  shift 43
+	INC_OP  shift 44
+	DEC_OP  shift 45
+	RE  shift 46
+	IM  shift 47
+	MOD  shift 48
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
+	.  error
+
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 95
+	cast_expression  goto 193
+
+
+state 137
+	additive_expression : additive_expression MINUS . multiplicative_expression  (34)
+
+	IDENTIFIER  shift 93
+	CONSTANT  shift 41
+	STRING_LITERAL  shift 42
+	SIZEOF  shift 43
+	INC_OP  shift 44
+	DEC_OP  shift 45
+	RE  shift 46
+	IM  shift 47
+	MOD  shift 48
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
+	.  error
+
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 95
+	cast_expression  goto 66
+	multiplicative_expression  goto 194
 
 
 state 138
-	postfix_expression : postfix_expression BRACKETLEFT . expression BRACKETRIGHT  (6)
+	additive_expression : additive_expression PLUS . multiplicative_expression  (33)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -2405,34 +2398,22 @@ state 138
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	expression  goto 198
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 95
+	cast_expression  goto 66
+	multiplicative_expression  goto 195
 
 
 state 139
-	assignment_expression : unary_expression EQUAL . assignment_expression  (59)
+	shift_expression : shift_expression LEFT_OP . additive_expression  (36)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -2441,33 +2422,23 @@ state 139
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	assignment_expression  goto 199
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 95
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 196
 
 
 state 140
-	multiplicative_expression : multiplicative_expression STAR . cast_expression  (29)
+	shift_expression : shift_expression RIGHT_OP . additive_expression  (37)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -2476,21 +2447,23 @@ state 140
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 200
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 95
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 197
 
 
 state 141
-	multiplicative_expression : multiplicative_expression SLASH . cast_expression  (30)
+	relational_expression : relational_expression LE_OP . shift_expression  (41)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -2499,21 +2472,24 @@ state 141
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 201
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 95
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 198
 
 
 state 142
-	multiplicative_expression : multiplicative_expression PERCENT . cast_expression  (31)
+	relational_expression : relational_expression GE_OP . shift_expression  (42)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -2522,21 +2498,24 @@ state 142
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 202
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 95
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 199
 
 
 state 143
-	additive_expression : additive_expression MINUS . multiplicative_expression  (34)
+	relational_expression : relational_expression LESS . shift_expression  (39)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -2545,22 +2524,24 @@ state 143
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 69
-	multiplicative_expression  goto 203
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 95
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 200
 
 
 state 144
-	additive_expression : additive_expression PLUS . multiplicative_expression  (33)
+	relational_expression : relational_expression GREATER . shift_expression  (40)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -2569,22 +2550,24 @@ state 144
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 69
-	multiplicative_expression  goto 204
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 95
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 201
 
 
 state 145
-	shift_expression : shift_expression LEFT_OP . additive_expression  (36)
+	equality_expression : equality_expression EQ_OP . relational_expression  (44)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -2593,23 +2576,25 @@ state 145
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 205
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 95
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 202
 
 
 state 146
-	shift_expression : shift_expression RIGHT_OP . additive_expression  (37)
+	equality_expression : equality_expression NE_OP . relational_expression  (45)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -2618,23 +2603,25 @@ state 146
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 206
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 95
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 203
 
 
 state 147
-	relational_expression : relational_expression LE_OP . shift_expression  (41)
+	and_expression : and_expression AMP . equality_expression  (47)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -2643,24 +2630,26 @@ state 147
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 207
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 95
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 204
 
 
 state 148
-	relational_expression : relational_expression GE_OP . shift_expression  (42)
+	exclusive_or_expression : exclusive_or_expression CARET . and_expression  (49)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -2669,24 +2658,27 @@ state 148
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 208
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 95
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 205
 
 
 state 149
-	relational_expression : relational_expression LESS . shift_expression  (39)
+	inclusive_or_expression : inclusive_or_expression BAR . exclusive_or_expression  (51)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -2695,24 +2687,28 @@ state 149
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 209
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 95
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 206
 
 
 state 150
-	relational_expression : relational_expression GREATER . shift_expression  (40)
+	logical_and_expression : logical_and_expression AND_OP . inclusive_or_expression  (53)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -2721,24 +2717,29 @@ state 150
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 210
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 95
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 207
 
 
 state 151
-	equality_expression : equality_expression EQ_OP . relational_expression  (44)
+	logical_or_expression : logical_or_expression OR_OP . logical_and_expression  (55)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -2747,25 +2748,30 @@ state 151
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 211
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 95
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 208
 
 
 state 152
-	equality_expression : equality_expression NE_OP . relational_expression  (45)
+	conditional_expression : logical_or_expression QUESTION . expression COLON conditional_expression  (57)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -2774,228 +2780,51 @@ state 152
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 212
+	primary_expression  goto 61
+	expression  goto 209
+	postfix_expression  goto 63
+	assignment_expression  goto 64
+	unary_expression  goto 65
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
 
 
 state 153
-	and_expression : and_expression AMP . equality_expression  (47)
+	compound_statement : BRACELEFT statement_list BRACERIGHT .  (117)
 
-	IDENTIFIER  shift 96
-	CONSTANT  shift 41
-	STRING_LITERAL  shift 42
-	SIZEOF  shift 43
-	INC_OP  shift 44
-	DEC_OP  shift 45
-	RE  shift 46
-	IM  shift 47
-	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
-	.  error
-
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 213
+	.  reduce 117
 
 
 state 154
-	exclusive_or_expression : exclusive_or_expression CARET . and_expression  (49)
+	statement_list : statement_list statement .  (123)
 
-	IDENTIFIER  shift 96
-	CONSTANT  shift 41
-	STRING_LITERAL  shift 42
-	SIZEOF  shift 43
-	INC_OP  shift 44
-	DEC_OP  shift 45
-	RE  shift 46
-	IM  shift 47
-	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
-	.  error
-
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 214
+	.  reduce 123
 
 
 state 155
-	inclusive_or_expression : inclusive_or_expression BAR . exclusive_or_expression  (51)
+	compound_statement : BRACELEFT declaration_list BRACERIGHT .  (118)
 
-	IDENTIFIER  shift 96
-	CONSTANT  shift 41
-	STRING_LITERAL  shift 42
-	SIZEOF  shift 43
-	INC_OP  shift 44
-	DEC_OP  shift 45
-	RE  shift 46
-	IM  shift 47
-	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
-	.  error
-
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 215
+	.  reduce 118
 
 
 state 156
-	logical_and_expression : logical_and_expression AND_OP . inclusive_or_expression  (53)
-
-	IDENTIFIER  shift 96
-	CONSTANT  shift 41
-	STRING_LITERAL  shift 42
-	SIZEOF  shift 43
-	INC_OP  shift 44
-	DEC_OP  shift 45
-	RE  shift 46
-	IM  shift 47
-	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
-	.  error
-
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 216
-
-
-state 157
-	logical_or_expression : logical_or_expression OR_OP . logical_and_expression  (55)
-
-	IDENTIFIER  shift 96
-	CONSTANT  shift 41
-	STRING_LITERAL  shift 42
-	SIZEOF  shift 43
-	INC_OP  shift 44
-	DEC_OP  shift 45
-	RE  shift 46
-	IM  shift 47
-	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
-	.  error
-
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 217
-
-
-state 158
-	conditional_expression : logical_or_expression QUESTION . expression COLON conditional_expression  (57)
-
-	IDENTIFIER  shift 96
-	CONSTANT  shift 41
-	STRING_LITERAL  shift 42
-	SIZEOF  shift 43
-	INC_OP  shift 44
-	DEC_OP  shift 45
-	RE  shift 46
-	IM  shift 47
-	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
-	.  error
-
-	primary_expression  goto 64
-	expression  goto 218
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
-
-
-state 159
-	compound_statement : BRACELEFT statement_list BRACERIGHT .  (121)
-
-	.  reduce 121
-
-
-state 160
-	statement_list : statement_list statement .  (127)
-
-	.  reduce 127
-
-
-state 161
-	compound_statement : BRACELEFT declaration_list BRACERIGHT .  (122)
-
-	.  reduce 122
-
-
-state 162
-	compound_statement : BRACELEFT declaration_list statement_list . BRACERIGHT  (123)
-	statement_list : statement_list . statement  (127)
+	compound_statement : BRACELEFT declaration_list statement_list . BRACERIGHT  (119)
+	statement_list : statement_list . statement  (123)
 
 	IDENTIFIER  shift 40
 	CONSTANT  shift 41
@@ -3006,55 +2835,52 @@ state 162
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	CASE  shift 49
-	DEFAULT  shift 50
-	IF  shift 51
-	SWITCH  shift 52
-	WHILE  shift 53
-	DO  shift 54
-	FOR  shift 55
-	GOTO  shift 56
-	BREAK  shift 57
-	RETURN  shift 58
-	SEMICOLON  shift 59
+	IF  shift 49
+	WHILE  shift 50
+	DO  shift 51
+	FOR  shift 52
+	GOTO  shift 53
+	BREAK  shift 54
+	RETURN  shift 55
+	SEMICOLON  shift 56
 	BRACELEFT  shift 26
-	BRACERIGHT  shift 219
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	BRACERIGHT  shift 210
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	expression  goto 65
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
-	statement  goto 160
-	labeled_statement  goto 82
-	compound_statement  goto 83
-	expression_statement  goto 84
-	selection_statement  goto 85
-	iteration_statement  goto 86
-	jump_statement  goto 87
+	primary_expression  goto 61
+	expression  goto 62
+	postfix_expression  goto 63
+	assignment_expression  goto 64
+	unary_expression  goto 65
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
+	statement  goto 154
+	labeled_statement  goto 79
+	compound_statement  goto 80
+	expression_statement  goto 81
+	selection_statement  goto 82
+	iteration_statement  goto 83
+	jump_statement  goto 84
 
 
-state 163
-	direct_declarator : RBLEFT . direct_declarator RBRIGHT  (83)
-	direct_abstract_declarator : RBLEFT . abstract_declarator RBRIGHT  (97)
-	direct_abstract_declarator : RBLEFT . RBRIGHT  (102)
-	direct_abstract_declarator : RBLEFT . parameter_list RBRIGHT  (103)
+state 157
+	direct_declarator : RBLEFT . direct_declarator RBRIGHT  (81)
+	direct_abstract_declarator : RBLEFT . abstract_declarator RBRIGHT  (95)
+	direct_abstract_declarator : RBLEFT . RBRIGHT  (100)
+	direct_abstract_declarator : RBLEFT . parameter_list RBRIGHT  (101)
 
 	IDENTIFIER  shift 1
 	CHAR  shift 2
@@ -3066,25 +2892,25 @@ state 163
 	VOID  shift 8
 	COMPLEX  shift 9
 	BOOL  shift 10
-	RBLEFT  shift 163
-	RBRIGHT  shift 220
-	BRACKETLEFT  shift 164
+	RBLEFT  shift 157
+	RBRIGHT  shift 211
+	BRACKETLEFT  shift 158
 	.  error
 
 	type_specifier  goto 13
-	declaration_specifiers  goto 92
+	declaration_specifiers  goto 89
 	direct_declarator  goto 20
-	parameter_list  goto 221
-	parameter_declaration  goto 95
-	abstract_declarator  goto 222
-	direct_abstract_declarator  goto 167
+	parameter_list  goto 212
+	parameter_declaration  goto 92
+	abstract_declarator  goto 213
+	direct_abstract_declarator  goto 161
 
 
-state 164
-	direct_abstract_declarator : BRACKETLEFT . BRACKETRIGHT  (98)
-	direct_abstract_declarator : BRACKETLEFT . constant_expression BRACKETRIGHT  (99)
+state 158
+	direct_abstract_declarator : BRACKETLEFT . BRACKETRIGHT  (96)
+	direct_abstract_declarator : BRACKETLEFT . constant_expression BRACKETRIGHT  (97)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -3093,65 +2919,65 @@ state 164
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	BRACKETRIGHT  shift 223
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	BRACKETRIGHT  shift 214
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 99
-	constant_expression  goto 224
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 95
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 96
+	constant_expression  goto 215
 
 
-state 165
-	direct_declarator : direct_declarator . BRACKETLEFT constant_expression BRACKETRIGHT  (84)
-	direct_declarator : direct_declarator . BRACKETLEFT BRACKETRIGHT  (85)
-	direct_declarator : direct_declarator . RBLEFT parameter_list RBRIGHT  (86)
-	direct_declarator : direct_declarator . RBLEFT identifier_list RBRIGHT  (87)
-	direct_declarator : direct_declarator . RBLEFT RBRIGHT  (88)
-	parameter_declaration : declaration_specifiers direct_declarator .  (91)
+state 159
+	direct_declarator : direct_declarator . BRACKETLEFT constant_expression BRACKETRIGHT  (82)
+	direct_declarator : direct_declarator . BRACKETLEFT BRACKETRIGHT  (83)
+	direct_declarator : direct_declarator . RBLEFT parameter_list RBRIGHT  (84)
+	direct_declarator : direct_declarator . RBLEFT identifier_list RBRIGHT  (85)
+	direct_declarator : direct_declarator . RBLEFT RBRIGHT  (86)
+	parameter_declaration : declaration_specifiers direct_declarator .  (89)
 
 	RBLEFT  shift 27
 	BRACKETLEFT  shift 28
-	COMMA  reduce 91
-	RBRIGHT  reduce 91
+	COMMA  reduce 89
+	RBRIGHT  reduce 89
 
 
-state 166
-	parameter_declaration : declaration_specifiers abstract_declarator .  (92)
+state 160
+	parameter_declaration : declaration_specifiers abstract_declarator .  (90)
 
-	.  reduce 92
-
-
-state 167
-	abstract_declarator : direct_abstract_declarator .  (96)
-	direct_abstract_declarator : direct_abstract_declarator . BRACKETLEFT BRACKETRIGHT  (100)
-	direct_abstract_declarator : direct_abstract_declarator . BRACKETLEFT constant_expression BRACKETRIGHT  (101)
-	direct_abstract_declarator : direct_abstract_declarator . RBLEFT RBRIGHT  (104)
-	direct_abstract_declarator : direct_abstract_declarator . RBLEFT parameter_list RBRIGHT  (105)
-
-	RBLEFT  shift 225
-	BRACKETLEFT  shift 226
-	COMMA  reduce 96
-	RBRIGHT  reduce 96
+	.  reduce 90
 
 
-state 168
-	parameter_list : parameter_list COMMA . parameter_declaration  (90)
+state 161
+	abstract_declarator : direct_abstract_declarator .  (94)
+	direct_abstract_declarator : direct_abstract_declarator . BRACKETLEFT BRACKETRIGHT  (98)
+	direct_abstract_declarator : direct_abstract_declarator . BRACKETLEFT constant_expression BRACKETRIGHT  (99)
+	direct_abstract_declarator : direct_abstract_declarator . RBLEFT RBRIGHT  (102)
+	direct_abstract_declarator : direct_abstract_declarator . RBLEFT parameter_list RBRIGHT  (103)
+
+	RBLEFT  shift 216
+	BRACKETLEFT  shift 217
+	COMMA  reduce 94
+	RBRIGHT  reduce 94
+
+
+state 162
+	parameter_list : parameter_list COMMA . parameter_declaration  (88)
 
 	CHAR  shift 2
 	SHORT  shift 3
@@ -3165,262 +2991,191 @@ state 168
 	.  error
 
 	type_specifier  goto 13
-	declaration_specifiers  goto 92
-	parameter_declaration  goto 227
+	declaration_specifiers  goto 89
+	parameter_declaration  goto 218
 
 
-state 169
-	direct_declarator : direct_declarator RBLEFT parameter_list RBRIGHT .  (86)
-
-	.  reduce 86
-
-
-state 170
-	identifier_list : identifier_list COMMA . IDENTIFIER  (95)
-
-	IDENTIFIER  shift 228
-	.  error
-
-
-state 171
-	direct_declarator : direct_declarator RBLEFT identifier_list RBRIGHT .  (87)
-
-	.  reduce 87
-
-
-state 172
-	direct_declarator : direct_declarator BRACKETLEFT constant_expression BRACKETRIGHT .  (84)
+state 163
+	direct_declarator : direct_declarator RBLEFT parameter_list RBRIGHT .  (84)
 
 	.  reduce 84
 
 
-state 173
-	initializer_list : initializer .  (109)
+state 164
+	identifier_list : identifier_list COMMA . IDENTIFIER  (93)
 
-	.  reduce 109
+	IDENTIFIER  shift 219
+	.  error
+
+
+state 165
+	direct_declarator : direct_declarator RBLEFT identifier_list RBRIGHT .  (85)
+
+	.  reduce 85
+
+
+state 166
+	direct_declarator : direct_declarator BRACKETLEFT constant_expression BRACKETRIGHT .  (82)
+
+	.  reduce 82
+
+
+state 167
+	initializer_list : initializer .  (107)
+
+	.  reduce 107
+
+
+state 168
+	initializer : BRACELEFT initializer_list . BRACERIGHT  (105)
+	initializer : BRACELEFT initializer_list . COMMA BRACERIGHT  (106)
+	initializer_list : initializer_list . COMMA initializer  (108)
+
+	BRACERIGHT  shift 220
+	COMMA  shift 221
+	.  error
+
+
+state 169
+	labeled_statement : IDENTIFIER COLON statement .  (115)
+
+	.  reduce 115
+
+
+state 170
+	unary_expression : SIZEOF RBLEFT type_specifier . RBRIGHT  (19)
+
+	RBRIGHT  shift 222
+	.  error
+
+
+state 171
+	unary_expression : RE RBLEFT IDENTIFIER . RBRIGHT  (21)
+
+	RBRIGHT  shift 223
+	.  error
+
+
+state 172
+	unary_expression : RE RBLEFT CONSTANT . RBRIGHT  (20)
+
+	RBRIGHT  shift 224
+	.  error
+
+
+state 173
+	unary_expression : IM RBLEFT IDENTIFIER . RBRIGHT  (23)
+
+	RBRIGHT  shift 225
+	.  error
 
 
 state 174
-	initializer : BRACELEFT initializer_list . BRACERIGHT  (107)
-	initializer : BRACELEFT initializer_list . COMMA BRACERIGHT  (108)
-	initializer_list : initializer_list . COMMA initializer  (110)
+	unary_expression : IM RBLEFT CONSTANT . RBRIGHT  (22)
 
-	BRACERIGHT  shift 229
-	COMMA  shift 230
+	RBRIGHT  shift 226
 	.  error
 
 
 state 175
-	labeled_statement : IDENTIFIER COLON statement .  (117)
+	unary_expression : MOD RBLEFT IDENTIFIER . RBRIGHT  (25)
 
-	.  reduce 117
+	RBRIGHT  shift 227
+	.  error
 
 
 state 176
-	unary_expression : SIZEOF RBLEFT type_specifier . RBRIGHT  (19)
+	unary_expression : MOD RBLEFT CONSTANT . RBRIGHT  (24)
 
-	RBRIGHT  shift 231
+	RBRIGHT  shift 228
 	.  error
 
 
 state 177
-	unary_expression : RE RBLEFT IDENTIFIER . RBRIGHT  (21)
+	expression : expression . COMMA assignment_expression  (61)
+	selection_statement : IF RBLEFT expression . RBRIGHT statement ELSE statement  (126)
 
-	RBRIGHT  shift 232
+	COMMA  shift 128
+	RBRIGHT  shift 229
 	.  error
 
 
 state 178
-	unary_expression : RE RBLEFT CONSTANT . RBRIGHT  (20)
+	expression : expression . COMMA assignment_expression  (61)
+	iteration_statement : WHILE RBLEFT expression . RBRIGHT statement  (127)
 
-	RBRIGHT  shift 233
+	COMMA  shift 128
+	RBRIGHT  shift 230
 	.  error
 
 
 state 179
-	unary_expression : IM RBLEFT IDENTIFIER . RBRIGHT  (23)
+	iteration_statement : DO statement WHILE . RBLEFT expression RBRIGHT SEMICOLON  (128)
 
-	RBRIGHT  shift 234
+	RBLEFT  shift 231
 	.  error
 
 
 state 180
-	unary_expression : IM RBLEFT CONSTANT . RBRIGHT  (22)
+	iteration_statement : FOR RBLEFT expression_statement . expression_statement expression RBRIGHT statement  (129)
 
-	RBRIGHT  shift 235
+	IDENTIFIER  shift 93
+	CONSTANT  shift 41
+	STRING_LITERAL  shift 42
+	SIZEOF  shift 43
+	INC_OP  shift 44
+	DEC_OP  shift 45
+	RE  shift 46
+	IM  shift 47
+	MOD  shift 48
+	SEMICOLON  shift 56
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
+
+	primary_expression  goto 61
+	expression  goto 62
+	postfix_expression  goto 63
+	assignment_expression  goto 64
+	unary_expression  goto 65
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
+	expression_statement  goto 232
 
 
 state 181
-	unary_expression : MOD RBLEFT IDENTIFIER . RBRIGHT  (25)
+	jump_statement : GOTO IDENTIFIER SEMICOLON .  (130)
 
-	RBRIGHT  shift 236
-	.  error
+	.  reduce 130
 
 
 state 182
-	unary_expression : MOD RBLEFT CONSTANT . RBRIGHT  (24)
+	jump_statement : RETURN expression SEMICOLON .  (133)
 
-	RBRIGHT  shift 237
-	.  error
+	.  reduce 133
 
 
 state 183
-	labeled_statement : CASE constant_expression COLON . statement  (118)
-
-	IDENTIFIER  shift 40
-	CONSTANT  shift 41
-	STRING_LITERAL  shift 42
-	SIZEOF  shift 43
-	INC_OP  shift 44
-	DEC_OP  shift 45
-	RE  shift 46
-	IM  shift 47
-	MOD  shift 48
-	CASE  shift 49
-	DEFAULT  shift 50
-	IF  shift 51
-	SWITCH  shift 52
-	WHILE  shift 53
-	DO  shift 54
-	FOR  shift 55
-	GOTO  shift 56
-	BREAK  shift 57
-	RETURN  shift 58
-	SEMICOLON  shift 59
-	BRACELEFT  shift 26
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
-	.  error
-
-	primary_expression  goto 64
-	expression  goto 65
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
-	statement  goto 238
-	labeled_statement  goto 82
-	compound_statement  goto 83
-	expression_statement  goto 84
-	selection_statement  goto 85
-	iteration_statement  goto 86
-	jump_statement  goto 87
-
-
-state 184
-	labeled_statement : DEFAULT COLON statement .  (119)
-
-	.  reduce 119
-
-
-state 185
-	expression : expression . COMMA assignment_expression  (61)
-	selection_statement : IF RBLEFT expression . RBRIGHT statement ELSE statement  (130)
-
-	COMMA  shift 134
-	RBRIGHT  shift 239
-	.  error
-
-
-state 186
-	expression : expression . COMMA assignment_expression  (61)
-	selection_statement : SWITCH RBLEFT expression . RBRIGHT statement  (131)
-
-	COMMA  shift 134
-	RBRIGHT  shift 240
-	.  error
-
-
-state 187
-	expression : expression . COMMA assignment_expression  (61)
-	iteration_statement : WHILE RBLEFT expression . RBRIGHT statement  (132)
-
-	COMMA  shift 134
-	RBRIGHT  shift 241
-	.  error
-
-
-state 188
-	iteration_statement : DO statement WHILE . RBLEFT expression RBRIGHT SEMICOLON  (133)
-
-	RBLEFT  shift 242
-	.  error
-
-
-state 189
-	iteration_statement : FOR RBLEFT expression_statement . expression_statement RBRIGHT statement  (134)
-	iteration_statement : FOR RBLEFT expression_statement . expression_statement expression RBRIGHT statement  (135)
-
-	IDENTIFIER  shift 96
-	CONSTANT  shift 41
-	STRING_LITERAL  shift 42
-	SIZEOF  shift 43
-	INC_OP  shift 44
-	DEC_OP  shift 45
-	RE  shift 46
-	IM  shift 47
-	MOD  shift 48
-	SEMICOLON  shift 59
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
-	.  error
-
-	primary_expression  goto 64
-	expression  goto 65
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
-	expression_statement  goto 243
-
-
-state 190
-	jump_statement : GOTO IDENTIFIER SEMICOLON .  (136)
-
-	.  reduce 136
-
-
-state 191
-	jump_statement : RETURN expression SEMICOLON .  (139)
-
-	.  reduce 139
-
-
-state 192
 	primary_expression : RBLEFT expression RBRIGHT .  (4)
 
 	.  reduce 4
 
 
-state 193
+state 184
 	cast_expression : RBLEFT type_specifier RBRIGHT . cast_expression  (27)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -3429,86 +3184,86 @@ state 193
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 244
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 95
+	cast_expression  goto 233
 
 
-state 194
+state 185
 	expression : expression COMMA assignment_expression .  (61)
 
 	.  reduce 61
 
 
-state 195
+state 186
 	postfix_expression : postfix_expression RBLEFT RBRIGHT .  (7)
 
 	.  reduce 7
 
 
-state 196
+state 187
 	postfix_expression : postfix_expression RBLEFT argument_expression_list . RBRIGHT  (8)
 	argument_expression_list : argument_expression_list . COMMA assignment_expression  (12)
 
-	COMMA  shift 245
-	RBRIGHT  shift 246
+	COMMA  shift 234
+	RBRIGHT  shift 235
 	.  error
 
 
-state 197
+state 188
 	argument_expression_list : assignment_expression .  (11)
 
 	.  reduce 11
 
 
-state 198
+state 189
 	postfix_expression : postfix_expression BRACKETLEFT expression . BRACKETRIGHT  (6)
 	expression : expression . COMMA assignment_expression  (61)
 
-	COMMA  shift 134
-	BRACKETRIGHT  shift 247
+	COMMA  shift 128
+	BRACKETRIGHT  shift 236
 	.  error
 
 
-state 199
+state 190
 	assignment_expression : unary_expression EQUAL assignment_expression .  (59)
 
 	.  reduce 59
 
 
-state 200
+state 191
 	multiplicative_expression : multiplicative_expression STAR cast_expression .  (29)
 
 	.  reduce 29
 
 
-state 201
+state 192
 	multiplicative_expression : multiplicative_expression SLASH cast_expression .  (30)
 
 	.  reduce 30
 
 
-state 202
+state 193
 	multiplicative_expression : multiplicative_expression PERCENT cast_expression .  (31)
 
 	.  reduce 31
 
 
-state 203
+state 194
 	multiplicative_expression : multiplicative_expression . STAR cast_expression  (29)
 	multiplicative_expression : multiplicative_expression . SLASH cast_expression  (30)
 	multiplicative_expression : multiplicative_expression . PERCENT cast_expression  (31)
 	additive_expression : additive_expression MINUS multiplicative_expression .  (34)
 
-	STAR  shift 140
-	SLASH  shift 141
-	PERCENT  shift 142
+	STAR  shift 134
+	SLASH  shift 135
+	PERCENT  shift 136
 	LEFT_OP  reduce 34
 	RIGHT_OP  reduce 34
 	LE_OP  reduce 34
@@ -3533,15 +3288,15 @@ state 203
 	QUESTION  reduce 34
 
 
-state 204
+state 195
 	multiplicative_expression : multiplicative_expression . STAR cast_expression  (29)
 	multiplicative_expression : multiplicative_expression . SLASH cast_expression  (30)
 	multiplicative_expression : multiplicative_expression . PERCENT cast_expression  (31)
 	additive_expression : additive_expression PLUS multiplicative_expression .  (33)
 
-	STAR  shift 140
-	SLASH  shift 141
-	PERCENT  shift 142
+	STAR  shift 134
+	SLASH  shift 135
+	PERCENT  shift 136
 	LEFT_OP  reduce 33
 	RIGHT_OP  reduce 33
 	LE_OP  reduce 33
@@ -3566,13 +3321,13 @@ state 204
 	QUESTION  reduce 33
 
 
-state 205
+state 196
 	additive_expression : additive_expression . PLUS multiplicative_expression  (33)
 	additive_expression : additive_expression . MINUS multiplicative_expression  (34)
 	shift_expression : shift_expression LEFT_OP additive_expression .  (36)
 
-	MINUS  shift 143
-	PLUS  shift 144
+	MINUS  shift 137
+	PLUS  shift 138
 	LEFT_OP  reduce 36
 	RIGHT_OP  reduce 36
 	LE_OP  reduce 36
@@ -3595,13 +3350,13 @@ state 205
 	QUESTION  reduce 36
 
 
-state 206
+state 197
 	additive_expression : additive_expression . PLUS multiplicative_expression  (33)
 	additive_expression : additive_expression . MINUS multiplicative_expression  (34)
 	shift_expression : shift_expression RIGHT_OP additive_expression .  (37)
 
-	MINUS  shift 143
-	PLUS  shift 144
+	MINUS  shift 137
+	PLUS  shift 138
 	LEFT_OP  reduce 37
 	RIGHT_OP  reduce 37
 	LE_OP  reduce 37
@@ -3624,13 +3379,13 @@ state 206
 	QUESTION  reduce 37
 
 
-state 207
+state 198
 	shift_expression : shift_expression . LEFT_OP additive_expression  (36)
 	shift_expression : shift_expression . RIGHT_OP additive_expression  (37)
 	relational_expression : relational_expression LE_OP shift_expression .  (41)
 
-	LEFT_OP  shift 145
-	RIGHT_OP  shift 146
+	LEFT_OP  shift 139
+	RIGHT_OP  shift 140
 	LE_OP  reduce 41
 	GE_OP  reduce 41
 	EQ_OP  reduce 41
@@ -3651,13 +3406,13 @@ state 207
 	QUESTION  reduce 41
 
 
-state 208
+state 199
 	shift_expression : shift_expression . LEFT_OP additive_expression  (36)
 	shift_expression : shift_expression . RIGHT_OP additive_expression  (37)
 	relational_expression : relational_expression GE_OP shift_expression .  (42)
 
-	LEFT_OP  shift 145
-	RIGHT_OP  shift 146
+	LEFT_OP  shift 139
+	RIGHT_OP  shift 140
 	LE_OP  reduce 42
 	GE_OP  reduce 42
 	EQ_OP  reduce 42
@@ -3678,13 +3433,13 @@ state 208
 	QUESTION  reduce 42
 
 
-state 209
+state 200
 	shift_expression : shift_expression . LEFT_OP additive_expression  (36)
 	shift_expression : shift_expression . RIGHT_OP additive_expression  (37)
 	relational_expression : relational_expression LESS shift_expression .  (39)
 
-	LEFT_OP  shift 145
-	RIGHT_OP  shift 146
+	LEFT_OP  shift 139
+	RIGHT_OP  shift 140
 	LE_OP  reduce 39
 	GE_OP  reduce 39
 	EQ_OP  reduce 39
@@ -3705,13 +3460,13 @@ state 209
 	QUESTION  reduce 39
 
 
-state 210
+state 201
 	shift_expression : shift_expression . LEFT_OP additive_expression  (36)
 	shift_expression : shift_expression . RIGHT_OP additive_expression  (37)
 	relational_expression : relational_expression GREATER shift_expression .  (40)
 
-	LEFT_OP  shift 145
-	RIGHT_OP  shift 146
+	LEFT_OP  shift 139
+	RIGHT_OP  shift 140
 	LE_OP  reduce 40
 	GE_OP  reduce 40
 	EQ_OP  reduce 40
@@ -3732,17 +3487,17 @@ state 210
 	QUESTION  reduce 40
 
 
-state 211
+state 202
 	relational_expression : relational_expression . LESS shift_expression  (39)
 	relational_expression : relational_expression . GREATER shift_expression  (40)
 	relational_expression : relational_expression . LE_OP shift_expression  (41)
 	relational_expression : relational_expression . GE_OP shift_expression  (42)
 	equality_expression : equality_expression EQ_OP relational_expression .  (44)
 
-	LE_OP  shift 147
-	GE_OP  shift 148
-	LESS  shift 149
-	GREATER  shift 150
+	LE_OP  shift 141
+	GE_OP  shift 142
+	LESS  shift 143
+	GREATER  shift 144
 	EQ_OP  reduce 44
 	NE_OP  reduce 44
 	AND_OP  reduce 44
@@ -3759,17 +3514,17 @@ state 211
 	QUESTION  reduce 44
 
 
-state 212
+state 203
 	relational_expression : relational_expression . LESS shift_expression  (39)
 	relational_expression : relational_expression . GREATER shift_expression  (40)
 	relational_expression : relational_expression . LE_OP shift_expression  (41)
 	relational_expression : relational_expression . GE_OP shift_expression  (42)
 	equality_expression : equality_expression NE_OP relational_expression .  (45)
 
-	LE_OP  shift 147
-	GE_OP  shift 148
-	LESS  shift 149
-	GREATER  shift 150
+	LE_OP  shift 141
+	GE_OP  shift 142
+	LESS  shift 143
+	GREATER  shift 144
 	EQ_OP  reduce 45
 	NE_OP  reduce 45
 	AND_OP  reduce 45
@@ -3786,13 +3541,13 @@ state 212
 	QUESTION  reduce 45
 
 
-state 213
+state 204
 	equality_expression : equality_expression . EQ_OP relational_expression  (44)
 	equality_expression : equality_expression . NE_OP relational_expression  (45)
 	and_expression : and_expression AMP equality_expression .  (47)
 
-	EQ_OP  shift 151
-	NE_OP  shift 152
+	EQ_OP  shift 145
+	NE_OP  shift 146
 	AND_OP  reduce 47
 	OR_OP  reduce 47
 	SEMICOLON  reduce 47
@@ -3807,11 +3562,11 @@ state 213
 	QUESTION  reduce 47
 
 
-state 214
+state 205
 	and_expression : and_expression . AMP equality_expression  (47)
 	exclusive_or_expression : exclusive_or_expression CARET and_expression .  (49)
 
-	AMP  shift 153
+	AMP  shift 147
 	AND_OP  reduce 49
 	OR_OP  reduce 49
 	SEMICOLON  reduce 49
@@ -3825,11 +3580,11 @@ state 214
 	QUESTION  reduce 49
 
 
-state 215
+state 206
 	exclusive_or_expression : exclusive_or_expression . CARET and_expression  (49)
 	inclusive_or_expression : inclusive_or_expression BAR exclusive_or_expression .  (51)
 
-	CARET  shift 154
+	CARET  shift 148
 	AND_OP  reduce 51
 	OR_OP  reduce 51
 	SEMICOLON  reduce 51
@@ -3842,11 +3597,11 @@ state 215
 	QUESTION  reduce 51
 
 
-state 216
+state 207
 	inclusive_or_expression : inclusive_or_expression . BAR exclusive_or_expression  (51)
 	logical_and_expression : logical_and_expression AND_OP inclusive_or_expression .  (53)
 
-	BAR  shift 155
+	BAR  shift 149
 	AND_OP  reduce 53
 	OR_OP  reduce 53
 	SEMICOLON  reduce 53
@@ -3858,11 +3613,11 @@ state 216
 	QUESTION  reduce 53
 
 
-state 217
+state 208
 	logical_and_expression : logical_and_expression . AND_OP inclusive_or_expression  (53)
 	logical_or_expression : logical_or_expression OR_OP logical_and_expression .  (55)
 
-	AND_OP  shift 156
+	AND_OP  shift 150
 	OR_OP  reduce 55
 	SEMICOLON  reduce 55
 	BRACERIGHT  reduce 55
@@ -3873,59 +3628,59 @@ state 217
 	QUESTION  reduce 55
 
 
-state 218
+state 209
 	conditional_expression : logical_or_expression QUESTION expression . COLON conditional_expression  (57)
 	expression : expression . COMMA assignment_expression  (61)
 
-	COMMA  shift 134
-	COLON  shift 248
+	COMMA  shift 128
+	COLON  shift 237
 	.  error
 
 
-state 219
-	compound_statement : BRACELEFT declaration_list statement_list BRACERIGHT .  (123)
+state 210
+	compound_statement : BRACELEFT declaration_list statement_list BRACERIGHT .  (119)
 
-	.  reduce 123
-
-
-state 220
-	direct_abstract_declarator : RBLEFT RBRIGHT .  (102)
-
-	.  reduce 102
+	.  reduce 119
 
 
-state 221
-	parameter_list : parameter_list . COMMA parameter_declaration  (90)
-	direct_abstract_declarator : RBLEFT parameter_list . RBRIGHT  (103)
+state 211
+	direct_abstract_declarator : RBLEFT RBRIGHT .  (100)
 
-	COMMA  shift 168
-	RBRIGHT  shift 249
+	.  reduce 100
+
+
+state 212
+	parameter_list : parameter_list . COMMA parameter_declaration  (88)
+	direct_abstract_declarator : RBLEFT parameter_list . RBRIGHT  (101)
+
+	COMMA  shift 162
+	RBRIGHT  shift 238
 	.  error
 
 
-state 222
-	direct_abstract_declarator : RBLEFT abstract_declarator . RBRIGHT  (97)
+state 213
+	direct_abstract_declarator : RBLEFT abstract_declarator . RBRIGHT  (95)
 
-	RBRIGHT  shift 250
+	RBRIGHT  shift 239
 	.  error
 
 
-state 223
-	direct_abstract_declarator : BRACKETLEFT BRACKETRIGHT .  (98)
+state 214
+	direct_abstract_declarator : BRACKETLEFT BRACKETRIGHT .  (96)
 
-	.  reduce 98
+	.  reduce 96
 
 
-state 224
-	direct_abstract_declarator : BRACKETLEFT constant_expression . BRACKETRIGHT  (99)
+state 215
+	direct_abstract_declarator : BRACKETLEFT constant_expression . BRACKETRIGHT  (97)
 
-	BRACKETRIGHT  shift 251
+	BRACKETRIGHT  shift 240
 	.  error
 
 
-state 225
-	direct_abstract_declarator : direct_abstract_declarator RBLEFT . RBRIGHT  (104)
-	direct_abstract_declarator : direct_abstract_declarator RBLEFT . parameter_list RBRIGHT  (105)
+state 216
+	direct_abstract_declarator : direct_abstract_declarator RBLEFT . RBRIGHT  (102)
+	direct_abstract_declarator : direct_abstract_declarator RBLEFT . parameter_list RBRIGHT  (103)
 
 	CHAR  shift 2
 	SHORT  shift 3
@@ -3936,20 +3691,20 @@ state 225
 	VOID  shift 8
 	COMPLEX  shift 9
 	BOOL  shift 10
-	RBRIGHT  shift 252
+	RBRIGHT  shift 241
 	.  error
 
 	type_specifier  goto 13
-	declaration_specifiers  goto 92
-	parameter_list  goto 253
-	parameter_declaration  goto 95
+	declaration_specifiers  goto 89
+	parameter_list  goto 242
+	parameter_declaration  goto 92
 
 
-state 226
-	direct_abstract_declarator : direct_abstract_declarator BRACKETLEFT . BRACKETRIGHT  (100)
-	direct_abstract_declarator : direct_abstract_declarator BRACKETLEFT . constant_expression BRACKETRIGHT  (101)
+state 217
+	direct_abstract_declarator : direct_abstract_declarator BRACKETLEFT . BRACKETRIGHT  (98)
+	direct_abstract_declarator : direct_abstract_declarator BRACKETLEFT . constant_expression BRACKETRIGHT  (99)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -3958,53 +3713,53 @@ state 226
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	BRACKETRIGHT  shift 254
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	BRACKETRIGHT  shift 243
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 99
-	constant_expression  goto 255
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 95
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 96
+	constant_expression  goto 244
 
 
-state 227
-	parameter_list : parameter_list COMMA parameter_declaration .  (90)
+state 218
+	parameter_list : parameter_list COMMA parameter_declaration .  (88)
 
-	.  reduce 90
-
-
-state 228
-	identifier_list : identifier_list COMMA IDENTIFIER .  (95)
-
-	.  reduce 95
+	.  reduce 88
 
 
-state 229
-	initializer : BRACELEFT initializer_list BRACERIGHT .  (107)
+state 219
+	identifier_list : identifier_list COMMA IDENTIFIER .  (93)
 
-	.  reduce 107
+	.  reduce 93
 
 
-state 230
-	initializer : BRACELEFT initializer_list COMMA . BRACERIGHT  (108)
-	initializer_list : initializer_list COMMA . initializer  (110)
+state 220
+	initializer : BRACELEFT initializer_list BRACERIGHT .  (105)
 
-	IDENTIFIER  shift 96
+	.  reduce 105
+
+
+state 221
+	initializer : BRACELEFT initializer_list COMMA . BRACERIGHT  (106)
+	initializer_list : initializer_list COMMA . initializer  (108)
+
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -4013,82 +3768,76 @@ state 230
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	BRACELEFT  shift 105
-	BRACERIGHT  shift 256
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	BRACELEFT  shift 102
+	BRACERIGHT  shift 245
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	assignment_expression  goto 106
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
-	initializer  goto 257
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	assignment_expression  goto 103
+	unary_expression  goto 65
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
+	initializer  goto 246
 
 
-state 231
+state 222
 	unary_expression : SIZEOF RBLEFT type_specifier RBRIGHT .  (19)
 
 	.  reduce 19
 
 
-state 232
+state 223
 	unary_expression : RE RBLEFT IDENTIFIER RBRIGHT .  (21)
 
 	.  reduce 21
 
 
-state 233
+state 224
 	unary_expression : RE RBLEFT CONSTANT RBRIGHT .  (20)
 
 	.  reduce 20
 
 
-state 234
+state 225
 	unary_expression : IM RBLEFT IDENTIFIER RBRIGHT .  (23)
 
 	.  reduce 23
 
 
-state 235
+state 226
 	unary_expression : IM RBLEFT CONSTANT RBRIGHT .  (22)
 
 	.  reduce 22
 
 
-state 236
+state 227
 	unary_expression : MOD RBLEFT IDENTIFIER RBRIGHT .  (25)
 
 	.  reduce 25
 
 
-state 237
+state 228
 	unary_expression : MOD RBLEFT CONSTANT RBRIGHT .  (24)
 
 	.  reduce 24
 
 
-state 238
-	labeled_statement : CASE constant_expression COLON statement .  (118)
-
-	.  reduce 118
-
-
-state 239
-	selection_statement : IF RBLEFT expression RBRIGHT . statement ELSE statement  (130)
+state 229
+	selection_statement : IF RBLEFT expression RBRIGHT . statement ELSE statement  (126)
 
 	IDENTIFIER  shift 40
 	CONSTANT  shift 41
@@ -4099,51 +3848,48 @@ state 239
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	CASE  shift 49
-	DEFAULT  shift 50
-	IF  shift 51
-	SWITCH  shift 52
-	WHILE  shift 53
-	DO  shift 54
-	FOR  shift 55
-	GOTO  shift 56
-	BREAK  shift 57
-	RETURN  shift 58
-	SEMICOLON  shift 59
+	IF  shift 49
+	WHILE  shift 50
+	DO  shift 51
+	FOR  shift 52
+	GOTO  shift 53
+	BREAK  shift 54
+	RETURN  shift 55
+	SEMICOLON  shift 56
 	BRACELEFT  shift 26
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	expression  goto 65
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
-	statement  goto 258
-	labeled_statement  goto 82
-	compound_statement  goto 83
-	expression_statement  goto 84
-	selection_statement  goto 85
-	iteration_statement  goto 86
-	jump_statement  goto 87
+	primary_expression  goto 61
+	expression  goto 62
+	postfix_expression  goto 63
+	assignment_expression  goto 64
+	unary_expression  goto 65
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
+	statement  goto 247
+	labeled_statement  goto 79
+	compound_statement  goto 80
+	expression_statement  goto 81
+	selection_statement  goto 82
+	iteration_statement  goto 83
+	jump_statement  goto 84
 
 
-state 240
-	selection_statement : SWITCH RBLEFT expression RBRIGHT . statement  (131)
+state 230
+	iteration_statement : WHILE RBLEFT expression RBRIGHT . statement  (127)
 
 	IDENTIFIER  shift 40
 	CONSTANT  shift 41
@@ -4154,53 +3900,50 @@ state 240
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	CASE  shift 49
-	DEFAULT  shift 50
-	IF  shift 51
-	SWITCH  shift 52
-	WHILE  shift 53
-	DO  shift 54
-	FOR  shift 55
-	GOTO  shift 56
-	BREAK  shift 57
-	RETURN  shift 58
-	SEMICOLON  shift 59
+	IF  shift 49
+	WHILE  shift 50
+	DO  shift 51
+	FOR  shift 52
+	GOTO  shift 53
+	BREAK  shift 54
+	RETURN  shift 55
+	SEMICOLON  shift 56
 	BRACELEFT  shift 26
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	expression  goto 65
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
-	statement  goto 259
-	labeled_statement  goto 82
-	compound_statement  goto 83
-	expression_statement  goto 84
-	selection_statement  goto 85
-	iteration_statement  goto 86
-	jump_statement  goto 87
+	primary_expression  goto 61
+	expression  goto 62
+	postfix_expression  goto 63
+	assignment_expression  goto 64
+	unary_expression  goto 65
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
+	statement  goto 248
+	labeled_statement  goto 79
+	compound_statement  goto 80
+	expression_statement  goto 81
+	selection_statement  goto 82
+	iteration_statement  goto 83
+	jump_statement  goto 84
 
 
-state 241
-	iteration_statement : WHILE RBLEFT expression RBRIGHT . statement  (132)
+state 231
+	iteration_statement : DO statement WHILE RBLEFT . expression RBRIGHT SEMICOLON  (128)
 
-	IDENTIFIER  shift 40
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -4209,53 +3952,34 @@ state 241
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	CASE  shift 49
-	DEFAULT  shift 50
-	IF  shift 51
-	SWITCH  shift 52
-	WHILE  shift 53
-	DO  shift 54
-	FOR  shift 55
-	GOTO  shift 56
-	BREAK  shift 57
-	RETURN  shift 58
-	SEMICOLON  shift 59
-	BRACELEFT  shift 26
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	expression  goto 65
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
-	statement  goto 260
-	labeled_statement  goto 82
-	compound_statement  goto 83
-	expression_statement  goto 84
-	selection_statement  goto 85
-	iteration_statement  goto 86
-	jump_statement  goto 87
+	primary_expression  goto 61
+	expression  goto 249
+	postfix_expression  goto 63
+	assignment_expression  goto 64
+	unary_expression  goto 65
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
 
 
-state 242
-	iteration_statement : DO statement WHILE RBLEFT . expression RBRIGHT SEMICOLON  (133)
+state 232
+	iteration_statement : FOR RBLEFT expression_statement expression_statement . expression RBRIGHT statement  (129)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -4264,78 +3988,40 @@ state 242
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	expression  goto 261
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
+	primary_expression  goto 61
+	expression  goto 250
+	postfix_expression  goto 63
+	assignment_expression  goto 64
+	unary_expression  goto 65
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
 
 
-state 243
-	iteration_statement : FOR RBLEFT expression_statement expression_statement . RBRIGHT statement  (134)
-	iteration_statement : FOR RBLEFT expression_statement expression_statement . expression RBRIGHT statement  (135)
-
-	IDENTIFIER  shift 96
-	CONSTANT  shift 41
-	STRING_LITERAL  shift 42
-	SIZEOF  shift 43
-	INC_OP  shift 44
-	DEC_OP  shift 45
-	RE  shift 46
-	IM  shift 47
-	MOD  shift 48
-	RBLEFT  shift 61
-	RBRIGHT  shift 262
-	EXCL  shift 62
-	MINUS  shift 63
-	.  error
-
-	primary_expression  goto 64
-	expression  goto 263
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
-
-
-state 244
+state 233
 	cast_expression : RBLEFT type_specifier RBRIGHT cast_expression .  (27)
 
 	.  reduce 27
 
 
-state 245
+state 234
 	argument_expression_list : argument_expression_list COMMA . assignment_expression  (12)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -4344,45 +4030,45 @@ state 245
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	assignment_expression  goto 264
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	assignment_expression  goto 251
+	unary_expression  goto 65
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
 
 
-state 246
+state 235
 	postfix_expression : postfix_expression RBLEFT argument_expression_list RBRIGHT .  (8)
 
 	.  reduce 8
 
 
-state 247
+state 236
 	postfix_expression : postfix_expression BRACKETLEFT expression BRACKETRIGHT .  (6)
 
 	.  reduce 6
 
 
-state 248
+state 237
 	conditional_expression : logical_or_expression QUESTION expression COLON . conditional_expression  (57)
 
-	IDENTIFIER  shift 96
+	IDENTIFIER  shift 93
 	CONSTANT  shift 41
 	STRING_LITERAL  shift 42
 	SIZEOF  shift 43
@@ -4391,272 +4077,143 @@ state 248
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	postfix_expression  goto 66
-	unary_expression  goto 98
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 265
+	primary_expression  goto 61
+	postfix_expression  goto 63
+	unary_expression  goto 95
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 252
 
 
-state 249
-	direct_abstract_declarator : RBLEFT parameter_list RBRIGHT .  (103)
+state 238
+	direct_abstract_declarator : RBLEFT parameter_list RBRIGHT .  (101)
 
-	.  reduce 103
+	.  reduce 101
 
 
-state 250
-	direct_abstract_declarator : RBLEFT abstract_declarator RBRIGHT .  (97)
+state 239
+	direct_abstract_declarator : RBLEFT abstract_declarator RBRIGHT .  (95)
+
+	.  reduce 95
+
+
+state 240
+	direct_abstract_declarator : BRACKETLEFT constant_expression BRACKETRIGHT .  (97)
 
 	.  reduce 97
 
 
-state 251
-	direct_abstract_declarator : BRACKETLEFT constant_expression BRACKETRIGHT .  (99)
+state 241
+	direct_abstract_declarator : direct_abstract_declarator RBLEFT RBRIGHT .  (102)
 
-	.  reduce 99
-
-
-state 252
-	direct_abstract_declarator : direct_abstract_declarator RBLEFT RBRIGHT .  (104)
-
-	.  reduce 104
+	.  reduce 102
 
 
-state 253
-	parameter_list : parameter_list . COMMA parameter_declaration  (90)
-	direct_abstract_declarator : direct_abstract_declarator RBLEFT parameter_list . RBRIGHT  (105)
+state 242
+	parameter_list : parameter_list . COMMA parameter_declaration  (88)
+	direct_abstract_declarator : direct_abstract_declarator RBLEFT parameter_list . RBRIGHT  (103)
 
-	COMMA  shift 168
-	RBRIGHT  shift 266
+	COMMA  shift 162
+	RBRIGHT  shift 253
 	.  error
 
 
-state 254
-	direct_abstract_declarator : direct_abstract_declarator BRACKETLEFT BRACKETRIGHT .  (100)
+state 243
+	direct_abstract_declarator : direct_abstract_declarator BRACKETLEFT BRACKETRIGHT .  (98)
 
-	.  reduce 100
+	.  reduce 98
 
 
-state 255
-	direct_abstract_declarator : direct_abstract_declarator BRACKETLEFT constant_expression . BRACKETRIGHT  (101)
+state 244
+	direct_abstract_declarator : direct_abstract_declarator BRACKETLEFT constant_expression . BRACKETRIGHT  (99)
 
-	BRACKETRIGHT  shift 267
+	BRACKETRIGHT  shift 254
 	.  error
 
 
-state 256
-	initializer : BRACELEFT initializer_list COMMA BRACERIGHT .  (108)
+state 245
+	initializer : BRACELEFT initializer_list COMMA BRACERIGHT .  (106)
+
+	.  reduce 106
+
+
+state 246
+	initializer_list : initializer_list COMMA initializer .  (108)
 
 	.  reduce 108
 
 
-state 257
-	initializer_list : initializer_list COMMA initializer .  (110)
+state 247
+	selection_statement : IF RBLEFT expression RBRIGHT statement . ELSE statement  (126)
 
-	.  reduce 110
-
-
-state 258
-	selection_statement : IF RBLEFT expression RBRIGHT statement . ELSE statement  (130)
-
-	ELSE  shift 268
+	ELSE  shift 255
 	.  error
 
 
-state 259
-	selection_statement : SWITCH RBLEFT expression RBRIGHT statement .  (131)
+state 248
+	iteration_statement : WHILE RBLEFT expression RBRIGHT statement .  (127)
 
-	.  reduce 131
-
-
-state 260
-	iteration_statement : WHILE RBLEFT expression RBRIGHT statement .  (132)
-
-	.  reduce 132
+	.  reduce 127
 
 
-state 261
+state 249
 	expression : expression . COMMA assignment_expression  (61)
-	iteration_statement : DO statement WHILE RBLEFT expression . RBRIGHT SEMICOLON  (133)
+	iteration_statement : DO statement WHILE RBLEFT expression . RBRIGHT SEMICOLON  (128)
 
-	COMMA  shift 134
-	RBRIGHT  shift 269
+	COMMA  shift 128
+	RBRIGHT  shift 256
 	.  error
 
 
-state 262
-	iteration_statement : FOR RBLEFT expression_statement expression_statement RBRIGHT . statement  (134)
-
-	IDENTIFIER  shift 40
-	CONSTANT  shift 41
-	STRING_LITERAL  shift 42
-	SIZEOF  shift 43
-	INC_OP  shift 44
-	DEC_OP  shift 45
-	RE  shift 46
-	IM  shift 47
-	MOD  shift 48
-	CASE  shift 49
-	DEFAULT  shift 50
-	IF  shift 51
-	SWITCH  shift 52
-	WHILE  shift 53
-	DO  shift 54
-	FOR  shift 55
-	GOTO  shift 56
-	BREAK  shift 57
-	RETURN  shift 58
-	SEMICOLON  shift 59
-	BRACELEFT  shift 26
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
-	.  error
-
-	primary_expression  goto 64
-	expression  goto 65
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
-	statement  goto 270
-	labeled_statement  goto 82
-	compound_statement  goto 83
-	expression_statement  goto 84
-	selection_statement  goto 85
-	iteration_statement  goto 86
-	jump_statement  goto 87
-
-
-state 263
+state 250
 	expression : expression . COMMA assignment_expression  (61)
-	iteration_statement : FOR RBLEFT expression_statement expression_statement expression . RBRIGHT statement  (135)
+	iteration_statement : FOR RBLEFT expression_statement expression_statement expression . RBRIGHT statement  (129)
 
-	COMMA  shift 134
-	RBRIGHT  shift 271
+	COMMA  shift 128
+	RBRIGHT  shift 257
 	.  error
 
 
-state 264
+state 251
 	argument_expression_list : argument_expression_list COMMA assignment_expression .  (12)
 
 	.  reduce 12
 
 
-state 265
+state 252
 	conditional_expression : logical_or_expression QUESTION expression COLON conditional_expression .  (57)
 
 	.  reduce 57
 
 
-state 266
-	direct_abstract_declarator : direct_abstract_declarator RBLEFT parameter_list RBRIGHT .  (105)
+state 253
+	direct_abstract_declarator : direct_abstract_declarator RBLEFT parameter_list RBRIGHT .  (103)
 
-	.  reduce 105
-
-
-state 267
-	direct_abstract_declarator : direct_abstract_declarator BRACKETLEFT constant_expression BRACKETRIGHT .  (101)
-
-	.  reduce 101
+	.  reduce 103
 
 
-state 268
-	selection_statement : IF RBLEFT expression RBRIGHT statement ELSE . statement  (130)
+state 254
+	direct_abstract_declarator : direct_abstract_declarator BRACKETLEFT constant_expression BRACKETRIGHT .  (99)
 
-	IDENTIFIER  shift 40
-	CONSTANT  shift 41
-	STRING_LITERAL  shift 42
-	SIZEOF  shift 43
-	INC_OP  shift 44
-	DEC_OP  shift 45
-	RE  shift 46
-	IM  shift 47
-	MOD  shift 48
-	CASE  shift 49
-	DEFAULT  shift 50
-	IF  shift 51
-	SWITCH  shift 52
-	WHILE  shift 53
-	DO  shift 54
-	FOR  shift 55
-	GOTO  shift 56
-	BREAK  shift 57
-	RETURN  shift 58
-	SEMICOLON  shift 59
-	BRACELEFT  shift 26
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
-	.  error
-
-	primary_expression  goto 64
-	expression  goto 65
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
-	statement  goto 272
-	labeled_statement  goto 82
-	compound_statement  goto 83
-	expression_statement  goto 84
-	selection_statement  goto 85
-	iteration_statement  goto 86
-	jump_statement  goto 87
+	.  reduce 99
 
 
-state 269
-	iteration_statement : DO statement WHILE RBLEFT expression RBRIGHT . SEMICOLON  (133)
-
-	SEMICOLON  shift 273
-	.  error
-
-
-state 270
-	iteration_statement : FOR RBLEFT expression_statement expression_statement RBRIGHT statement .  (134)
-
-	.  reduce 134
-
-
-state 271
-	iteration_statement : FOR RBLEFT expression_statement expression_statement expression RBRIGHT . statement  (135)
+state 255
+	selection_statement : IF RBLEFT expression RBRIGHT statement ELSE . statement  (126)
 
 	IDENTIFIER  shift 40
 	CONSTANT  shift 41
@@ -4667,71 +4224,122 @@ state 271
 	RE  shift 46
 	IM  shift 47
 	MOD  shift 48
-	CASE  shift 49
-	DEFAULT  shift 50
-	IF  shift 51
-	SWITCH  shift 52
-	WHILE  shift 53
-	DO  shift 54
-	FOR  shift 55
-	GOTO  shift 56
-	BREAK  shift 57
-	RETURN  shift 58
-	SEMICOLON  shift 59
+	IF  shift 49
+	WHILE  shift 50
+	DO  shift 51
+	FOR  shift 52
+	GOTO  shift 53
+	BREAK  shift 54
+	RETURN  shift 55
+	SEMICOLON  shift 56
 	BRACELEFT  shift 26
-	RBLEFT  shift 61
-	EXCL  shift 62
-	MINUS  shift 63
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
 	.  error
 
-	primary_expression  goto 64
-	expression  goto 65
-	postfix_expression  goto 66
-	assignment_expression  goto 67
-	unary_expression  goto 68
-	cast_expression  goto 69
-	multiplicative_expression  goto 70
-	additive_expression  goto 71
-	shift_expression  goto 72
-	relational_expression  goto 73
-	equality_expression  goto 74
-	and_expression  goto 75
-	exclusive_or_expression  goto 76
-	inclusive_or_expression  goto 77
-	logical_and_expression  goto 78
-	logical_or_expression  goto 79
-	conditional_expression  goto 80
-	statement  goto 274
-	labeled_statement  goto 82
-	compound_statement  goto 83
-	expression_statement  goto 84
-	selection_statement  goto 85
-	iteration_statement  goto 86
-	jump_statement  goto 87
+	primary_expression  goto 61
+	expression  goto 62
+	postfix_expression  goto 63
+	assignment_expression  goto 64
+	unary_expression  goto 65
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
+	statement  goto 258
+	labeled_statement  goto 79
+	compound_statement  goto 80
+	expression_statement  goto 81
+	selection_statement  goto 82
+	iteration_statement  goto 83
+	jump_statement  goto 84
 
 
-state 272
-	selection_statement : IF RBLEFT expression RBRIGHT statement ELSE statement .  (130)
+state 256
+	iteration_statement : DO statement WHILE RBLEFT expression RBRIGHT . SEMICOLON  (128)
 
-	.  reduce 130
-
-
-state 273
-	iteration_statement : DO statement WHILE RBLEFT expression RBRIGHT SEMICOLON .  (133)
-
-	.  reduce 133
+	SEMICOLON  shift 259
+	.  error
 
 
-state 274
-	iteration_statement : FOR RBLEFT expression_statement expression_statement expression RBRIGHT statement .  (135)
+state 257
+	iteration_statement : FOR RBLEFT expression_statement expression_statement expression RBRIGHT . statement  (129)
 
-	.  reduce 135
+	IDENTIFIER  shift 40
+	CONSTANT  shift 41
+	STRING_LITERAL  shift 42
+	SIZEOF  shift 43
+	INC_OP  shift 44
+	DEC_OP  shift 45
+	RE  shift 46
+	IM  shift 47
+	MOD  shift 48
+	IF  shift 49
+	WHILE  shift 50
+	DO  shift 51
+	FOR  shift 52
+	GOTO  shift 53
+	BREAK  shift 54
+	RETURN  shift 55
+	SEMICOLON  shift 56
+	BRACELEFT  shift 26
+	RBLEFT  shift 58
+	EXCL  shift 59
+	MINUS  shift 60
+	.  error
+
+	primary_expression  goto 61
+	expression  goto 62
+	postfix_expression  goto 63
+	assignment_expression  goto 64
+	unary_expression  goto 65
+	cast_expression  goto 66
+	multiplicative_expression  goto 67
+	additive_expression  goto 68
+	shift_expression  goto 69
+	relational_expression  goto 70
+	equality_expression  goto 71
+	and_expression  goto 72
+	exclusive_or_expression  goto 73
+	inclusive_or_expression  goto 74
+	logical_and_expression  goto 75
+	logical_or_expression  goto 76
+	conditional_expression  goto 77
+	statement  goto 260
+	labeled_statement  goto 79
+	compound_statement  goto 80
+	expression_statement  goto 81
+	selection_statement  goto 82
+	iteration_statement  goto 83
+	jump_statement  goto 84
 
 
-Rules never reduced:
-	specifier_qualifier_list : type_specifier specifier_qualifier_list  (80)
-	specifier_qualifier_list : type_specifier  (81)
+state 258
+	selection_statement : IF RBLEFT expression RBRIGHT statement ELSE statement .  (126)
+
+	.  reduce 126
 
 
-63 terminals, 47 nonterminals
-149 grammar rules, 275 states
+state 259
+	iteration_statement : DO statement WHILE RBLEFT expression RBRIGHT SEMICOLON .  (128)
+
+	.  reduce 128
+
+
+state 260
+	iteration_statement : FOR RBLEFT expression_statement expression_statement expression RBRIGHT statement .  (129)
+
+	.  reduce 129
+
+
+60 terminals, 46 nonterminals
+143 grammar rules, 261 states
