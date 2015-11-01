@@ -331,13 +331,12 @@ function_definition
     System.err.println ("Error: " + error);
   }
 
-
   public Parser(Reader r) {
     lexer = new Yylex(r, this);
   }
 
   public static ParserVal ParseFile(String file) throws IOException {
-	System.out.println("Lexer:");
+	System.out.println("Lexical analyzer output:");
 	Parser yyparser;
     yyparser = new Parser(new FileReader(file));
     //Tokenize input file (for debug)
@@ -351,7 +350,7 @@ function_definition
           }
     System.out.println();
 
-	System.out.println("Parser:");
+	System.out.println("Syntax tree:");
 
   	//yyparser.yydebug = true;
   	yyparser.yyparse(); //Parsing goes here
