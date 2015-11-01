@@ -1,5 +1,7 @@
 package edu.eltech.moevm.syntax_tree;
 
+import sun.awt.SunToolkit;
+
 /**
  * Created by vladimir on 31.10.15.
  */

@@ -29,7 +29,12 @@ public class Node extends TreeElement {
 
     @Override
     public void add(TreeElement element) throws UnsupportedOperationException {
-        element.add(element);
+        elements.add(element);
+    }
+
+    @Override
+    public void remove(TreeElement element) throws UnsupportedOperationException {
+        elements.remove(element);
     }
 
     @Override

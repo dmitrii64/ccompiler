@@ -19,6 +19,10 @@ public abstract class TreeElement {
         throw new UnsupportedOperationException();
     }
 
+    public void remove(TreeElement element) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException();
+    }
+
     public List<TreeElement> getElements() throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
