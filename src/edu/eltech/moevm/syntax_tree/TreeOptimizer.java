@@ -1,7 +1,5 @@
 package edu.eltech.moevm.syntax_tree;
 
-import sun.reflect.generics.tree.Tree;
-
 import java.util.ArrayList;
 
 /**
@@ -23,12 +21,16 @@ public class TreeOptimizer implements TreeCallback {
 
     private void optimizeNode(Node node) throws UnsupportedOperationException {
         if(node.getOperation()==Operation.ROOT)
-        while(node.haveAny(Operation.TR_UNIT))
-            reduce(node,Operation.ROOT,Operation.TR_UNIT);
-        if(node.getOperation()==Operation.FNDEF_2)
-        while(node.haveAny(Operation.DIRECT_DEC_FUNC))
-            reduce(node,Operation.FNDEF_2,Operation.DIRECT_DEC_FUNC);
+            while (node.haveAny(Operation.TR_UNIT))
+                reduce(node, Operation.ROOT, Operation.TR_UNIT);
 
+        if(node.getOperation()==Operation.FNDEF_2)
+            while (node.haveAny(Operation.DIRECT_DEC_FUNC))
+                reduce(node, Operation.FNDEF_2, Operation.DIRECT_DEC_FUNC);
+
+        if (node.getOperation() == Operation.FUNC_CALL)
+            while (node.haveAny(Operation.ARGUMENT_EXP_LIST))
+                reduce(node, Operation.FUNC_CALL, Operation.ARGUMENT_EXP_LIST);
 
     }
 

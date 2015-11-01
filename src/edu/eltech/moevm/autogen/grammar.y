@@ -156,7 +156,7 @@ constant_expression
 
 declaration
 	: declaration_specifiers SEMICOLON                      { $$ = new ParserVal(new Node(Operation.DECLARATION, $1)); }
-	| declaration_specifiers init_declarator_list SEMICOLON { $$ = new ParserVal(new Node(Operation.DECLARATION_INIT_LIST, $1, $2)); }
+	| declaration_specifiers init_declarator_list SEMICOLON { $$ = new ParserVal(new Node(Operation.VARIABLE_DECLARATION, $1, $2)); }
 	;
 
 declaration_specifiers
@@ -204,7 +204,7 @@ parameter_list
 	;
 
 parameter_declaration
-	: declaration_specifiers direct_declarator   { $$ = new ParserVal(new Node(Operation.PARAM_DEC_DIR, $1, $2)); }
+	: declaration_specifiers direct_declarator   { $$ = new ParserVal(new Node(Operation.FUNCTION_PARAMETER, $1, $2)); }
 	| declaration_specifiers abstract_declarator { $$ = new ParserVal(new Node(Operation.PARAM_DEC_ABS, $1, $2)); }
 	| declaration_specifiers                     { $$ = new ParserVal(new Node(Operation.PARAM_DEC, $1)); }
 	;
@@ -264,12 +264,12 @@ compound_statement
 
 declaration_list
 	: declaration                  { $$ = $1; }
-	| declaration_list declaration { $$ = new ParserVal(new Node(Operation.DECL_LIST, $1, $2)); }
+	| declaration_list declaration { $$ = new ParserVal(new Node(Operation.DECLARATIONS, $1, $2)); }
 	;
 
 statement_list
 	: statement                { $$ = $1; }
-	| statement_list statement { $$ = new ParserVal(new Node(Operation.STAT_LIST, $1, $2)); }
+	| statement_list statement { $$ = new ParserVal(new Node(Operation.STATEMENTS, $1, $2)); }
 	;
 
 expression_statement

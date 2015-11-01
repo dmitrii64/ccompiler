@@ -29,7 +29,7 @@ public enum Operation {
 
     EXPRESSION,
     DECLARATION,
-    DECLARATION_INIT_LIST,
+    VARIABLE_DECLARATION,
 
     DEC_SPEC,
 
@@ -42,7 +42,7 @@ public enum Operation {
 
     PARAM_LIST,
 
-    PARAM_DEC_DIR,
+    FUNCTION_PARAMETER,
     PARAM_DEC_ABS,
     PARAM_DEC,
 
@@ -62,8 +62,8 @@ public enum Operation {
 
     COMP_STATEMENT,
 
-    DECL_LIST,
-    STAT_LIST,
+    DECLARATIONS,
+    STATEMENTS,
 
     TR_UNIT,
 
