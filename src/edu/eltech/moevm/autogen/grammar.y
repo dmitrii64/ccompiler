@@ -17,7 +17,8 @@
 
 %token SEMICOLON BRACELEFT BRACERIGHT COMMA COLON EQUAL RBLEFT RBRIGHT BRACKETLEFT
 %token BRACKETRIGHT DOT AMP EXCL MINUS PLUS STAR SLASH PERCENT LESS GREATER
-%token CARET BAR QUESTION
+%token CARET BAR QUESTION NUMBER_SIGN COLON_EQUAL
+
 
 %start root
 %%
@@ -129,7 +130,7 @@ conditional_expression
 
 assignment_expression
 	: conditional_expression                       { $$ = $1; }
-	| unary_expression EQUAL assignment_expression { $$ = new ParserVal(new Node(Operation.ASSIGNMENT, $1, $3)); }
+	| IDENTIFIER EQUAL assignment_expression { $$ = new ParserVal(new Node(Operation.ASSIGNMENT, $1, $3)); }
 	;
 
 expression
@@ -157,8 +158,8 @@ init_declarator_list
 	;
 
 init_declarator
-	: direct_declarator                   { $$ = $1; }
-	| direct_declarator EQUAL initializer { $$ = new ParserVal(new Node(Operation.INIT_DECLARATION, $1, $3)); }
+	: direct_declarator                         { $$ = $1; }
+	| direct_declarator COLON_EQUAL initializer { $$ = new ParserVal(new Node(Operation.INIT_DECLARATION, $1, $3)); }
 	;
 
 type_specifier
@@ -237,7 +238,7 @@ statement
 	;
 
 labeled_statement
-	: IDENTIFIER COLON statement               { $$ = new ParserVal(new Node(Operation.LABELED,new ParserVal(new Leaf(Operand.IDENTIFIER,$1.sval)), $3)); }
+	: IDENTIFIER NUMBER_SIGN statement               { $$ = new ParserVal(new Node(Operation.LABELED,new ParserVal(new Leaf(Operand.IDENTIFIER,$1.sval)), $3)); }
 	;
 
 compound_statement

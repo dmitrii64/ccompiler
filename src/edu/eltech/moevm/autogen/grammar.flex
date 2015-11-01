@@ -79,6 +79,7 @@ L?'(\\.|[^\\'])+'	{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext())
 "\{"		{ return Parser.BRACELEFT; }
 "\}"		{ return Parser.BRACERIGHT; }
 ","			{ return Parser.COMMA; }
+":="		{ return Parser.COLON_EQUAL; }
 ":"			{ return Parser.COLON; }
 "="			{ return Parser.EQUAL; }
 "("			{ return Parser.RBLEFT; }
@@ -98,6 +99,7 @@ L?'(\\.|[^\\'])+'	{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext())
 "^"			{ return Parser.CARET; }
 "|"			{ return Parser.BAR; }
 "?"			{ return Parser.QUESTION; }
+"#"			{ return Parser.NUMBER_SIGN; }
 
 [ \t\v\n\f]	{ }
 .			{ }
