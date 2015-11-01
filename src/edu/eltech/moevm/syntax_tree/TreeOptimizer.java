@@ -35,13 +35,22 @@ public class TreeOptimizer implements TreeCallback {
             node.remove(id);
         }
 
-
         if (node.getOperation() == Operation.FUNC_CALL) {
             while (node.haveAny(Operation.ARGUMENT_EXP_LIST))
                 reduce(node, Operation.FUNC_CALL, Operation.ARGUMENT_EXP_LIST);
             Leaf id = (Leaf) node.getElements().get(node.getElements().size() - 1);
             node.setValue(id.getValue());
             node.remove(id);
+        }
+
+        if (node.getOperation() == Operation.DECLARATIONS) {
+            while (node.haveAny(Operation.DECLARATIONS))
+                reduce(node, Operation.DECLARATIONS, Operation.DECLARATIONS);
+        }
+
+        if (node.getOperation() == Operation.STATEMENTS) {
+            while (node.haveAny(Operation.STATEMENTS))
+                reduce(node, Operation.STATEMENTS, Operation.STATEMENTS);
         }
 
     }

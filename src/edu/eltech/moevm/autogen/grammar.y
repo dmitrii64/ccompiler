@@ -174,7 +174,6 @@ init_declarator
 	| direct_declarator EQUAL initializer { $$ = new ParserVal(new Node(Operation.INIT_DECLARATION, $1, $3)); }
 	;
 
-
 type_specifier
 	: VOID    { $$ = new ParserVal(new Leaf(Operand.VOID,null)); }
 	| COMPLEX { $$ = new ParserVal(new Leaf(Operand.COMPLEX,null)); }
@@ -186,7 +185,6 @@ type_specifier
 	| DOUBLE  { $$ = new ParserVal(new Leaf(Operand.DOUBLE,null)); }
 	| BOOL    { $$ = new ParserVal(new Leaf(Operand.BOOL,null)); }
 	;
-
 
 direct_declarator
 	: IDENTIFIER                                                     { $$ = new ParserVal(new Leaf(Operand.IDENTIFIER, $1.sval)); }
