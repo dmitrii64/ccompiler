@@ -1,7 +1,5 @@
 package edu.eltech.moevm.syntax_tree;
 
-import sun.awt.SunToolkit;
-
 /**
  * Created by vladimir on 31.10.15.
  */
@@ -12,27 +10,19 @@ public class SyntaxTree {
         this.root = root;
     }
 
-    public void visit() {
-        visit(root);
+    public void visit(TreeCallback c) {
+        visit(c, root);
     }
 
-    private void visit(TreeElement node) {
+    private void visit(TreeCallback c, TreeElement node) {
         try {
             for (TreeElement e : node.getElements()) {
-                if(e!=null)
-                visit(e);
+                if (e != null)
+                    visit(c, e);
             }
         } catch (UnsupportedOperationException ignored) {
         } finally {
-            print(node);
+            c.processElement(node);
         }
-    }
-
-    private void print(TreeElement e) {
-
-        if(e instanceof Leaf)
-            System.out.println("leaf ["+((Leaf) e).getOperand()+"] value = "+((Leaf) e).getValue());
-        else
-            System.out.println("node ["+((Node) e).getOperation()+"]");
     }
 }

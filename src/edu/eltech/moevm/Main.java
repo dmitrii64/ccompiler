@@ -3,10 +3,7 @@ package edu.eltech.moevm;
 
 import edu.eltech.moevm.autogen.Parser;
 import edu.eltech.moevm.autogen.ParserVal;
-import edu.eltech.moevm.syntax_tree.Leaf;
-import edu.eltech.moevm.syntax_tree.Node;
-import edu.eltech.moevm.syntax_tree.Operation;
-import edu.eltech.moevm.syntax_tree.SyntaxTree;
+import edu.eltech.moevm.syntax_tree.*;
 
 import java.io.IOException;
 
@@ -22,10 +19,20 @@ public class Main {
             Node root;
             root = (Node) Parser.ParseFile("test.c").obj;
             SyntaxTree tree = new SyntaxTree(root);
-            tree.visit();
+            tree.visit(new TreeCallback() {
+                @Override
+                public void processElement(TreeElement e) {
+                    if(e instanceof Leaf)
+                        System.out.println("leaf ["+((Leaf) e).getOperand()+"] value = "+((Leaf) e).getValue());
+                    else
+                        System.out.println("node ["+((Node) e).getOperation()+"]");
+                }
+            });
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
 
 
