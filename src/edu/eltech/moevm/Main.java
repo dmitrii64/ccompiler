@@ -4,17 +4,35 @@ package edu.eltech.moevm;
 import edu.eltech.moevm.autogen.Parser;
 import edu.eltech.moevm.syntax_tree.*;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 
 
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("BYACC/Java C compiler");
+        System.out.println("================Input file================");
+        String filename = "test.c";
+        try {
+            FileReader reader = new FileReader(filename);
+            BufferedReader br = new BufferedReader(reader);
+            String s;
+            while ((s = br.readLine()) != null) {
+                System.out.println(s);
+            }
+            reader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         try {
             Node root;
-            root = (Node) Parser.ParseFile("test.c").obj;
+            root = (Node) Parser.ParseFile(filename).obj;
             SyntaxTree tree = new SyntaxTree(root);
             tree.infixVisit(new TreeOptimizer());
             tree.infixVisit(new TreeCallback() {

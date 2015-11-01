@@ -323,7 +323,7 @@ function_definition
   }
 
   public static ParserVal ParseFile(String file) throws IOException {
-	System.out.println("Lexical analyzer output:");
+    System.out.println("==========Lexical analyzer output=========");
 	Parser yyparser;
     yyparser = new Parser(new FileReader(file));
     //Tokenize input file (for debug)
@@ -335,9 +335,8 @@ function_definition
               System.out.print(Parser.yyname[i]);
               System.out.print(" ");
           }
-    System.out.println();
-
-	System.out.println("Syntax tree:");
+	System.out.println();
+    System.out.println("================Syntax tree===============");
 
   	//yyparser.yydebug = true;
   	yyparser.yyparse(); //Parsing goes here
