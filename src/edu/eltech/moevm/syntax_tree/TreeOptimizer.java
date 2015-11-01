@@ -20,17 +20,24 @@ public class TreeOptimizer implements TreeCallback {
     }
 
     private void optimizeNode(Node node) throws UnsupportedOperationException {
-        if(node.getOperation()==Operation.ROOT)
+        if(node.getOperation()==Operation.ROOT) {
             while (node.haveAny(Operation.TR_UNIT))
                 reduce(node, Operation.ROOT, Operation.TR_UNIT);
+            while (node.haveAny(Operation.FUNC_DEF))
+                reduce(node, Operation.ROOT, Operation.FUNC_DEF);
+        }
 
         if(node.getOperation()==Operation.FNDEF_2)
             while (node.haveAny(Operation.DIRECT_DEC_FUNC))
                 reduce(node, Operation.FNDEF_2, Operation.DIRECT_DEC_FUNC);
 
-        if (node.getOperation() == Operation.FUNC_CALL)
+        if (node.getOperation() == Operation.FUNC_CALL) {
             while (node.haveAny(Operation.ARGUMENT_EXP_LIST))
                 reduce(node, Operation.FUNC_CALL, Operation.ARGUMENT_EXP_LIST);
+            Leaf id = (Leaf) node.getElements().get(node.getElements().size() - 1);
+            node.setValue(id.getValue());
+            node.remove(id);
+        }
 
     }
 

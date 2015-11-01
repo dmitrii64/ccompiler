@@ -176,15 +176,15 @@ init_declarator
 
 
 type_specifier
-	: VOID    { $$ = new ParserVal(new Leaf(Operand.VOID,"")); }
-	| COMPLEX { $$ = new ParserVal(new Leaf(Operand.COMPLEX,"")); }
-	| CHAR    { $$ = new ParserVal(new Leaf(Operand.CHAR,"")); }
-	| SHORT   { $$ = new ParserVal(new Leaf(Operand.SHORT,"")); }
-	| INT     { $$ = new ParserVal(new Leaf(Operand.INT,"")); }
-	| LONG    { $$ = new ParserVal(new Leaf(Operand.LONG,"")); }
-	| FLOAT   { $$ = new ParserVal(new Leaf(Operand.FLOAT,"")); }
-	| DOUBLE  { $$ = new ParserVal(new Leaf(Operand.DOUBLE,"")); }
-	| BOOL    { $$ = new ParserVal(new Leaf(Operand.BOOL,"")); }
+	: VOID    { $$ = new ParserVal(new Leaf(Operand.VOID,null)); }
+	| COMPLEX { $$ = new ParserVal(new Leaf(Operand.COMPLEX,null)); }
+	| CHAR    { $$ = new ParserVal(new Leaf(Operand.CHAR,null)); }
+	| SHORT   { $$ = new ParserVal(new Leaf(Operand.SHORT,null)); }
+	| INT     { $$ = new ParserVal(new Leaf(Operand.INT,null)); }
+	| LONG    { $$ = new ParserVal(new Leaf(Operand.LONG,null)); }
+	| FLOAT   { $$ = new ParserVal(new Leaf(Operand.FLOAT,null)); }
+	| DOUBLE  { $$ = new ParserVal(new Leaf(Operand.DOUBLE,null)); }
+	| BOOL    { $$ = new ParserVal(new Leaf(Operand.BOOL,null)); }
 	;
 
 
@@ -256,7 +256,7 @@ labeled_statement
 	;
 
 compound_statement
-	: BRACELEFT BRACERIGHT                                 { $$ = new ParserVal(new Leaf(Operand.EMPTY_BODY,"")); }
+	: BRACELEFT BRACERIGHT                                 { $$ = new ParserVal(new Leaf(Operand.EMPTY_BODY,null)); }
 	| BRACELEFT statement_list BRACERIGHT                  { $$ = new ParserVal(new Node(Operation.COMP_STATEMENT, $2)); }
 	| BRACELEFT declaration_list BRACERIGHT                { $$ = new ParserVal(new Node(Operation.COMP_STATEMENT, $2)); }
 	| BRACELEFT declaration_list statement_list BRACERIGHT { $$ = new ParserVal(new Node(Operation.COMP_STATEMENT, $2, $3)); }
@@ -273,7 +273,7 @@ statement_list
 	;
 
 expression_statement
-	: SEMICOLON            { $$ = new ParserVal(new Leaf(Operand.EMPTY_EXPR,"")); }
+	: SEMICOLON            { $$ = new ParserVal(new Leaf(Operand.EMPTY_EXPR,null)); }
 	| expression SEMICOLON { $$ = $1; }
 	;
 

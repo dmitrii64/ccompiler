@@ -10,6 +10,7 @@ import java.util.List;
  */
 public class Node extends TreeElement {
     private Operation operation;
+    private String value;
     private ArrayList<TreeElement> elements;
 
     public Node(Operation operation, ParserVal... elements) {
@@ -59,4 +60,11 @@ public class Node extends TreeElement {
     }
 
 
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 }

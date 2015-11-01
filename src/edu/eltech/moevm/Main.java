@@ -2,7 +2,6 @@ package edu.eltech.moevm;
 
 
 import edu.eltech.moevm.autogen.Parser;
-import edu.eltech.moevm.autogen.ParserVal;
 import edu.eltech.moevm.syntax_tree.*;
 
 import java.io.IOException;
@@ -28,9 +27,18 @@ public class Main {
                         System.out.print("--");
                     }
                     if (e instanceof Leaf)
-                        System.out.println("leaf [" + ((Leaf) e).getOperand() + "] value = " + ((Leaf) e).getValue());
-                    else
-                        System.out.println("node [" + ((Node) e).getOperation() + "]");
+                        if (((Leaf) e).getValue() == null)
+                            System.out.println("leaf [" + ((Leaf) e).getOperand() + "]");
+                        else
+                            System.out.println("leaf [" + ((Leaf) e).getOperand() + "] (" + ((Leaf) e).getValue() + ")");
+                    else {
+                        if (((Node) e).getValue() == null)
+                            System.out.println("node [" + ((Node) e).getOperation() + "]");
+                        else
+                            System.out.println("node [" + ((Node) e).getOperation() + "] (" + ((Node) e).getValue() + ")");
+                    }
+
+
                 }
             });
 

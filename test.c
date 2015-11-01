@@ -1,23 +1,12 @@
-int a(int p,char c)
-{
-    int g = 123;
-    return g;
-}
-
-void b()
-{
-}
-
-void c()
-{
-}
-
 int main()
 {
-    int res;
-    int a = 5;
+    int a;
 
-    res = a(1,2);
+
+    a = 6*5*4+7*3*2;
+
+
+
 
 
     return 0;
