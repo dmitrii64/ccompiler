@@ -29,6 +29,7 @@ public class TreeOptimizer implements TreeCallback {
         if (node.getOperation() == Operation.FUNCTION_DEFINITION) {
             while (node.haveAny(Operation.DIRECT_DEC_FUNC))
                 reduce(node, Operation.FUNCTION_DEFINITION, Operation.DIRECT_DEC_FUNC);
+
             Leaf id = (Leaf) node.getElements().get(0);
             node.setValue(id.getValue());
             node.remove(id);
@@ -37,15 +38,40 @@ public class TreeOptimizer implements TreeCallback {
                 node.setType(Type.valueOf(type.getOperand().name()));
                 node.remove(type);
             } else {
+
                 for (TreeElement te : node.getElements())
-                    if (te instanceof Leaf)
+                    if (te instanceof Leaf) {
                         if (Type.valueOf(((Leaf) te).getOperand().name()) != null) {
                             Leaf type = (Leaf) node.getElements().get(1);
                             node.setType(Type.valueOf(type.getOperand().name()));
                             node.remove(type);
                         }
+                    }
+
 
             }
+            ArrayList<TreeElement> addlist = new ArrayList<TreeElement>();
+            ArrayList<TreeElement> rmlist = new ArrayList<TreeElement>();
+            for (TreeElement te : node.getElements())
+                if (te instanceof Node)
+                    if (((Node) te).getOperation() == Operation.FUNCTION_PARAMETER) {
+                        Leaf typeleaf = (Leaf) te.getElements().get(0);
+                        if (te.getElements().get(te.getElements().size() - 1) instanceof Leaf) {
+                            Leaf id2 = (Leaf) (te.getElements().get(te.getElements().size() - 1));
+                            id2.setType(Type.valueOf(typeleaf.getOperand().name()));
+                            te.remove(typeleaf);
+                        }
+                        addlist.add(te.getElements().get(0));
+                        rmlist.add(te);
+                    }
+            for (TreeElement rm : rmlist)
+                node.remove(rm);
+            for (TreeElement add : node.getElements())
+                addlist.add(add);
+            node.clear();
+            for (TreeElement addnew : addlist)
+                node.add(addnew);
+
         }
 
         if (node.getOperation() == Operation.FUNC_CALL) {
@@ -77,6 +103,15 @@ public class TreeOptimizer implements TreeCallback {
             }
             while (node.haveAny(Operation.FUNCTION_PARAMETER))
                 reduce(node, Operation.PARAM_LIST, Operation.FUNCTION_PARAMETER);
+        }
+
+        if (node.getOperation() == Operation.FUNCTION_PARAMETER) {
+            Leaf type = (Leaf) node.getElements().get(0);
+            if (node.getElements().get(node.getElements().size() - 1) instanceof Leaf) {
+                Leaf id = (Leaf) (node.getElements().get(node.getElements().size() - 1));
+                id.setType(Type.valueOf(type.getOperand().name()));
+                node.remove(type);
+            }
 
         }
 
