@@ -30,6 +30,4 @@ public abstract class TreeElement {
         this.type = type;
     }
 
-    public abstract String getValue();
-
 }

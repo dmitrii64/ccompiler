@@ -36,11 +36,8 @@ IS = (u|U|l|L)*
 
 "bool"			{ return Parser.BOOL; }
 "break"			{ return Parser.BREAK; }
-"case"			{ return Parser.CASE; }
 "char"			{ return Parser.CHAR; }
 "complex"		{ return Parser.COMPLEX; }
-"const"			{ return Parser.CONST; }
-"default"		{ return Parser.DEFAULT; }
 "do"			{ return Parser.DO; }
 "double"		{ return Parser.DOUBLE; }
 "else"			{ return Parser.ELSE; }
@@ -57,7 +54,6 @@ IS = (u|U|l|L)*
 "short"			{ return Parser.SHORT; }
 "sizeof"		{ return Parser.SIZEOF; }
 "static"		{ return Parser.STATIC; }
-"switch"		{ return Parser.SWITCH; }
 "void"			{ return Parser.VOID; }
 "while"			{ return Parser.WHILE; }
 

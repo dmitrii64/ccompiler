@@ -11,25 +11,98 @@ public enum Operation {
     UMINUS, //-x
     PERCENT,    //%
     LESS,   //<
-    GRAND,  //>
+    GREATER,  //>
     NOT,    //!
     EQUAL,  //==
     ASSIGNMENT, //=
     NOT_EQ, //!=
-    GRAND_OR_EQ,    //>=
+    GREATER_OR_EQ,    //>=
     LESS_OR_EQ,  //<=
+    LEFT_OP,
+    RIGHT_OP,
+    AND_OP,
+    XOR_OP,
+    OR_OP,
+    LOGICAL_AND_OP,
+    LOGICAL_OR_OP,
+    QUESTION_OP,
+
+    EXPRESSION,
+    DECLARATION,
+    DECLARATION_INIT_LIST,
+
+    DEC_SPEC,
+
+    INIT_LIST,
+
+    INIT_DECLARATION,
+
+    DIRECT_DEC_ARRAY,
+    DIRECT_DEC_FUNC,
+
+    PARAM_LIST,
+
+    PARAM_DEC_DIR,
+    PARAM_DEC_ABS,
+    PARAM_DEC,
+
+    IDENT_LIST,
+
+    DIR_ABS_DEC_BRACKETS,
+    DIR_ABS_DEC_BRACKETS_WITH_DEC,
+
+    DIR_ABS_DEC_ROUND,
+    DIR_ABS_DEC_ROUND_WITH_DEC,
+
+    ARRAY_INIT,
+
+    INITIALIZER_LIST,
+
+    LABELED,
+
+    COMP_STATEMENT,
+    EMPTY_BODY,
+    EMPTY_EXPR,
+
+    DECL_LIST,
+    STAT_LIST,
+
+    TR_UNIT,
+
+    FUNC_DEF,
+    EXT_DECL,
+
+    FNDEF_1,
+    FNDEF_2,
+    FNDEF_3,
+    FNDEF_4,
+
 
     WHILE,
     DO,
     FOR,
     IF,
-    ELSE,
-    SWITCH,
-    CASE,
-    DEFAULT,
     GOTO,
     BREAK,
     RETURN,
+
+    INC_OP,
+    DEC_OP,
+
+    FUNC_CALL,
+
+    ARRAY_ACCESS,
+
+    ARGUMENT_EXP_LIST,
+
+    TYPE_CAST,
+
+    SIZEOF,
+    SIZEOFTYPE,
+
+    RE,
+    IM,
+    MOD,
 
     NEW,
 

@@ -1,9 +1,12 @@
 package edu.eltech.moevm.syntax_tree;
 
 /**
- * Created by vladimir on 31.10.15.
+ * Created by lazorg on 11/1/15.
  */
-public enum Type {
+public enum Operand {
+    IDENTIFIER,
+    CONSTANT,
+    STRING_LITERAL,
     VOID,
     INT,
     CHAR,
@@ -13,4 +16,6 @@ public enum Type {
     SHORT,
     DOUBLE,
     LONG
+
+
 }

@@ -13,6 +13,7 @@ public class Node extends TreeElement {
     private ArrayList<TreeElement> elements;
 
     public Node(Operation operation, ParserVal... elements) {
+
         this.operation = operation;
         this.elements = new ArrayList<TreeElement>();
         for (ParserVal obj : elements) {
@@ -35,54 +36,5 @@ public class Node extends TreeElement {
         return elements;
     }
 
-    @Override
-    public String getValue() {
-        String value = null;
-        switch (operation) {
-            case PLUS:
-                value = "+";
-                break;
-            case MINUS:
-                value = "-";
-                break;
-            case MULTIPLY:
-                value = "*";
-                break;
-            case DIVIDE:
-                value = "/";
-                break;
-            case UMINUS:
-                value = "-";
-                break;
-            case PERCENT:
-                value = "%";
-                break;
-            case LESS:
-                value = "<";
-                break;
-            case GRAND:
-                value = ">";
-                break;
-            case NOT:
-                value = "!";
-                break;
-            case EQUAL:
-                value = "==";
-                break;
-            case ASSIGNMENT:
-                value = "=";
-                break;
-            case NOT_EQ:
-                value = "!=";
-                break;
-            case GRAND_OR_EQ:
-                value = ">=";
-                break;
-            case LESS_OR_EQ:
-                value = "<=";
-                break;
-        }
-        return value;
-    }
 
 }

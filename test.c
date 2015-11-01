@@ -1,3 +1,15 @@
+void a()
+{
+}
+
+void b()
+{
+}
+
+void c()
+{
+}
+
 int main()
 {
     int a = 5;
