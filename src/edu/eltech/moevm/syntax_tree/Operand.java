@@ -7,15 +7,4 @@ public enum Operand {
     IDENTIFIER,
     CONSTANT,
     STRING_LITERAL,
-    EMPTY_BODY,
-    EMPTY_EXPR,
-    VOID,
-    INT,
-    CHAR,
-    FLOAT,
-    BOOL,
-    COMPLEX,
-    SHORT,
-    DOUBLE,
-    LONG
 }
