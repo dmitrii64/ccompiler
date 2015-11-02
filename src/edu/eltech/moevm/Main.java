@@ -34,7 +34,7 @@ public class Main {
             Node root;
             root = (Node) Parser.ParseFile(filename).obj;
             SyntaxTree tree = new SyntaxTree(root);
-            tree.infixVisit(new TreeOptimizer());
+            //tree.infixVisit(new TreeOptimizer());
             tree.infixVisit(new TreeCallback() {
                 @Override
                 public void processElement(TreeElement e, int level) {
