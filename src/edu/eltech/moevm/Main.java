@@ -2,7 +2,7 @@ package edu.eltech.moevm;
 
 
 import edu.eltech.moevm.autogen.Parser;
-import edu.eltech.moevm.syntax_tree.*;
+import edu.eltech.moevm.parsing_tree.*;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -31,30 +31,27 @@ public class Main {
 
 
         try {
-            Node root;
-            root = (Node) Parser.ParseFile(filename).obj;
-            SyntaxTree tree = new SyntaxTree(root);
+
+            ParsingTree tree = (ParsingTree) Parser.ParseFile(filename).obj;
             //tree.infixVisit(new TreeOptimizer());
-            tree.infixVisit(new TreeCallback() {
+            tree.infixVisit(new PTCallback() {
                 @Override
-                public void processElement(TreeElement e, int level) {
+                public void processElement(PTElement e, int level) {
                     System.out.print("|");
                     for (int i = 0; i < level; i++) {
                         System.out.print("--");
                     }
-                    if (e instanceof Leaf) {
-                        System.out.print("leaf [" + ((Leaf) e).getOperand() + "]");
-                        if (((Leaf) e).getValue() != null)
-                            System.out.print(" (" + ((Leaf) e).getValue() + ")");
-                        if (((Leaf) e).getType() != null)
-                            System.out.print(" <" + ((Leaf) e).getType() + ">");
+                    if (e instanceof PTLeaf) {
+                        System.out.print("leaf [" + Parser.getTokenName(((PTLeaf) e).getToken()) + "]");
+                        if (((PTLeaf) e).getValue() != null)
+                            System.out.print(" (" + ((PTLeaf) e).getValue() + ")");
+
                     }
                     else {
-                        System.out.print("node [" + ((Node) e).getOperation() + "]");
-                        if (((Node) e).getValue() != null)
-                            System.out.print(" (" + ((Node) e).getValue() + ")");
-                        if (((Node) e).getType() != null)
-                            System.out.print(" <" + ((Node) e).getType() + ">");
+                        System.out.print("node [" + ((PTNode) e).getNonterminal() + "]");
+                        if (((PTNode) e).getValue() != null)
+                            System.out.print(" (" + ((PTNode) e).getValue() + ")");
+
                     }
                     System.out.println();
 

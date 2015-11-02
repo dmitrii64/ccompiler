@@ -1,7 +1,7 @@
 %{
   import java.io.*;
   import edu.eltech.moevm.*;
-  import edu.eltech.moevm.syntax_tree.*;
+  import edu.eltech.moevm.parsing_tree.*;
 %}
       
 %token IDENTIFIER CONSTANT STRING_LITERAL SIZEOF
@@ -24,278 +24,277 @@
 %%
 
 primary_expression
-	: IDENTIFIER                { $$ = new ParserVal(new Leaf(Operand.IDENTIFIER,$1.sval)); }
-	| CONSTANT                  { $$ = new ParserVal(new Leaf(Operand.CONSTANT,$1.sval)); }
-	| STRING_LITERAL            { $$ = new ParserVal(new Leaf(Operand.STRING_LITERAL, $1.sval)); }
-	| RBLEFT expression RBRIGHT { $$ = $2; }
+	: IDENTIFIER                { $$ = new ParserVal(new PTNode(Nonterminals.PRIMARY_EXPRESSION, new PTLeaf(Parser.IDENTIFIER,$1.sval))); }
+	| CONSTANT                  { $$ = new ParserVal(new PTNode(Nonterminals.PRIMARY_EXPRESSION, new PTLeaf(Parser.CONSTANT,$1.sval))); }
+	| STRING_LITERAL            { $$ = new ParserVal(new PTNode(Nonterminals.PRIMARY_EXPRESSION, new PTLeaf(Parser.STRING_LITERAL,$1.sval))); }
+	| RBLEFT expression RBRIGHT { $$ = new ParserVal(new PTNode(Nonterminals.PRIMARY_EXPRESSION, new PTLeaf(Parser.RBLEFT,null), (PTElement)$2.obj, new PTLeaf(Parser.RBRIGHT,null))); }
 	;
 
 postfix_expression
-	: primary_expression                                         { $$ = $1; }
-	| postfix_expression BRACKETLEFT expression BRACKETRIGHT     { $$ = new ParserVal(new Node(Operation.ARRAY_ACCESS, $1, $3)); }
-	| postfix_expression RBLEFT RBRIGHT                          { $$ = new ParserVal(new Node(Operation.FUNC_CALL, $1)); }
-	| postfix_expression RBLEFT argument_expression_list RBRIGHT { $$ = new ParserVal(new Node(Operation.FUNC_CALL, $1, $3)); }
-	| postfix_expression INC_OP                                  { $$ = new ParserVal(new Node(Operation.INC_OP, $1)); }
-	| postfix_expression DEC_OP                                  { $$ = new ParserVal(new Node(Operation.DEC_OP, $1)); }
+	: primary_expression                                         { $$ = new ParserVal(new PTNode(Nonterminals.POSTFIX_EXPRESSION, (PTElement)$1.obj)); }
+	| postfix_expression BRACKETLEFT expression BRACKETRIGHT     { $$ = new ParserVal(new PTNode(Nonterminals.POSTFIX_EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.BRACKETLEFT,null), (PTElement)$3.obj, new PTLeaf(Parser.BRACKETRIGHT,null))); }
+	| postfix_expression RBLEFT RBRIGHT                          { $$ = new ParserVal(new PTNode(Nonterminals.POSTFIX_EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.RBLEFT,null), new PTLeaf(Parser.RBRIGHT,null))); }
+	| postfix_expression RBLEFT argument_expression_list RBRIGHT { $$ = new ParserVal(new PTNode(Nonterminals.POSTFIX_EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.RBLEFT,null), (PTElement)$3.obj, new PTLeaf(Parser.RBRIGHT,null))); }
+	| postfix_expression INC_OP                                  { $$ = new ParserVal(new PTNode(Nonterminals.POSTFIX_EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.INC_OP,null))); }
+	| postfix_expression DEC_OP                                  { $$ = new ParserVal(new PTNode(Nonterminals.POSTFIX_EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.DEC_OP,null))); }
 	;
 
 argument_expression_list
-	: assignment_expression                                { $$ = new ParserVal(new Node(Operation.ARGUMENT_EXP_LIST, $1)); }
-	| argument_expression_list COMMA assignment_expression { $$ = new ParserVal(new Node(Operation.ARGUMENT_EXP_LIST, $1,$3)); }
+	: assignment_expression                                { $$ = new ParserVal(new PTNode(Nonterminals.ARGUMENT_EXPRESSION_LIST, (PTElement)$1.obj)); }
+	| argument_expression_list COMMA assignment_expression { $$ = new ParserVal(new PTNode(Nonterminals.ARGUMENT_EXPRESSION_LIST, (PTElement)$1.obj, new PTLeaf(Parser.COMMA,null), (PTElement)$3.obj)); }
 	;
 
 unary_expression
-	: postfix_expression              { $$ = $1; }
-	| INC_OP unary_expression         { $$ = new ParserVal(new Node(Operation.INC_OP, $1)); }
-	| DEC_OP unary_expression         { $$ = new ParserVal(new Node(Operation.DEC_OP, $1)); }
-	| MINUS  cast_expression	      { $$ = new ParserVal(new Node(Operation.UMINUS, $2)); }
-	| EXCL  cast_expression	          { $$ = new ParserVal(new Node(Operation.NOT, $2)); }
-	| SIZEOF unary_expression         { $$ = new ParserVal(new Node(Operation.SIZEOF, $2)); }
-	| SIZEOF RBLEFT type_specifier RBRIGHT { $$ = new ParserVal(new Node(Operation.SIZEOFTYPE, $3)); }
-	| RE RBLEFT CONSTANT RBRIGHT      { $$ = new ParserVal(new Node(Operation.RE, $3)); }
-	| RE RBLEFT IDENTIFIER RBRIGHT    { $$ = new ParserVal(new Node(Operation.RE, $3)); }
-	| IM RBLEFT CONSTANT RBRIGHT      { $$ = new ParserVal(new Node(Operation.IM, $3)); }
-	| IM RBLEFT IDENTIFIER RBRIGHT    { $$ = new ParserVal(new Node(Operation.IM, $3)); }
-	| MOD RBLEFT CONSTANT RBRIGHT     { $$ = new ParserVal(new Node(Operation.MOD, $3)); }
-	| MOD RBLEFT IDENTIFIER RBRIGHT   { $$ = new ParserVal(new Node(Operation.MOD, $3)); }
+	: postfix_expression                   { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTElement)$1.obj)); }
+	| INC_OP unary_expression              { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, new PTLeaf(Parser.INC_OP,null), (PTElement)$2.obj)); }
+	| DEC_OP unary_expression              { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, new PTLeaf(Parser.DEC_OP,null), (PTElement)$2.obj)); }
+	| MINUS  cast_expression               { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, new PTLeaf(Parser.MINUS,null), (PTElement)$2.obj)); }
+	| EXCL  cast_expression                { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, new PTLeaf(Parser.EXCL,null), (PTElement)$2.obj)); }
+	| SIZEOF unary_expression              { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, new PTLeaf(Parser.SIZEOF,null), (PTElement)$2.obj)); }
+	| SIZEOF RBLEFT type_specifier RBRIGHT { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, new PTLeaf(Parser.SIZEOF,null), new PTLeaf(Parser.RBLEFT,null), (PTElement)$3.obj, new PTLeaf(Parser.RBRIGHT,null))); }
+	| RE RBLEFT CONSTANT RBRIGHT           { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, new PTLeaf(Parser.RE,null), new PTLeaf(Parser.RBLEFT,null), new PTLeaf(Parser.CONSTANT,null), new PTLeaf(Parser.RBRIGHT,null))); }
+	| RE RBLEFT IDENTIFIER RBRIGHT         { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, new PTLeaf(Parser.RE,null), new PTLeaf(Parser.RBLEFT,null), new PTLeaf(Parser.IDENTIFIER,null), new PTLeaf(Parser.RBRIGHT,null))); }
+	| IM RBLEFT CONSTANT RBRIGHT           { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, new PTLeaf(Parser.IM,null), new PTLeaf(Parser.RBLEFT,null), new PTLeaf(Parser.CONSTANT,null), new PTLeaf(Parser.RBRIGHT,null))); }
+	| IM RBLEFT IDENTIFIER RBRIGHT         { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, new PTLeaf(Parser.IM,null), new PTLeaf(Parser.RBLEFT,null), new PTLeaf(Parser.IDENTIFIER,null), new PTLeaf(Parser.RBRIGHT,null))); }
+	| MOD RBLEFT CONSTANT RBRIGHT          { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, new PTLeaf(Parser.MOD,null), new PTLeaf(Parser.RBLEFT,null), new PTLeaf(Parser.CONSTANT,null), new PTLeaf(Parser.RBRIGHT,null))); }
+	| MOD RBLEFT IDENTIFIER RBRIGHT        { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, new PTLeaf(Parser.MOD,null), new PTLeaf(Parser.RBLEFT,null), new PTLeaf(Parser.IDENTIFIER,null), new PTLeaf(Parser.RBRIGHT,null))); }
 	;
 
 cast_expression
-	: unary_expression                         { $$ = $1; }
-	| RBLEFT type_specifier RBRIGHT cast_expression { $$ = new ParserVal(new Node(Operation.TYPE_CAST, $2, $4)); }
+	: unary_expression                              { $$ = new ParserVal(new PTNode(Nonterminals.CAST_EXPRESSION, (PTElement)$1.obj)); }
+	| RBLEFT type_specifier RBRIGHT cast_expression { $$ = new ParserVal(new PTNode(Nonterminals.CAST_EXPRESSION, new PTLeaf(Parser.RBLEFT,null), (PTElement)$2.obj, new PTLeaf(Parser.RBRIGHT,null), (PTElement)$4.obj)); }
 	;
 
 multiplicative_expression
-	: cast_expression                                   { $$ = $1; }
-	| multiplicative_expression STAR cast_expression    { $$ = new ParserVal(new Node(Operation.MULTIPLY, $1, $3)); }
-	| multiplicative_expression SLASH cast_expression   { $$ = new ParserVal(new Node(Operation.DIVIDE, $1, $3)); }
-	| multiplicative_expression PERCENT cast_expression { $$ = new ParserVal(new Node(Operation.PERCENT, $1, $3)); }
+	: cast_expression                                   { $$ = new ParserVal(new PTNode(Nonterminals.MULTIPLICATIVE_EXPRESSION, (PTElement)$1.obj)); }
+	| multiplicative_expression STAR cast_expression    { $$ = new ParserVal(new PTNode(Nonterminals.MULTIPLICATIVE_EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.STAR,null), (PTElement)$3.obj)); }
+	| multiplicative_expression SLASH cast_expression   { $$ = new ParserVal(new PTNode(Nonterminals.MULTIPLICATIVE_EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.SLASH,null), (PTElement)$3.obj)); }
+	| multiplicative_expression PERCENT cast_expression { $$ = new ParserVal(new PTNode(Nonterminals.MULTIPLICATIVE_EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.PERCENT,null), (PTElement)$3.obj)); }
 	;
 
 additive_expression
-	: multiplicative_expression                           { $$ = $1; }
-	| additive_expression PLUS multiplicative_expression  { $$ = new ParserVal(new Node(Operation.PLUS, $1, $3)); }
-	| additive_expression MINUS multiplicative_expression { $$ = new ParserVal(new Node(Operation.MINUS, $1, $3)); }
+	: multiplicative_expression                           { $$ = new ParserVal(new PTNode(Nonterminals.ADDITIVE_EXPRESSION, (PTElement)$1.obj)); }
+	| additive_expression PLUS multiplicative_expression  { $$ = new ParserVal(new PTNode(Nonterminals.ADDITIVE_EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.PLUS,null), (PTElement)$3.obj)); }
+	| additive_expression MINUS multiplicative_expression { $$ = new ParserVal(new PTNode(Nonterminals.ADDITIVE_EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.MINUS,null), (PTElement)$3.obj)); }
 	;
 
 shift_expression
-	: additive_expression                           { $$ = $1; }
-	| shift_expression LEFT_OP additive_expression  { $$ = new ParserVal(new Node(Operation.LEFT_OP, $1, $3)); }
-	| shift_expression RIGHT_OP additive_expression { $$ = new ParserVal(new Node(Operation.RIGHT_OP, $1, $3)); }
+	: additive_expression                           { $$ = new ParserVal(new PTNode(Nonterminals.SHIFT_EXPRESSION, (PTElement)$1.obj)); }
+	| shift_expression LEFT_OP additive_expression  { $$ = new ParserVal(new PTNode(Nonterminals.SHIFT_EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.LEFT_OP,null), (PTElement)$3.obj)); }
+	| shift_expression RIGHT_OP additive_expression { $$ = new ParserVal(new PTNode(Nonterminals.SHIFT_EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.RIGHT_OP,null), (PTElement)$3.obj)); }
 	;
 
 relational_expression
-	: shift_expression                               { $$ = $1; }
-	| relational_expression LESS shift_expression    { $$ = new ParserVal(new Node(Operation.LESS, $1, $3)); }
-	| relational_expression GREATER shift_expression { $$ = new ParserVal(new Node(Operation.GREATER, $1, $3)); }
-	| relational_expression LE_OP shift_expression   { $$ = new ParserVal(new Node(Operation.LESS_OR_EQ, $1, $3)); }
-	| relational_expression GE_OP shift_expression   { $$ = new ParserVal(new Node(Operation.GREATER_OR_EQ, $1, $3)); }
+	: shift_expression                               { $$ = new ParserVal(new PTNode(Nonterminals.RELATIONAL_EXPRESSION, (PTElement)$1.obj)); }
+	| relational_expression LESS shift_expression    { $$ = new ParserVal(new PTNode(Nonterminals.RELATIONAL_EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.LESS,null), (PTElement)$3.obj)); }
+	| relational_expression GREATER shift_expression { $$ = new ParserVal(new PTNode(Nonterminals.RELATIONAL_EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.GREATER,null), (PTElement)$3.obj)); }
+	| relational_expression LE_OP shift_expression   { $$ = new ParserVal(new PTNode(Nonterminals.RELATIONAL_EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.LE_OP,null), (PTElement)$3.obj)); }
+	| relational_expression GE_OP shift_expression   { $$ = new ParserVal(new PTNode(Nonterminals.RELATIONAL_EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.GE_OP,null), (PTElement)$3.obj)); }
 	;
 
 equality_expression
-	: relational_expression                           { $$ = $1; }
-	| equality_expression EQ_OP relational_expression { $$ = new ParserVal(new Node(Operation.EQUAL, $1, $3)); }
-	| equality_expression NE_OP relational_expression { $$ = new ParserVal(new Node(Operation.NOT_EQ, $1, $3)); }
+	: relational_expression                           { $$ = new ParserVal(new PTNode(Nonterminals.EQUALITY_EXPRESSION, (PTElement)$1.obj)); }
+	| equality_expression EQ_OP relational_expression { $$ = new ParserVal(new PTNode(Nonterminals.EQUALITY_EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.EQ_OP,null), (PTElement)$3.obj)); }
+	| equality_expression NE_OP relational_expression { $$ = new ParserVal(new PTNode(Nonterminals.EQUALITY_EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.NE_OP,null), (PTElement)$3.obj)); }
 	;
 
 and_expression
-	: equality_expression                    { $$ = $1; }
-	| and_expression AMP equality_expression { $$ = new ParserVal(new Node(Operation.AND_OP, $1, $3)); }
+	: equality_expression                    { $$ = new ParserVal(new PTNode(Nonterminals.AND_EXPRESSION, (PTElement)$1.obj)); }
+	| and_expression AMP equality_expression { $$ = new ParserVal(new PTNode(Nonterminals.AND_EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.AMP,null), (PTElement)$3.obj)); }
 	;
 
 exclusive_or_expression
-	: and_expression                               { $$ = $1; }
-	| exclusive_or_expression CARET and_expression { $$ = new ParserVal(new Node(Operation.XOR_OP, $1, $3)); }
+	: and_expression                               { $$ = new ParserVal(new PTNode(Nonterminals.EXCLUSIVE_OR_EXPRESSION, (PTElement)$1.obj)); }
+	| exclusive_or_expression CARET and_expression { $$ = new ParserVal(new PTNode(Nonterminals.EXCLUSIVE_OR_EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.CARET,null), (PTElement)$3.obj)); }
 	;
 
 inclusive_or_expression
-	: exclusive_or_expression                             { $$ = $1; }
-	| inclusive_or_expression BAR exclusive_or_expression { $$ = new ParserVal(new Node(Operation.OR_OP, $1, $3)); }
+	: exclusive_or_expression                             { $$ = new ParserVal(new PTNode(Nonterminals.INCLUSIVE_OR_EXPRESSION, (PTElement)$1.obj)); }
+	| inclusive_or_expression BAR exclusive_or_expression { $$ = new ParserVal(new PTNode(Nonterminals.INCLUSIVE_OR_EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.BAR,null), (PTElement)$3.obj)); }
 	;
 
 logical_and_expression
-	: inclusive_or_expression                               { $$ = $1; }
-	| logical_and_expression AND_OP inclusive_or_expression { $$ = new ParserVal(new Node(Operation.LOGICAL_AND_OP, $1, $3)); }
+	: inclusive_or_expression                               { $$ = new ParserVal(new PTNode(Nonterminals.LOGICAL_AND_EXPRESSION, (PTElement)$1.obj)); }
+	| logical_and_expression AND_OP inclusive_or_expression { $$ = new ParserVal(new PTNode(Nonterminals.LOGICAL_AND_EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.AND_OP,null), (PTElement)$3.obj)); }
 	;
 
 logical_or_expression
-	: logical_and_expression                             { $$ = $1; }
-	| logical_or_expression OR_OP logical_and_expression { $$ = new ParserVal(new Node(Operation.LOGICAL_OR_OP, $1, $3)); }
+	: logical_and_expression                             { $$ = new ParserVal(new PTNode(Nonterminals.LOGICAL_OR_EXPRESSION, (PTElement)$1.obj)); }
+	| logical_or_expression OR_OP logical_and_expression { $$ = new ParserVal(new PTNode(Nonterminals.LOGICAL_OR_EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.OR_OP,null), (PTElement)$3.obj)); }
 	;
 
 conditional_expression
-	: logical_or_expression                                                  { $$ = $1; }
-	| logical_or_expression QUESTION expression COLON conditional_expression { $$ = new ParserVal(new Node(Operation.QUESTION_OP, $1, $3, $5)); }
+	: logical_or_expression                                                  { $$ = new ParserVal(new PTNode(Nonterminals.CONDITIONAL_EXPRESSION, (PTElement)$1.obj)); }
+	| logical_or_expression QUESTION expression COLON conditional_expression { $$ = new ParserVal(new PTNode(Nonterminals.CONDITIONAL_EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.QUESTION,null), (PTElement)$3.obj, new PTLeaf(Parser.COLON,null), (PTElement)$5.obj)); }
 	;
 
 assignment_expression
-	: conditional_expression                       { $$ = $1; }
-	| IDENTIFIER EQUAL assignment_expression { $$ = new ParserVal(new Node(Operation.ASSIGNMENT, $1, $3)); }
+	: conditional_expression                 { $$ = new ParserVal(new PTNode(Nonterminals.ASSIGNMENT_EXPRESSION, (PTElement)$1.obj)); }
+	| IDENTIFIER EQUAL assignment_expression { $$ = new ParserVal(new PTNode(Nonterminals.ASSIGNMENT_EXPRESSION, new PTLeaf(Parser.IDENTIFIER,null), new PTLeaf(Parser.EQUAL,null), (PTElement)$3.obj)); }
 	;
 
 expression
-	: assignment_expression                  { $$ = $1; }
-	| expression COMMA assignment_expression { $$ = new ParserVal(new Node(Operation.EXPRESSION, $1, $3)); }
+	: assignment_expression                  { $$ = new ParserVal(new PTNode(Nonterminals.EXPRESSION, (PTElement)$1.obj)); }
+	| expression COMMA assignment_expression { $$ = new ParserVal(new PTNode(Nonterminals.EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.COMMA,null), (PTElement)$3.obj)); }
 	;
 
 constant_expression
-	: conditional_expression { $$ = $1; }
+	: conditional_expression { $$ = new ParserVal(new PTNode(Nonterminals.CONSTANT_EXPRESSION, (PTElement)$1.obj)); }
 	;
 
 declaration
-	: declaration_specifiers SEMICOLON                      { $$ = new ParserVal(new Node(Operation.DECLARATION, $1)); }
-	| declaration_specifiers init_declarator_list SEMICOLON { $$ = new ParserVal(new Node(Operation.VARIABLE_DECLARATION, $1, $2)); }
+	: declaration_specifiers SEMICOLON                      { $$ = new ParserVal(new PTNode(Nonterminals.DECLARATION, (PTElement)$1.obj, new PTLeaf(Parser.SEMICOLON,null))); }
+	| declaration_specifiers init_declarator_list SEMICOLON { $$ = new ParserVal(new PTNode(Nonterminals.DECLARATION, (PTElement)$1.obj, (PTElement)$2.obj, new PTLeaf(Parser.SEMICOLON,null))); }
 	;
 
 declaration_specifiers
-	: type_specifier                                 { $$ = $1; }
-	| type_specifier declaration_specifiers          { $$ = new ParserVal(new Node(Operation.DEC_SPEC, $1, $2)); }
+	: type_specifier                        { $$ = new ParserVal(new PTNode(Nonterminals.DECLARATION_SPECIFIERS, (PTElement)$1.obj)); }
+	| type_specifier declaration_specifiers { $$ = new ParserVal(new PTNode(Nonterminals.DECLARATION_SPECIFIERS, (PTElement)$1.obj, (PTElement)$2.obj)); }
 	;
 
 init_declarator_list
-	: init_declarator                            { $$ = $1; }
-	| init_declarator_list COMMA init_declarator { $$ = new ParserVal(new Node(Operation.INIT_LIST, $1, $3)); }
+	: init_declarator                            { $$ = new ParserVal(new PTNode(Nonterminals.INIT_DECLARATOR_LIST, (PTElement)$1.obj)); }
+	| init_declarator_list COMMA init_declarator { $$ = new ParserVal(new PTNode(Nonterminals.INIT_DECLARATOR_LIST, (PTElement)$1.obj, new PTLeaf(Parser.COMMA,null), (PTElement)$3.obj)); }
 	;
 
 init_declarator
-	: direct_declarator                         { $$ = $1; }
-	| direct_declarator EQUAL initializer { $$ = new ParserVal(new Node(Operation.INIT_DECLARATION, $1, $3)); }
+	: direct_declarator                   { $$ = new ParserVal(new PTNode(Nonterminals.INIT_DECLARATOR, (PTElement)$1.obj)); }
+	| direct_declarator EQUAL initializer { $$ = new ParserVal(new PTNode(Nonterminals.INIT_DECLARATOR, (PTElement)$1.obj, new PTLeaf(Parser.EQUAL,null), (PTElement)$3.obj)); }
 	;
 
 type_specifier
-	: VOID    { $$ = new ParserVal(new Leaf(Operand.VOID,null)); }
-	| COMPLEX { $$ = new ParserVal(new Leaf(Operand.COMPLEX,null)); }
-	| CHAR    { $$ = new ParserVal(new Leaf(Operand.CHAR,null)); }
-	| SHORT   { $$ = new ParserVal(new Leaf(Operand.SHORT,null)); }
-	| INT     { $$ = new ParserVal(new Leaf(Operand.INT,null)); }
-	| LONG    { $$ = new ParserVal(new Leaf(Operand.LONG,null)); }
-	| FLOAT   { $$ = new ParserVal(new Leaf(Operand.FLOAT,null)); }
-	| DOUBLE  { $$ = new ParserVal(new Leaf(Operand.DOUBLE,null)); }
-	| BOOL    { $$ = new ParserVal(new Leaf(Operand.BOOL,null)); }
+	: VOID    { $$ = new ParserVal(new PTNode(Nonterminals.TYPE_SPECIFIER, new PTLeaf(Parser.VOID,null))); }
+	| COMPLEX { $$ = new ParserVal(new PTNode(Nonterminals.TYPE_SPECIFIER, new PTLeaf(Parser.COMPLEX,null))); }
+	| CHAR    { $$ = new ParserVal(new PTNode(Nonterminals.TYPE_SPECIFIER, new PTLeaf(Parser.CHAR,null))); }
+	| SHORT   { $$ = new ParserVal(new PTNode(Nonterminals.TYPE_SPECIFIER, new PTLeaf(Parser.SHORT,null))); }
+	| INT     { $$ = new ParserVal(new PTNode(Nonterminals.TYPE_SPECIFIER, new PTLeaf(Parser.INT,null))); }
+	| LONG    { $$ = new ParserVal(new PTNode(Nonterminals.TYPE_SPECIFIER, new PTLeaf(Parser.LONG,null))); }
+	| FLOAT   { $$ = new ParserVal(new PTNode(Nonterminals.TYPE_SPECIFIER, new PTLeaf(Parser.FLOAT,null))); }
+	| DOUBLE  { $$ = new ParserVal(new PTNode(Nonterminals.TYPE_SPECIFIER, new PTLeaf(Parser.DOUBLE,null))); }
+	| BOOL    { $$ = new ParserVal(new PTNode(Nonterminals.TYPE_SPECIFIER, new PTLeaf(Parser.BOOL,null))); }
 	;
 
 direct_declarator
-	: IDENTIFIER                                                     { $$ = new ParserVal(new Leaf(Operand.IDENTIFIER, $1.sval)); }
-	| RBLEFT direct_declarator RBRIGHT                               { $$ = $2; }
-	| direct_declarator BRACKETLEFT constant_expression BRACKETRIGHT { $$ = new ParserVal(new Node(Operation.DIRECT_DEC_ARRAY, $1, $3)); }
-	| direct_declarator BRACKETLEFT BRACKETRIGHT                     { $$ = new ParserVal(new Node(Operation.DIRECT_DEC_ARRAY, $1)); }
-	| direct_declarator RBLEFT parameter_list RBRIGHT                { $$ = new ParserVal(new Node(Operation.DIRECT_DEC_FUNC, $1, $3)); }
-	| direct_declarator RBLEFT identifier_list RBRIGHT               { $$ = new ParserVal(new Node(Operation.DIRECT_DEC_FUNC, $1, $3)); }
-	| direct_declarator RBLEFT RBRIGHT                               { $$ = new ParserVal(new Node(Operation.DIRECT_DEC_FUNC, $1)); }
+	: IDENTIFIER                                                     { $$ = new ParserVal(new PTNode(Nonterminals.DIRECT_DECLARATOR, new PTLeaf(Parser.IDENTIFIER,null))); }
+	| RBLEFT direct_declarator RBRIGHT                               { $$ = new ParserVal(new PTNode(Nonterminals.DIRECT_DECLARATOR, new PTLeaf(Parser.RBLEFT,null), (PTElement)$2.obj, new PTLeaf(Parser.RBRIGHT,null))); }
+	| direct_declarator BRACKETLEFT constant_expression BRACKETRIGHT { $$ = new ParserVal(new PTNode(Nonterminals.DIRECT_DECLARATOR, (PTElement)$1.obj, new PTLeaf(Parser.BRACKETLEFT,null), (PTElement)$3.obj, new PTLeaf(Parser.BRACKETRIGHT,null))); }
+	| direct_declarator BRACKETLEFT BRACKETRIGHT                     { $$ = new ParserVal(new PTNode(Nonterminals.DIRECT_DECLARATOR, (PTElement)$1.obj, new PTLeaf(Parser.BRACKETLEFT,null), new PTLeaf(Parser.BRACKETRIGHT,null))); }
+	| direct_declarator RBLEFT parameter_list RBRIGHT                { $$ = new ParserVal(new PTNode(Nonterminals.DIRECT_DECLARATOR, (PTElement)$1.obj, new PTLeaf(Parser.RBLEFT,null), (PTElement)$3.obj, new PTLeaf(Parser.RBRIGHT,null))); }
+	| direct_declarator RBLEFT identifier_list RBRIGHT               { $$ = new ParserVal(new PTNode(Nonterminals.DIRECT_DECLARATOR, (PTElement)$1.obj, new PTLeaf(Parser.RBLEFT,null), (PTElement)$3.obj, new PTLeaf(Parser.RBRIGHT,null))); }
+	| direct_declarator RBLEFT RBRIGHT                               { $$ = new ParserVal(new PTNode(Nonterminals.DIRECT_DECLARATOR, (PTElement)$1.obj, new PTLeaf(Parser.RBLEFT,null), new PTLeaf(Parser.RBRIGHT,null))); }
 	;
 
 parameter_list
-	: parameter_declaration                      { $$ = $1; }
-	| parameter_list COMMA parameter_declaration { $$ = new ParserVal(new Node(Operation.PARAM_LIST, $1, $3)); }
+	: parameter_declaration                      { $$ = new ParserVal(new PTNode(Nonterminals.PARAMETER_LIST, (PTElement)$1.obj)); }
+	| parameter_list COMMA parameter_declaration { $$ = new ParserVal(new PTNode(Nonterminals.PARAMETER_LIST, (PTElement)$1.obj, new PTLeaf(Parser.COMMA,null), (PTElement)$3.obj)); }
 	;
 
 parameter_declaration
-	: declaration_specifiers direct_declarator   { $$ = new ParserVal(new Node(Operation.FUNCTION_PARAMETER, $1, $2)); }
-	| declaration_specifiers abstract_declarator { $$ = new ParserVal(new Node(Operation.PARAM_DEC_ABS, $1, $2)); }
-	| declaration_specifiers                     { $$ = new ParserVal(new Node(Operation.PARAM_DEC, $1)); }
+	: declaration_specifiers direct_declarator   { $$ = new ParserVal(new PTNode(Nonterminals.PARAMETER_DECLARATION, (PTElement)$1.obj, (PTElement)$2.obj)); }
+	| declaration_specifiers abstract_declarator { $$ = new ParserVal(new PTNode(Nonterminals.PARAMETER_DECLARATION, (PTElement)$1.obj, (PTElement)$2.obj)); }
+	| declaration_specifiers                     { $$ = new ParserVal(new PTNode(Nonterminals.PARAMETER_DECLARATION, (PTElement)$1.obj)); }
 	;
 
 identifier_list
-	: IDENTIFIER                       { $$ = new ParserVal(new Leaf(Operand.IDENTIFIER, $1.sval)); }
-	| identifier_list COMMA IDENTIFIER { $$ = new ParserVal(new Node(Operation.IDENT_LIST, $1, new ParserVal(new Leaf(Operand.IDENTIFIER, $2.sval)))); }
+	: IDENTIFIER                       { $$ = new ParserVal(new PTNode(Nonterminals.IDENTIFIER_LIST, new PTLeaf(Parser.IDENTIFIER,null))); }
+	| identifier_list COMMA IDENTIFIER { $$ = new ParserVal(new PTNode(Nonterminals.IDENTIFIER_LIST, (PTElement)$1.obj, new PTLeaf(Parser.COMMA,null), new PTLeaf(Parser.IDENTIFIER,null))); }
 	;
 
-
 abstract_declarator
-	: direct_abstract_declarator { $$ = $1; }
+	: direct_abstract_declarator { $$ = new ParserVal(new PTNode(Nonterminals.ABSTRACT_DECLARATOR, (PTElement)$1.obj)); }
 	;
 
 direct_abstract_declarator
-	: RBLEFT abstract_declarator RBRIGHT                                      { $$ = $2; }
-	| BRACKETLEFT BRACKETRIGHT                                                { $$ = new ParserVal(new Node(Operation.DIR_ABS_DEC_BRACKETS)); }
-	| BRACKETLEFT constant_expression BRACKETRIGHT                            { $$ = new ParserVal(new Node(Operation.DIR_ABS_DEC_BRACKETS, $2)); }
-	| direct_abstract_declarator BRACKETLEFT BRACKETRIGHT                     { $$ = new ParserVal(new Node(Operation.DIR_ABS_DEC_BRACKETS_WITH_DEC, $1)); }
-	| direct_abstract_declarator BRACKETLEFT constant_expression BRACKETRIGHT { $$ = new ParserVal(new Node(Operation.DIR_ABS_DEC_BRACKETS_WITH_DEC, $1,$3)); }
-	| RBLEFT RBRIGHT                                                          { $$ = new ParserVal(new Node(Operation.DIR_ABS_DEC_ROUND)); }
-	| RBLEFT parameter_list RBRIGHT                                           { $$ = new ParserVal(new Node(Operation.DIR_ABS_DEC_ROUND, $2)); }
-	| direct_abstract_declarator RBLEFT RBRIGHT                               { $$ = new ParserVal(new Node(Operation.DIR_ABS_DEC_ROUND_WITH_DEC, $1)); }
-	| direct_abstract_declarator RBLEFT parameter_list RBRIGHT                { $$ = new ParserVal(new Node(Operation.DIR_ABS_DEC_ROUND_WITH_DEC, $1, $3)); }
+	: RBLEFT abstract_declarator RBRIGHT                                      { $$ = new ParserVal(new PTNode(Nonterminals.DIRECT_ABSTRACT_DECLARATOR, new PTLeaf(Parser.RBLEFT,null), (PTElement)$2.obj, new PTLeaf(Parser.RBRIGHT,null))); }
+	| BRACKETLEFT BRACKETRIGHT                                                { $$ = new ParserVal(new PTNode(Nonterminals.DIRECT_ABSTRACT_DECLARATOR, new PTLeaf(Parser.BRACKETLEFT,null), new PTLeaf(Parser.BRACKETRIGHT,null))); }
+	| BRACKETLEFT constant_expression BRACKETRIGHT                            { $$ = new ParserVal(new PTNode(Nonterminals.DIRECT_ABSTRACT_DECLARATOR, new PTLeaf(Parser.BRACKETLEFT,null), (PTElement)$2.obj, new PTLeaf(Parser.BRACKETRIGHT,null))); }
+	| direct_abstract_declarator BRACKETLEFT BRACKETRIGHT                     { $$ = new ParserVal(new PTNode(Nonterminals.DIRECT_ABSTRACT_DECLARATOR, (PTElement)$1.obj, new PTLeaf(Parser.BRACKETLEFT,null), new PTLeaf(Parser.BRACKETRIGHT,null))); }
+	| direct_abstract_declarator BRACKETLEFT constant_expression BRACKETRIGHT { $$ = new ParserVal(new PTNode(Nonterminals.DIRECT_ABSTRACT_DECLARATOR, (PTElement)$1.obj, new PTLeaf(Parser.BRACKETLEFT,null), (PTElement)$3.obj, new PTLeaf(Parser.BRACKETRIGHT,null))); }
+	| RBLEFT RBRIGHT                                                          { $$ = new ParserVal(new PTNode(Nonterminals.DIRECT_ABSTRACT_DECLARATOR, new PTLeaf(Parser.RBLEFT,null), new PTLeaf(Parser.RBRIGHT,null))); }
+	| RBLEFT parameter_list RBRIGHT                                           { $$ = new ParserVal(new PTNode(Nonterminals.DIRECT_ABSTRACT_DECLARATOR, new PTLeaf(Parser.RBLEFT,null), (PTElement)$2.obj, new PTLeaf(Parser.RBRIGHT,null))); }
+	| direct_abstract_declarator RBLEFT RBRIGHT                               { $$ = new ParserVal(new PTNode(Nonterminals.DIRECT_ABSTRACT_DECLARATOR, (PTElement)$1.obj, new PTLeaf(Parser.RBLEFT,null), new PTLeaf(Parser.RBRIGHT,null))); }
+	| direct_abstract_declarator RBLEFT parameter_list RBRIGHT                { $$ = new ParserVal(new PTNode(Nonterminals.DIRECT_ABSTRACT_DECLARATOR, (PTElement)$1.obj, new PTLeaf(Parser.RBLEFT,null), (PTElement)$3.obj, new PTLeaf(Parser.RBRIGHT,null))); }
 	;
 
 initializer
-	: assignment_expression                       { $$ = $1; }
-	| BRACELEFT initializer_list BRACERIGHT       { $$ = new ParserVal(new Node(Operation.ARRAY_INIT, $2)); }
-	| BRACELEFT initializer_list COMMA BRACERIGHT { $$ = new ParserVal(new Node(Operation.ARRAY_INIT, $2)); }
+	: assignment_expression                       { $$ = new ParserVal(new PTNode(Nonterminals.INITIALIZER, (PTElement)$1.obj)); }
+	| BRACELEFT initializer_list BRACERIGHT       { $$ = new ParserVal(new PTNode(Nonterminals.INITIALIZER, new PTLeaf(Parser.BRACELEFT,null), (PTElement)$2.obj, new PTLeaf(Parser.BRACERIGHT,null))); }
+	| BRACELEFT initializer_list COMMA BRACERIGHT { $$ = new ParserVal(new PTNode(Nonterminals.INITIALIZER, new PTLeaf(Parser.BRACELEFT,null), (PTElement)$2.obj, new PTLeaf(Parser.COMMA,null), new PTLeaf(Parser.BRACERIGHT,null))); }
 	;
 
 initializer_list
-	: initializer                        { $$ = $1; }
-	| initializer_list COMMA initializer { $$ = new ParserVal(new Node(Operation.INITIALIZER_LIST, $1, $3)); }
+	: initializer                        { $$ = new ParserVal(new PTNode(Nonterminals.INITIALIZER_LIST, (PTElement)$1.obj)); }
+	| initializer_list COMMA initializer { $$ = new ParserVal(new PTNode(Nonterminals.INITIALIZER_LIST, (PTElement)$1.obj, new PTLeaf(Parser.COMMA,null), (PTElement)$3.obj)); }
 	;
 
 statement
-	: labeled_statement    { $$ = $1; }
-	| compound_statement   { $$ = $1; }
-	| expression_statement { $$ = $1; }
-	| selection_statement  { $$ = $1; }
-	| iteration_statement  { $$ = $1; }
-	| jump_statement       { $$ = $1; }
+	: labeled_statement    { $$ = new ParserVal(new PTNode(Nonterminals.STATEMENT, (PTElement)$1.obj)); }
+	| compound_statement   { $$ = new ParserVal(new PTNode(Nonterminals.STATEMENT, (PTElement)$1.obj)); }
+	| expression_statement { $$ = new ParserVal(new PTNode(Nonterminals.STATEMENT, (PTElement)$1.obj)); }
+	| selection_statement  { $$ = new ParserVal(new PTNode(Nonterminals.STATEMENT, (PTElement)$1.obj)); }
+	| iteration_statement  { $$ = new ParserVal(new PTNode(Nonterminals.STATEMENT, (PTElement)$1.obj)); }
+	| jump_statement       { $$ = new ParserVal(new PTNode(Nonterminals.STATEMENT, (PTElement)$1.obj)); }
 	;
 
 labeled_statement
-	: IDENTIFIER NUMBER_SIGN statement               { $$ = new ParserVal(new Node(Operation.LABELED,new ParserVal(new Leaf(Operand.IDENTIFIER,$1.sval)), $3)); }
+	: IDENTIFIER NUMBER_SIGN statement { $$ = new ParserVal(new PTNode(Nonterminals.LABELED_STATEMENT, new PTLeaf(Parser.IDENTIFIER,null), new PTLeaf(Parser.NUMBER_SIGN,null), (PTElement)$3.obj)); }
 	;
 
 compound_statement
-	: BRACELEFT BRACERIGHT                                 { $$ = new ParserVal(new Leaf(Operand.EMPTY_BODY,null)); }
-	| BRACELEFT statement_list BRACERIGHT                  { $$ = new ParserVal(new Node(Operation.COMP_STATEMENT, $2)); }
-	| BRACELEFT declaration_list BRACERIGHT                { $$ = new ParserVal(new Node(Operation.COMP_STATEMENT, $2)); }
-	| BRACELEFT declaration_list statement_list BRACERIGHT { $$ = new ParserVal(new Node(Operation.COMP_STATEMENT, $2, $3)); }
+	: BRACELEFT BRACERIGHT                                 { $$ = new ParserVal(new PTNode(Nonterminals.COMPOUND_STATEMENT, new PTLeaf(Parser.BRACELEFT,null), new PTLeaf(Parser.BRACERIGHT,null))); }
+	| BRACELEFT statement_list BRACERIGHT                  { $$ = new ParserVal(new PTNode(Nonterminals.COMPOUND_STATEMENT, new PTLeaf(Parser.BRACELEFT,null), (PTElement)$2.obj, new PTLeaf(Parser.BRACERIGHT,null))); }
+	| BRACELEFT declaration_list BRACERIGHT                { $$ = new ParserVal(new PTNode(Nonterminals.COMPOUND_STATEMENT, new PTLeaf(Parser.BRACELEFT,null), (PTElement)$2.obj, new PTLeaf(Parser.BRACERIGHT,null))); }
+	| BRACELEFT declaration_list statement_list BRACERIGHT { $$ = new ParserVal(new PTNode(Nonterminals.COMPOUND_STATEMENT, new PTLeaf(Parser.BRACELEFT,null), (PTElement)$2.obj, (PTElement)$3.obj, new PTLeaf(Parser.BRACERIGHT,null))); }
 	;
 
 declaration_list
-	: declaration                  { $$ = $1; }
-	| declaration_list declaration { $$ = new ParserVal(new Node(Operation.DECLARATIONS, $1, $2)); }
+	: declaration                  { $$ = new ParserVal(new PTNode(Nonterminals.DECLARATION_LIST, (PTElement)$1.obj)); }
+	| declaration_list declaration { $$ = new ParserVal(new PTNode(Nonterminals.DECLARATION_LIST, (PTElement)$1.obj, (PTElement)$2.obj)); }
 	;
 
 statement_list
-	: statement                { $$ = $1; }
-	| statement_list statement { $$ = new ParserVal(new Node(Operation.STATEMENTS, $1, $2)); }
+	: statement                { $$ = new ParserVal(new PTNode(Nonterminals.STATEMENT_LIST, (PTElement)$1.obj)); }
+	| statement_list statement { $$ = new ParserVal(new PTNode(Nonterminals.STATEMENT_LIST, (PTElement)$1.obj, (PTElement)$2.obj)); }
 	;
 
 expression_statement
-	: SEMICOLON            { $$ = new ParserVal(new Leaf(Operand.EMPTY_EXPR,null)); }
-	| expression SEMICOLON { $$ = $1; }
+	: SEMICOLON            { $$ = new ParserVal(new PTNode(Nonterminals.EXPRESSION_STATEMENT, new PTLeaf(Parser.SEMICOLON,null))); }
+	| expression SEMICOLON { $$ = new ParserVal(new PTNode(Nonterminals.EXPRESSION_STATEMENT, (PTElement)$1.obj, new PTLeaf(Parser.SEMICOLON,null))); }
 	;
 
 selection_statement
-	: IF RBLEFT expression RBRIGHT statement ELSE statement { $$ = new ParserVal(new Node(Operation.IF, $3, $5, $7)); }
+	: IF RBLEFT expression RBRIGHT statement ELSE statement { $$ = new ParserVal(new PTNode(Nonterminals.SELECTION_STATEMENT, new PTLeaf(Parser.IF,null), new PTLeaf(Parser.RBLEFT,null), (PTElement)$3.obj, new PTLeaf(Parser.RBRIGHT,null), (PTElement)$5.obj, new PTLeaf(Parser.ELSE,null), (PTElement)$7.obj)); }
 	;
 
 iteration_statement
-	: WHILE RBLEFT expression RBRIGHT statement                                         { $$ = new ParserVal(new Node(Operation.WHILE, $3, $5)); }
-	| DO statement WHILE RBLEFT expression RBRIGHT SEMICOLON                            { $$ = new ParserVal(new Node(Operation.DO, $2, $5)); }
-	| FOR RBLEFT expression_statement expression_statement expression RBRIGHT statement { $$ = new ParserVal(new Node(Operation.FOR, $3, $4, $5, $7)); }
+	: WHILE RBLEFT expression RBRIGHT statement                                         { $$ = new ParserVal(new PTNode(Nonterminals.ITERATION_STATEMENT, new PTLeaf(Parser.WHILE,null), new PTLeaf(Parser.RBLEFT,null), (PTElement)$3.obj, new PTLeaf(Parser.RBRIGHT,null), (PTElement)$5.obj)); }
+	| DO statement WHILE RBLEFT expression RBRIGHT SEMICOLON                            { $$ = new ParserVal(new PTNode(Nonterminals.ITERATION_STATEMENT, new PTLeaf(Parser.DO,null), (PTElement)$2.obj, new PTLeaf(Parser.WHILE,null), new PTLeaf(Parser.RBLEFT,null), (PTElement)$5.obj, new PTLeaf(Parser.RBRIGHT,null), new PTLeaf(Parser.SEMICOLON,null))); }
+	| FOR RBLEFT expression_statement expression_statement expression RBRIGHT statement { $$ = new ParserVal(new PTNode(Nonterminals.ITERATION_STATEMENT, new PTLeaf(Parser.FOR,null), new PTLeaf(Parser.RBLEFT,null), (PTElement)$3.obj, (PTElement)$4.obj, (PTElement)$5.obj, new PTLeaf(Parser.RBRIGHT,null), (PTElement)$7.obj)); }
 	;
 
 jump_statement
-	: GOTO IDENTIFIER SEMICOLON   { $$ = new ParserVal(new Node(Operation.GOTO, new ParserVal(new Leaf(Operand.IDENTIFIER,$2.sval)))); }
-	| BREAK SEMICOLON             { $$ = new ParserVal(new Node(Operation.BREAK)); }
-	| RETURN SEMICOLON            { $$ = new ParserVal(new Node(Operation.RETURN)); }
-	| RETURN expression SEMICOLON { $$ = new ParserVal(new Node(Operation.RETURN, $2)); }
+	: GOTO IDENTIFIER SEMICOLON   { $$ = new ParserVal(new PTNode(Nonterminals.JUMP_STATEMENT, new PTLeaf(Parser.GOTO,null), new PTLeaf(Parser.IDENTIFIER,null), new PTLeaf(Parser.SEMICOLON,null))); }
+	| BREAK SEMICOLON             { $$ = new ParserVal(new PTNode(Nonterminals.JUMP_STATEMENT, new PTLeaf(Parser.BREAK,null), new PTLeaf(Parser.SEMICOLON,null))); }
+	| RETURN SEMICOLON            { $$ = new ParserVal(new PTNode(Nonterminals.JUMP_STATEMENT, new PTLeaf(Parser.RETURN,null), new PTLeaf(Parser.SEMICOLON,null))); }
+	| RETURN expression SEMICOLON { $$ = new ParserVal(new PTNode(Nonterminals.JUMP_STATEMENT, new PTLeaf(Parser.RETURN,null), (PTElement)$2.obj, new PTLeaf(Parser.SEMICOLON,null))); }
 	;
 
 root
-	: translation_unit { $$ = new ParserVal(new Node(Operation.ROOT, $1)); }
+	: translation_unit { $$ = new ParserVal(new ParsingTree(new PTNode(Nonterminals.ROOT, (PTElement)$1.obj))); }
 	;
 
 translation_unit
-	: external_declaration                  { $$ = $1; }
-	| translation_unit external_declaration { $$ = new ParserVal(new Node(Operation.TR_UNIT, $1, $2)); }
+	: external_declaration                  { $$ = new ParserVal(new PTNode(Nonterminals.TRANSLATION_UNIT, (PTElement)$1.obj)); }
+	| translation_unit external_declaration { $$ = new ParserVal(new PTNode(Nonterminals.TRANSLATION_UNIT, (PTElement)$1.obj, (PTElement)$2.obj)); }
 	;
 
 external_declaration
-	: function_definition { $$ = new ParserVal(new Node(Operation.FUNC_DEF, $1)); }
-	| declaration         { $$ = new ParserVal(new Node(Operation.EXT_DECL, $1)); }
+	: function_definition { $$ = new ParserVal(new PTNode(Nonterminals.EXTERNAL_DECLARATION, (PTElement)$1.obj)); }
+	| declaration         { $$ = new ParserVal(new PTNode(Nonterminals.EXTERNAL_DECLARATION, (PTElement)$1.obj)); }
 	;
 
 function_definition
-	: declaration_specifiers direct_declarator compound_statement                  { $$ = new ParserVal(new Node(Operation.FUNCTION_DEFINITION, $1, $2, $3)); }
+	: declaration_specifiers direct_declarator compound_statement { $$ = new ParserVal(new PTNode(Nonterminals.FUNCTION_DEFINITION, (PTElement)$1.obj, (PTElement)$2.obj, (PTElement)$3.obj)); }
 	;
 
 %%
@@ -321,6 +320,11 @@ function_definition
 
   public Parser(Reader r) {
     lexer = new Yylex(r, this);
+  }
+
+  public static String getTokenName(short c)
+  {
+  	return Parser.yyname[c];
   }
 
   public static ParserVal ParseFile(String file) throws IOException {

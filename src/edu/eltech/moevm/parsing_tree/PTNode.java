@@ -47,4 +47,8 @@ public class PTNode extends PTElement {
     public void setValue(String value) {
         this.value = value;
     }
+
+    public Nonterminals getNonterminal() {
+        return nonterminal;
+    }
 }
