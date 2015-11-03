@@ -91,7 +91,7 @@ public class TreeJsGenerator implements PTCallback {
                 "\n" +
 
                 "\n" +
-                "<script id=\"js\">\n" +
+                "<script type=\"text/javascript\" id=\"js\">\n" +
                 "// Create the input graph\n" +
                 "var g = new dagreD3.graphlib.Graph()\n" +
                 "  .setGraph({})\n" +
@@ -130,7 +130,6 @@ public class TreeJsGenerator implements PTCallback {
                 "// Center the graph\n" +
                 "var xCenterOffset = (svg.attr(\"width\") - g.graph().width) / 2;\n" +
                 "svgGroup.attr(\"transform\", \"translate(\" + xCenterOffset + \", 20)\");\n" +
-                "svg.attr(\"height\", g.graph().height + 40);\n" +
                 "</script>\n" +
                 "</body></html>\n";
 
