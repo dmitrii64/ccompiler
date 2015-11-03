@@ -25,6 +25,10 @@ public class PTNode extends PTElement {
         elements.add(element);
     }
 
+    public void insertElementBefore(PTElement element, PTElement newElement) {
+        elements.add(elements.indexOf(element), newElement);
+    }
+
     @Override
     public void remove(PTElement element) throws UnsupportedOperationException {
         elements.remove(element);

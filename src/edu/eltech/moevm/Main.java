@@ -58,6 +58,34 @@ public class Main {
                 }
             });
 
+            tree.infixVisit(new TreeOptimizer());
+
+            System.out.println("------------+======---------------");
+
+            tree.infixVisit(new PTCallback() {
+                @Override
+                public void processElement(PTElement e, int level) {
+                    System.out.print("|");
+                    for (int i = 0; i < level; i++) {
+                        System.out.print("--");
+                    }
+                    if (e instanceof PTLeaf) {
+                        System.out.print("leaf [" + Parser.getTokenName(((PTLeaf) e).getToken()) + "]");
+                        if (((PTLeaf) e).getValue() != null)
+                            System.out.print(" (" + ((PTLeaf) e).getValue() + ")");
+
+                    }
+                    else {
+                        System.out.print("node [" + ((PTNode) e).getNonterminal() + "]");
+                        if (((PTNode) e).getValue() != null)
+                            System.out.print(" (" + ((PTNode) e).getValue() + ")");
+
+                    }
+                    System.out.println();
+
+                }
+            });
+
         } catch (IOException e) {
             e.printStackTrace();
         }
