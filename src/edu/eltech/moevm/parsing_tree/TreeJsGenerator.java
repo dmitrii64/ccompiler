@@ -46,7 +46,8 @@ public class TreeJsGenerator implements PTCallback {
         String result = new String();
 
         result += "<!doctype html>\n" +
-                "\n" +
+                "<html>\n" +
+                "<head>\n" +
                 "<meta charset=\"utf-8\">\n" +
                 "<title>Dagre D3 Demo: Sentence Tokenization</title>\n" +
                 "\n" +
@@ -54,10 +55,13 @@ public class TreeJsGenerator implements PTCallback {
                 "<script src=\"js/d3.v3.min.js\" charset=\"utf-8\"></script>\n" +
                 "<script src=\"js/dagre-d3.min.js\"></script>\n" +
                 "\n" +
-                "<h1>Dagre D3 Demo: Sentence Tokenization</h1>\n" +
-                "\n" +
                 "<style id=\"css\">\n" +
                 "/* This sets the color for \"TK\" nodes to a light blue green. */\n" +
+                "body {\n" +
+                "  margin: 0px;\n" +
+                "  padding: 0px;\n" +
+                "  overflow: hidden;\n" +
+                "}\n" +
                 "g.type-TK > rect {\n" +
                 "  fill: #00ffd0;\n" +
                 "}\n" +
@@ -79,13 +83,12 @@ public class TreeJsGenerator implements PTCallback {
                 "  stroke-width: 1.5px;\n" +
                 "}\n" +
                 "</style>\n" +
+                "</head><body>\n" +
+                "<script type=\"text/javascript\">"+
+                "    var w = window,  d = document, e = d.documentElement,  g = d.getElementsByTagName('body')[0],  x = w.innerWidth || e.clientWidth || g.clientWidth,  y = w.innerHeight|| e.clientHeight|| g.clientHeight;"+
+                "    document.write(\"<svg id=\\\"svg-canvas\\\" width=\\\"\"+x+\"\\\" height=\\\"\"+y+\"\\\"></svg>\");"+
+                "</script>"+
                 "\n" +
-                "<svg id=\"svg-canvas\" width=960 height=600></svg>\n" +
-                "\n" +
-                "<section>\n" +
-                "<p>An example of visualizing the tokenization of a sentence. This example shows\n" +
-                "how CSS classes can be applied to a rendered graph.\n" +
-                "</section>\n" +
                 "\n" +
                 "<script id=\"js\">\n" +
                 "// Create the input graph\n" +
@@ -128,7 +131,7 @@ public class TreeJsGenerator implements PTCallback {
                 "svgGroup.attr(\"transform\", \"translate(\" + xCenterOffset + \", 20)\");\n" +
                 "svg.attr(\"height\", g.graph().height + 40);\n" +
                 "</script>\n" +
-                "\n";
+                "</body></html>\n";
 
 
         return result;
