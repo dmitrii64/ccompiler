@@ -4,10 +4,7 @@ package edu.eltech.moevm;
 import edu.eltech.moevm.autogen.Parser;
 import edu.eltech.moevm.parsing_tree.*;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 
 public class Main {
@@ -85,7 +82,14 @@ public class Main {
 
                 }
             });
-
+            TreeJsGenerator treeJsGenerator = new TreeJsGenerator();
+            tree.infixVisit(treeJsGenerator);
+            FileWriter fileWriter = new FileWriter("tree.html");
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            String str = treeJsGenerator.genTree();
+            bufferedWriter.write(str);
+            bufferedWriter.close();
+            fileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
