@@ -89,6 +89,7 @@ public class TreeJsGenerator implements PTCallback {
                 "    document.write(\"<svg id=\\\"svg-canvas\\\" width=\\\"\"+x+\"\\\" height=\\\"\"+y+\"\\\"></svg>\");"+
                 "</script>"+
                 "\n" +
+
                 "\n" +
                 "<script id=\"js\">\n" +
                 "// Create the input graph\n" +
