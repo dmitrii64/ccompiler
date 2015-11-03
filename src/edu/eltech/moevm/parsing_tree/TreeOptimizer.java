@@ -30,7 +30,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element3);
                         System.out.println("removed postfix_expression");
                         ptnode.remove(child);
-                        i += 3; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -45,7 +45,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed postfix_expression");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -62,7 +62,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element3);
                         System.out.println("removed postfix_expression");
                         ptnode.remove(child);
-                        i += 3; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -75,7 +75,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element1);
                         System.out.println("removed postfix_expression");
                         ptnode.remove(child);
-                        i += 1; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -88,7 +88,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element1);
                         System.out.println("removed postfix_expression");
                         ptnode.remove(child);
-                        i += 1; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -105,7 +105,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed argument_expression_list");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -120,7 +120,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element1);
                         System.out.println("removed unary_expression");
                         ptnode.remove(child);
-                        i += 1; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -133,7 +133,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element1);
                         System.out.println("removed unary_expression");
                         ptnode.remove(child);
-                        i += 1; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -146,7 +146,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element1);
                         System.out.println("removed unary_expression");
                         ptnode.remove(child);
-                        i += 1; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -165,7 +165,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element3);
                         System.out.println("removed cast_expression");
                         ptnode.remove(child);
-                        i += 3; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -182,7 +182,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed multiplicative_expression");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -197,7 +197,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed multiplicative_expression");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -212,7 +212,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed multiplicative_expression");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -229,7 +229,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed additive_expression");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -244,7 +244,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed additive_expression");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -261,7 +261,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed shift_expression");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -276,7 +276,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed shift_expression");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -293,7 +293,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed relational_expression");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -308,7 +308,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed relational_expression");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -323,7 +323,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed relational_expression");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -338,7 +338,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed relational_expression");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -355,7 +355,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed equality_expression");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -370,7 +370,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed equality_expression");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -387,7 +387,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed and_expression");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -404,7 +404,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed exclusive_or_expression");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -421,7 +421,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed inclusive_or_expression");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -438,7 +438,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed logical_and_expression");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -455,7 +455,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed logical_or_expression");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -476,7 +476,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element4);
                         System.out.println("removed conditional_expression");
                         ptnode.remove(child);
-                        i += 4; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -493,7 +493,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed assignment_expression");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -510,7 +510,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed expression");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -525,7 +525,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element1);
                         System.out.println("removed declaration_specifiers");
                         ptnode.remove(child);
-                        i += 1; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -542,7 +542,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed init_declarator_list");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -559,7 +559,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed direct_declarator");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -576,7 +576,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element3);
                         System.out.println("removed direct_declarator");
                         ptnode.remove(child);
-                        i += 3; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -591,7 +591,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed direct_declarator");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -608,7 +608,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element3);
                         System.out.println("removed direct_declarator");
                         ptnode.remove(child);
-                        i += 3; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -625,7 +625,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element3);
                         System.out.println("removed direct_declarator");
                         ptnode.remove(child);
-                        i += 3; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -640,7 +640,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed direct_declarator");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -657,7 +657,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed parameter_list");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -674,7 +674,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed identifier_list");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -691,7 +691,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed direct_abstract_declarator");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -708,7 +708,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element3);
                         System.out.println("removed direct_abstract_declarator");
                         ptnode.remove(child);
-                        i += 3; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -723,7 +723,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed direct_abstract_declarator");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -740,7 +740,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element3);
                         System.out.println("removed direct_abstract_declarator");
                         ptnode.remove(child);
-                        i += 3; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -757,7 +757,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         System.out.println("removed initializer_list");
                         ptnode.remove(child);
-                        i += 2; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -772,7 +772,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element1);
                         System.out.println("removed declaration_list");
                         ptnode.remove(child);
-                        i += 1; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -787,7 +787,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element1);
                         System.out.println("removed statement_list");
                         ptnode.remove(child);
-                        i += 1; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
@@ -802,7 +802,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element1);
                         System.out.println("removed translation_unit");
                         ptnode.remove(child);
-                        i += 1; // count(childs) - removed
+                        i--;
                         break;
                     }
                 }
