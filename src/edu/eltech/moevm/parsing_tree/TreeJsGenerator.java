@@ -54,7 +54,7 @@ public class TreeJsGenerator implements PTCallback {
                 "<script src=\"js/d3.v3.min.js\" charset=\"utf-8\"></script>\n" +
                 "<script src=\"js/dagre-d3.min.js\"></script>\n" +
                 "\n" +
-                "<h1>Parsing tree visualisation</h1>\n" +
+                "<h1>Parsing tree visualization</h1>\n" +
                 "\n" +
                 "<style id=\"css\">\n" +
                 "/* This sets the color for \"TK\" nodes to a light blue green. */\n" +
