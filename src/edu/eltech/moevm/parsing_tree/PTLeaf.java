@@ -13,6 +13,10 @@ public class PTLeaf extends PTElement {
         this.value = value;
     }
 
+    public PTLeaf(short tok) {
+        this.token = tok;
+    }
+
     public String getValue() {
         return value;
     }
