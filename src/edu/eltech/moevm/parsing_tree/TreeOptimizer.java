@@ -28,7 +28,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
                         ptnode.insertElementBefore(child, element3);
-                        System.out.println("removed postfix_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -43,7 +43,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed postfix_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -60,7 +60,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
                         ptnode.insertElementBefore(child, element3);
-                        System.out.println("removed postfix_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -73,7 +73,7 @@ public class TreeOptimizer implements PTCallback {
                     if (element0 instanceof PTNode && ((PTNode)element0).getNonterminal() == Nonterminals.POSTFIX_EXPRESSION && element1 instanceof PTLeaf && ((PTLeaf)element1).getToken() == Parser.INC_OP) {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
-                        System.out.println("removed postfix_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -86,7 +86,7 @@ public class TreeOptimizer implements PTCallback {
                     if (element0 instanceof PTNode && ((PTNode)element0).getNonterminal() == Nonterminals.POSTFIX_EXPRESSION && element1 instanceof PTLeaf && ((PTLeaf)element1).getToken() == Parser.DEC_OP) {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
-                        System.out.println("removed postfix_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -103,7 +103,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed argument_expression_list");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -118,7 +118,7 @@ public class TreeOptimizer implements PTCallback {
                     if (element0 instanceof PTLeaf && ((PTLeaf)element0).getToken() == Parser.INC_OP && element1 instanceof PTNode && ((PTNode)element1).getNonterminal() == Nonterminals.UNARY_EXPRESSION) {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
-                        System.out.println("removed unary_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -131,7 +131,7 @@ public class TreeOptimizer implements PTCallback {
                     if (element0 instanceof PTLeaf && ((PTLeaf)element0).getToken() == Parser.DEC_OP && element1 instanceof PTNode && ((PTNode)element1).getNonterminal() == Nonterminals.UNARY_EXPRESSION) {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
-                        System.out.println("removed unary_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -144,7 +144,7 @@ public class TreeOptimizer implements PTCallback {
                     if (element0 instanceof PTLeaf && ((PTLeaf)element0).getToken() == Parser.SIZEOF && element1 instanceof PTNode && ((PTNode)element1).getNonterminal() == Nonterminals.UNARY_EXPRESSION) {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
-                        System.out.println("removed unary_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -163,7 +163,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
                         ptnode.insertElementBefore(child, element3);
-                        System.out.println("removed cast_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -180,7 +180,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed multiplicative_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -195,7 +195,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed multiplicative_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -210,7 +210,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed multiplicative_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -227,7 +227,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed additive_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -242,7 +242,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed additive_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -259,7 +259,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed shift_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -274,7 +274,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed shift_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -291,7 +291,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed relational_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -306,7 +306,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed relational_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -321,7 +321,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed relational_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -336,7 +336,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed relational_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -353,7 +353,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed equality_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -368,7 +368,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed equality_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -385,7 +385,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed and_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -402,7 +402,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed exclusive_or_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -419,7 +419,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed inclusive_or_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -436,7 +436,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed logical_and_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -453,7 +453,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed logical_or_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -474,7 +474,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element2);
                         ptnode.insertElementBefore(child, element3);
                         ptnode.insertElementBefore(child, element4);
-                        System.out.println("removed conditional_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -491,7 +491,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed assignment_expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -508,7 +508,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed expression");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -523,7 +523,7 @@ public class TreeOptimizer implements PTCallback {
                     if (element0 instanceof PTNode && ((PTNode)element0).getNonterminal() == Nonterminals.TYPE_SPECIFIER && element1 instanceof PTNode && ((PTNode)element1).getNonterminal() == Nonterminals.DECLARATION_SPECIFIERS) {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
-                        System.out.println("removed declaration_specifiers");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -540,7 +540,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed init_declarator_list");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -557,7 +557,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed direct_declarator");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -574,7 +574,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
                         ptnode.insertElementBefore(child, element3);
-                        System.out.println("removed direct_declarator");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -589,7 +589,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed direct_declarator");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -606,7 +606,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
                         ptnode.insertElementBefore(child, element3);
-                        System.out.println("removed direct_declarator");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -623,7 +623,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
                         ptnode.insertElementBefore(child, element3);
-                        System.out.println("removed direct_declarator");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -638,7 +638,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed direct_declarator");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -655,7 +655,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed parameter_list");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -672,7 +672,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed identifier_list");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -689,7 +689,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed direct_abstract_declarator");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -706,7 +706,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
                         ptnode.insertElementBefore(child, element3);
-                        System.out.println("removed direct_abstract_declarator");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -721,7 +721,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed direct_abstract_declarator");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -738,7 +738,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
                         ptnode.insertElementBefore(child, element3);
-                        System.out.println("removed direct_abstract_declarator");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -755,7 +755,7 @@ public class TreeOptimizer implements PTCallback {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
                         ptnode.insertElementBefore(child, element2);
-                        System.out.println("removed initializer_list");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -770,7 +770,7 @@ public class TreeOptimizer implements PTCallback {
                     if (element0 instanceof PTNode && ((PTNode)element0).getNonterminal() == Nonterminals.DECLARATION_LIST && element1 instanceof PTNode && ((PTNode)element1).getNonterminal() == Nonterminals.DECLARATION) {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
-                        System.out.println("removed declaration_list");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -785,7 +785,7 @@ public class TreeOptimizer implements PTCallback {
                     if (element0 instanceof PTNode && ((PTNode)element0).getNonterminal() == Nonterminals.STATEMENT_LIST && element1 instanceof PTNode && ((PTNode)element1).getNonterminal() == Nonterminals.STATEMENT) {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
-                        System.out.println("removed statement_list");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -800,7 +800,7 @@ public class TreeOptimizer implements PTCallback {
                     if (element0 instanceof PTNode && ((PTNode)element0).getNonterminal() == Nonterminals.TRANSLATION_UNIT && element1 instanceof PTNode && ((PTNode)element1).getNonterminal() == Nonterminals.EXTERNAL_DECLARATION) {
                         ptnode.insertElementBefore(child, element0);
                         ptnode.insertElementBefore(child, element1);
-                        System.out.println("removed translation_unit");
+                        System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
                         ptnode.remove(child);
                         i--;
                         break;
@@ -817,6 +817,7 @@ public class TreeOptimizer implements PTCallback {
             PTNode ptnodeChild = (PTNode) child;
             if (ptnodeChild.getElements().size() == 1) {
                 ptnode.insertElementBefore(ptnodeChild, ptnodeChild.getElements().get(0));
+                System.out.println("(one child) removed " + ptnodeChild.getNonterminal());
                 ptnode.remove(ptnodeChild);
                 i--;
             }
