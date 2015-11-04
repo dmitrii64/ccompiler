@@ -157,8 +157,8 @@ public class TreeGenerator {
                 PTElement first = node.getElements().get(0);
                 PTElement second = node.getElements().get(1);
 
-                result = new Node(Operation.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())));
-                Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) second).getToken())), ((PTLeaf) second).getValue());
+                result = new Node(Operation.valueOf(Parser.getTokenName(((PTLeaf) second).getToken())));
+                Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())), ((PTLeaf) first).getValue());
                 result.add(leaf);
             } else if (name.compareTo("JUMP_STATEMENT") == 0) {
                 PTElement first = node.getElements().get(0);
