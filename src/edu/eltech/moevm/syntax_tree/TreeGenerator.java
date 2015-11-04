@@ -96,14 +96,6 @@ public class TreeGenerator {
                     Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) second).getToken())), ((PTLeaf) second).getValue());
                     result.add(leaf2);
                 }
-            } else if (name.compareTo(Operation.JUMP_STATEMENT.name()) == 0) {
-                PTElement first = node.getElements().get(0);
-                PTElement second = node.getElements().get(1);
-                result.setValue(Parser.getTokenName(((PTLeaf) first).getToken()));
-                if (result.getValue().compareTo("RETURN") == 0) {
-                    Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) second).getToken())), ((PTLeaf) second).getValue());
-                    result.add(leaf);
-                }
             } else if (name.compareTo(Operation.POSTFIX_EXPRESSION.name()) == 0) {
                 PTElement first = node.getElements().get(0);
                 PTElement second = node.getElements().get(1);
@@ -168,6 +160,15 @@ public class TreeGenerator {
                 result = new Node(Operation.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())));
                 Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) second).getToken())), ((PTLeaf) second).getValue());
                 result.add(leaf);
+            } else if (name.compareTo("JUMP_STATEMENT") == 0) {
+                PTElement first = node.getElements().get(0);
+                PTElement second = node.getElements().get(1);
+                result = new Node(Operation.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())));
+
+                if (result.getOperation() == Operation.RETURN) {
+                    Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) second).getToken())), ((PTLeaf) second).getValue());
+                    result.add(leaf);
+                }
             }
 
         }

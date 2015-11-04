@@ -26,7 +26,6 @@ public enum Operation {
     LOGICAL_AND_OP,
     LOGICAL_OR_OP,
     QUESTION_OP,
-    JUMP_STATEMENT,
     POSTFIX_EXPRESSION,
 
     EXPRESSION,
