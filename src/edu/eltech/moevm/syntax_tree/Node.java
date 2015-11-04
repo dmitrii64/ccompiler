@@ -9,6 +9,10 @@ import java.util.List;
  * Created by vladimir on 31.10.15.
  */
 public class Node extends TreeElement {
+    public void setOperation(Operation operation) {
+        this.operation = operation;
+    }
+
     private Operation operation;
     private String value;
     private ArrayList<TreeElement> elements;
@@ -40,6 +44,7 @@ public class Node extends TreeElement {
     @Override
     public void add(TreeElement element) throws UnsupportedOperationException {
         elements.add(element);
+        element.setParent(this);
     }
 
     @Override

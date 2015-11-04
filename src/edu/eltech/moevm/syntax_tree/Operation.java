@@ -6,15 +6,15 @@ package edu.eltech.moevm.syntax_tree;
 public enum Operation {
     PLUS,   // +
     MINUS,  // -
-    MULTIPLY,   // *
+    STAR,   // *
     DIVIDE, // /
     UMINUS, //-x
     PERCENT,    //%
     LESS,   //<
     GREATER,  //>
     NOT,    //!
-    EQUAL,  //==
-    ASSIGNMENT, //=
+    EQ_OP,  //==
+    EQUAL, //=
     NOT_EQ, //!=
     GREATER_OR_EQ,    //>=
     LESS_OR_EQ,  //<=
@@ -26,16 +26,21 @@ public enum Operation {
     LOGICAL_AND_OP,
     LOGICAL_OR_OP,
     QUESTION_OP,
+    JUMP_STATEMENT,
+    POSTFIX_EXPRESSION,
 
     EXPRESSION,
-    VARIABLE_DECLARATION,
+    DECLARATION,
 
-    DIRECT_DEC_FUNC,
     FUNCTION_DEFINITION,
+    COMPOUND_STATEMENT,
 
-    WHILE,
-    DO,
-    FOR,
+    ITERATION_STATEMENT,
+    INIT_DECLARATOR,
+    PARAMETER_DECLARATION,
+
+    EXPRESSION_STATEMENT,
+
     IF,
     GOTO,
     BREAK,
@@ -43,6 +48,8 @@ public enum Operation {
 
     INC_OP,
     DEC_OP,
+    POST_INC_OP,
+    POST_DEC_OP,
 
     FUNC_CALL,
 

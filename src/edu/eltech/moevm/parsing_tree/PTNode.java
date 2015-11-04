@@ -23,6 +23,7 @@ public class PTNode extends PTElement {
     @Override
     public void add(PTElement element) throws UnsupportedOperationException {
         elements.add(element);
+        element.setParent(this);
     }
 
     public void insertElementBefore(PTElement element, PTElement newElement) {

@@ -3,6 +3,7 @@ package edu.eltech.moevm;
 
 import edu.eltech.moevm.autogen.Parser;
 import edu.eltech.moevm.parsing_tree.*;
+import edu.eltech.moevm.syntax_tree.*;
 
 import java.io.*;
 
@@ -57,7 +58,7 @@ public class Main {
 
             tree.infixVisit(new TreeOptimizer());
 
-            System.out.println("------------+======---------------");
+            System.out.println("================Parsing Tree================");
 
             tree.infixVisit(new PTCallback() {
                 @Override
@@ -70,6 +71,7 @@ public class Main {
                         System.out.print("leaf [" + Parser.getTokenName(((PTLeaf) e).getToken()) + "]");
                         if (((PTLeaf) e).getValue() != null)
                             System.out.print(" (" + ((PTLeaf) e).getValue() + ")");
+
 
                     }
                     else {
@@ -84,12 +86,51 @@ public class Main {
             });
             TreeJsGenerator treeJsGenerator = new TreeJsGenerator();
             tree.infixVisit(treeJsGenerator);
-            FileWriter fileWriter = new FileWriter("tree.html");
+            FileWriter fileWriter = new FileWriter("parsing_tree.html");
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             String str = treeJsGenerator.genTree();
             bufferedWriter.write(str);
             bufferedWriter.close();
             fileWriter.close();
+
+            TreeGenerator treeGenerator = new TreeGenerator();
+            SyntaxTree syntaxTree = treeGenerator.generate(tree);
+
+            System.out.println("================Syntax Tree================");
+            syntaxTree.infixVisit(new TreeCallback() {
+                @Override
+                public void processElement(TreeElement e, int level) {
+                    System.out.print("|");
+                    for (int i = 0; i < level; i++) {
+                        System.out.print("--");
+                    }
+                    if (e instanceof Leaf) {
+                        System.out.print("leaf [" + ((Leaf) e).getOperand().name() + "]");
+                        if (((Leaf) e).getValue() != null)
+                            System.out.print(" (" + ((Leaf) e).getValue() + ")");
+                        if (((Leaf) e).getType() != null)
+                            System.out.print(" <" + ((Leaf) e).getType().name() + ">");
+                    } else {
+                        System.out.print("node [" + ((Node) e).getOperation().name() + "]");
+                        if (((Node) e).getValue() != null)
+                            System.out.print(" (" + ((Node) e).getValue() + ")");
+                        if (((Node) e).getType() != null)
+                            System.out.print(" <" + ((Node) e).getType().name() + ">");
+
+                    }
+                    System.out.println();
+                }
+            });
+
+            SyntaxTreeJsGenerator syntaxTreeJsGenerator = new SyntaxTreeJsGenerator();
+            syntaxTree.infixVisit(syntaxTreeJsGenerator);
+            FileWriter stfileWriter = new FileWriter("syntax_tree.html");
+            BufferedWriter stbufferedWriter = new BufferedWriter(stfileWriter);
+            String ststr = syntaxTreeJsGenerator.genTree();
+            stbufferedWriter.write(ststr);
+            stbufferedWriter.close();
+            stfileWriter.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }

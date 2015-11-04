@@ -4,6 +4,8 @@ package edu.eltech.moevm.parsing_tree;
  * Created by vladimir on 31.10.15.
  */
 public class ParsingTree {
+
+
     private PTElement root;
 
     public ParsingTree(PTElement root) {
@@ -38,5 +40,9 @@ public class ParsingTree {
         } catch (UnsupportedOperationException ignored) {
         }
 
+    }
+
+    public PTElement getRoot() {
+        return root;
     }
 }

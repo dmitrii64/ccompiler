@@ -2,6 +2,8 @@ out
 .idea
 *.iml
 tree.html
+parsing_tree.html
+syntax_tree.html
 src/edu/eltech/moevm/autogen/Parser.java
 src/edu/eltech/moevm/autogen/ParserVal.java
 src/edu/eltech/moevm/autogen/Yylex.java
