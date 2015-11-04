@@ -147,18 +147,5 @@ public class TreeOptimizer implements PTCallback {
                 break;
             }
         }
-        for (int i = 0; i < ptnode.getElements().size(); i++) {
-            PTElement child = ptnode.getElements().get(i);
-            if (!(child instanceof PTNode)) {
-                continue;
-            }
-            PTNode ptnodeChild = (PTNode) child;
-            if (ptnodeChild.getElements().size() == 1) {
-                ptnode.insertElementBefore(ptnodeChild, ptnodeChild.getElements().get(0));
-                System.out.println("(one child) removed " + ptnodeChild.getNonterminal());
-                ptnode.remove(ptnodeChild);
-                i--;
-            }
-        }
     }
 }
