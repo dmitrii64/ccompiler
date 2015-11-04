@@ -60,7 +60,7 @@ public class SyntaxTreeJsGenerator implements TreeCallback {
                 "<html>\n" +
                 "<head>\n" +
                 "<meta charset=\"utf-8\">\n" +
-                "<title>Parsing tree visualisation</title>\n" +
+                "<title>Syntax tree visualisation</title>\n" +
                 "\n" +
                 "<link rel=\"stylesheet\" href=\"css/demo.css\">\n" +
                 "<script src=\"js/d3.v3.min.js\" charset=\"utf-8\"></script>\n" +
