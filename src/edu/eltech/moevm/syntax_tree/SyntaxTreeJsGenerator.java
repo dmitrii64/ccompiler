@@ -1,6 +1,4 @@
-package edu.eltech.moevm.parsing_tree;
-
-import edu.eltech.moevm.syntax_tree.*;
+package edu.eltech.moevm.syntax_tree;
 
 import java.util.ArrayList;
 
@@ -24,7 +22,7 @@ public class SyntaxTreeJsGenerator implements TreeCallback {
             if (e instanceof Leaf) {
                 Leaf cur = ((Leaf) e);
                 String name = ((Leaf) e).getOperand().name();
-                int hc = cur.hashCode();
+                int hc = cur.getId();
                 if (cur.getValue() != null)
                     name += " (" + cur.getValue() + ")";
                 if (cur.getType() != null)
@@ -33,9 +31,8 @@ public class SyntaxTreeJsGenerator implements TreeCallback {
             } else if (e instanceof Node) {
                 Node cur = ((Node) e);
                 String name = cur.getOperation().name();
-                int hc = cur.hashCode();
-                if (((Node) e).getOperation() == Operation.ROOT)
-                    hc = 0;
+                int hc = cur.getId();
+
                 if (cur.getValue() != null)
                     name += " (" + cur.getValue() + ")";
                 if (cur.getType() != null)
@@ -44,7 +41,7 @@ public class SyntaxTreeJsGenerator implements TreeCallback {
                 if (e instanceof Node) {
                     try {
                         for (TreeElement node : e.getElements()) {
-                            branches.add(new String("g.setEdge(" + hc + ", " + node.hashCode() + ");"));
+                            branches.add(new String("g.setEdge(" + hc + ", " + node.getId() + ",{ lineInterpolate: 'basis' });"));
                         }
                     } catch (edu.eltech.moevm.syntax_tree.UnsupportedOperationException e1) {
                         e1.printStackTrace();
@@ -67,7 +64,6 @@ public class SyntaxTreeJsGenerator implements TreeCallback {
                 "<script src=\"js/dagre-d3.min.js\"></script>\n" +
                 "\n" +
                 "<style id=\"css\">\n" +
-                "/* This sets the color for \"TK\" nodes to a light blue green. */\n" +
                 "body {\n" +
                 "  margin: 0px;\n" +
                 "  padding: 0px;\n" +
@@ -86,7 +82,7 @@ public class SyntaxTreeJsGenerator implements TreeCallback {
                 ".node rect {\n" +
                 "  stroke: #999;\n" +
                 "  fill: #fff;\n" +
-                "  stroke-width: 1.5px;\n" +
+                "  stroke-width: 2.5px;\n" +
                 "}\n" +
                 "\n" +
                 ".edgePath path {\n" +
@@ -98,35 +94,29 @@ public class SyntaxTreeJsGenerator implements TreeCallback {
                 "<script type=\"text/javascript\">" +
                 "    var w = window,  d = document, e = d.documentElement,  g = d.getElementsByTagName('body')[0],  x = w.innerWidth || e.clientWidth || g.clientWidth,  y = w.innerHeight|| e.clientHeight|| g.clientHeight;" +
                 "    document.write(\"<svg id=\\\"svg-canvas\\\" width=\\\"\"+x+\"\\\" height=\\\"\"+y+\"\\\"></svg>\");" +
-                "</script>" +
-                "\n" +
-
-                "\n" +
+                "</script>\n" +
                 "<script type=\"text/javascript\" id=\"js\">\n" +
-                "// Create the input graph\n" +
                 "var g = new dagreD3.graphlib.Graph()\n" +
                 "  .setGraph({})\n" +
-                "  .setDefaultEdgeLabel(function() { return {}; });";
+                "  .setDefaultEdgeLabel(function() { return {}; });\n";
 
         for (String str : nodes)
             result += str + "\n";
 
         result += "g.nodes().forEach(function(v) {\n" +
                 "  var node = g.node(v);\n" +
-                "  // Round the corners of the nodes\n" +
                 "  node.rx = node.ry = 5;\n" +
-                "});";
+                "});\n";
 
         for (String str : branches)
             result += str + "\n";
 
-        result += "// Create the renderer\n" +
-                "var render = new dagreD3.render();\n" +
+        result += "var render = new dagreD3.render();\n" +
                 "\n" +
-                "// Set up an SVG group so that we can translate the final graph.\n" +
                 "var svg = d3.select(\"svg\"),\n" +
                 "    svgGroup = svg.append(\"g\");\n" +
                 "    \n" +
+                "render(d3.select(\"svg g\"), g);\n" +
                 "var svg2 = d3.select(\"svg\"),\n" +
                 "    inner = d3.select(\"svg g\"),\n" +
                 "    zoom = d3.behavior.zoom().on(\"zoom\", function() {\n" +
@@ -135,10 +125,6 @@ public class SyntaxTreeJsGenerator implements TreeCallback {
                 "    });\n" +
                 "svg2.call(zoom);\n" +
                 "\n" +
-                "// Run the renderer. This is what draws the final graph.\n" +
-                "render(d3.select(\"svg g\"), g);\n" +
-                "\n" +
-                "// Center the graph\n" +
                 "var xCenterOffset = (svg.attr(\"width\") - g.graph().width) / 2;\n" +
                 "svgGroup.attr(\"transform\", \"translate(\" + xCenterOffset + \", 20)\");\n" +
                 "</script>\n" +

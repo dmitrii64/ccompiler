@@ -24,6 +24,8 @@ public class Node extends TreeElement {
             this.elements.add((TreeElement) obj.obj);
             ((TreeElement) obj.obj).setParent(this);
         }
+        id = counter;
+        counter++;
     }
 
     public Operation getOperation() {

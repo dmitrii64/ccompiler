@@ -36,7 +36,7 @@ public class TreeJsGenerator implements PTCallback {
                 if (e instanceof PTNode) {
                     for (PTElement node : e.getElements()) {
                         //if(node instanceof PTNode)
-                        branches.add(new String("g.setEdge(" + hc + ", " + node.hashCode() + ");"));
+                        branches.add(new String("g.setEdge(" + hc + ", " + node.hashCode() + ",{ lineInterpolate: 'basis' });"));
                     }
                 }
             }
@@ -56,7 +56,6 @@ public class TreeJsGenerator implements PTCallback {
                 "<script src=\"js/dagre-d3.min.js\"></script>\n" +
                 "\n" +
                 "<style id=\"css\">\n" +
-                "/* This sets the color for \"TK\" nodes to a light blue green. */\n" +
                 "body {\n" +
                 "  margin: 0px;\n" +
                 "  padding: 0px;\n" +
@@ -75,7 +74,7 @@ public class TreeJsGenerator implements PTCallback {
                 ".node rect {\n" +
                 "  stroke: #999;\n" +
                 "  fill: #fff;\n" +
-                "  stroke-width: 1.5px;\n" +
+                "  stroke-width: 2.5px;\n" +
                 "}\n" +
                 "\n" +
                 ".edgePath path {\n" +
@@ -84,38 +83,31 @@ public class TreeJsGenerator implements PTCallback {
                 "}\n" +
                 "</style>\n" +
                 "</head><body>\n" +
-                "<script type=\"text/javascript\">"+
-                "    var w = window,  d = document, e = d.documentElement,  g = d.getElementsByTagName('body')[0],  x = w.innerWidth || e.clientWidth || g.clientWidth,  y = w.innerHeight|| e.clientHeight|| g.clientHeight;"+
-                "    document.write(\"<svg id=\\\"svg-canvas\\\" width=\\\"\"+x+\"\\\" height=\\\"\"+y+\"\\\"></svg>\");"+
-                "</script>"+
-                "\n" +
-
-                "\n" +
+                "<script type=\"text/javascript\">" +
+                "    var w = window,  d = document, e = d.documentElement,  g = d.getElementsByTagName('body')[0],  x = w.innerWidth || e.clientWidth || g.clientWidth,  y = w.innerHeight|| e.clientHeight|| g.clientHeight;" +
+                "    document.write(\"<svg id=\\\"svg-canvas\\\" width=\\\"\"+x+\"\\\" height=\\\"\"+y+\"\\\"></svg>\");" +
+                "</script>\n" +
                 "<script type=\"text/javascript\" id=\"js\">\n" +
-                "// Create the input graph\n" +
                 "var g = new dagreD3.graphlib.Graph()\n" +
                 "  .setGraph({})\n" +
-                "  .setDefaultEdgeLabel(function() { return {}; });";
-
+                "  .setDefaultEdgeLabel(function() { return {}; });\n";
         for (String str : nodes)
             result += str + "\n";
 
         result += "g.nodes().forEach(function(v) {\n" +
                 "  var node = g.node(v);\n" +
-                "  // Round the corners of the nodes\n" +
                 "  node.rx = node.ry = 5;\n" +
-                "});";
+                "});\n";
 
         for (String str : branches)
             result += str + "\n";
 
-        result += "// Create the renderer\n" +
-                "var render = new dagreD3.render();\n" +
+        result += "var render = new dagreD3.render();\n" +
                 "\n" +
-                "// Set up an SVG group so that we can translate the final graph.\n" +
                 "var svg = d3.select(\"svg\"),\n" +
                 "    svgGroup = svg.append(\"g\");\n" +
                 "    \n" +
+                "render(d3.select(\"svg g\"), g);\n" +
                 "var svg2 = d3.select(\"svg\"),\n" +
                 "    inner = d3.select(\"svg g\"),\n" +
                 "    zoom = d3.behavior.zoom().on(\"zoom\", function() {\n" +
@@ -124,10 +116,6 @@ public class TreeJsGenerator implements PTCallback {
                 "    });\n" +
                 "svg2.call(zoom);\n" +
                 "\n" +
-                "// Run the renderer. This is what draws the final graph.\n" +
-                "render(d3.select(\"svg g\"), g);\n" +
-                "\n" +
-                "// Center the graph\n" +
                 "var xCenterOffset = (svg.attr(\"width\") - g.graph().width) / 2;\n" +
                 "svgGroup.attr(\"transform\", \"translate(\" + xCenterOffset + \", 20)\");\n" +
                 "</script>\n" +

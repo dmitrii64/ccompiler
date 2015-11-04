@@ -6,6 +6,14 @@ import java.util.List;
  * Created by vladimir on 31.10.15.
  */
 public abstract class TreeElement {
+    protected static int counter = 0;
+
+    public int getId() {
+        return id;
+    }
+
+    protected int id;
+
     protected TreeElement parent;
     protected Type type;
 

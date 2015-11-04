@@ -10,6 +10,8 @@ public class Leaf extends TreeElement {
     public Leaf(Operand operand, String value) {
         this.operand = operand;
         this.value = value;
+        id = counter;
+        counter++;
     }
 
     public String getValue() {
