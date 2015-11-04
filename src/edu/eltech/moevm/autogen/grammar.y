@@ -129,8 +129,8 @@ conditional_expression
 	;
 
 assignment_expression
-	: conditional_expression                 { $$ = new ParserVal(new PTNode(Nonterminals.ASSIGNMENT_EXPRESSION, (PTElement)$1.obj)); }
-	| IDENTIFIER EQUAL assignment_expression { $$ = new ParserVal(new PTNode(Nonterminals.ASSIGNMENT_EXPRESSION, new PTLeaf(Parser.IDENTIFIER, $1.sval), new PTLeaf(Parser.EQUAL), (PTElement)$3.obj)); }
+	: conditional_expression                         { $$ = new ParserVal(new PTNode(Nonterminals.ASSIGNMENT_EXPRESSION, (PTElement)$1.obj)); }
+	| postfix_expression EQUAL assignment_expression { $$ = new ParserVal(new PTNode(Nonterminals.ASSIGNMENT_EXPRESSION, (PTElement)$1.obj, new PTLeaf(Parser.EQUAL), (PTElement)$3.obj)); }
 	;
 
 expression

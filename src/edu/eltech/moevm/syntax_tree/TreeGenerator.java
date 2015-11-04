@@ -181,7 +181,6 @@ public class TreeGenerator {
             }
         }
 
-
         return result;
     }
 }
