@@ -101,7 +101,6 @@ public class TreeGenerator {
                     result.add(leaf2);
                 }
             } else if (name.compareTo(Operation.POSTFIX_EXPRESSION.name()) == 0) {
-
                 PTElement first = node.getElements().get(0);
                 PTElement second = node.getElements().get(1);
                 String op = Parser.getTokenName(((PTLeaf) second).getToken());
@@ -118,8 +117,16 @@ public class TreeGenerator {
                     Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) third).getToken())), ((PTLeaf) third).getValue());
                     result.add(leaf2);
                 }
+            } else if (name.compareTo(Operation.CONDITIONAL_EXPRESSION.name()) == 0) {
+                PTElement first = node.getElements().get(0);
+                if (first instanceof PTLeaf) {
+                    Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())), ((PTLeaf) first).getValue());
+                    result.add(leaf2);
+                }
 
             }
+
+
         } else {
             result = null;
             if (name.compareTo("RELATIONAL_EXPRESSION") == 0) {
@@ -215,7 +222,6 @@ public class TreeGenerator {
                     result.add(ret);
             }
         }
-
         return result;
     }
 }
