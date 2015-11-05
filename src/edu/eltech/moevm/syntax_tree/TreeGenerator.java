@@ -174,13 +174,26 @@ public class TreeGenerator {
                             result.add(leaf);
                         }
                 }
-
             } else if (name.compareTo("UNARY_EXPRESSION") == 0) {
                 PTElement first = node.getElements().get(0);
                 PTElement second = node.getElements().get(1);
 
-                result = new Node(Operation.valueOf(Parser.getTokenName(((PTLeaf) second).getToken())));
+                String str = Parser.getTokenName(((PTLeaf) second).getToken());
+                Operation op = Operation.POST_INC_OP;
+                if (str.compareTo("INC_OP") == 0)
+                    op = Operation.POST_INC_OP;
+                else if (str.compareTo("DEC_OP") == 0)
+                    op = Operation.POST_DEC_OP;
+
+                result = new Node(op);
                 Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())), ((PTLeaf) first).getValue());
+                result.add(leaf);
+            } else if (name.compareTo("CAST_EXPRESSION") == 0) {
+                PTElement first = node.getElements().get(0);
+                PTElement second = node.getElements().get(1);
+
+                result = new Node(Operation.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())));
+                Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) second).getToken())), ((PTLeaf) second).getValue());
                 result.add(leaf);
             } else if (name.compareTo("JUMP_STATEMENT") == 0) {
                 PTElement first = node.getElements().get(0);

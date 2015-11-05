@@ -25,6 +25,8 @@ int main()
     int arr[10];
 
     func_with_two_args(1,2);
+    i--;
+    --i;
 
     return 0;
 }
