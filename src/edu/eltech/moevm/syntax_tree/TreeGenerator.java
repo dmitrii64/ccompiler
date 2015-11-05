@@ -108,10 +108,10 @@ public class TreeGenerator {
 
                 Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())), ((PTLeaf) first).getValue());
                 result.add(leaf);
-                if (op.compareTo("INC_OP") == 0)
-                    result.setOperation(Operation.POST_INC_OP);
-                else if (op.compareTo("DEC_OP") == 0)
-                    result.setOperation(Operation.POST_DEC_OP);
+                if (op.compareTo("RBLEFT") == 0) {
+                    result.setOperation(Operation.FUNC_CALL);
+
+                }
                 else if (op.compareTo("BRACKETLEFT") == 0) {
                     result.setOperation(Operation.ARRAY_ACCESS);
                     PTElement third = node.getElements().get(2);
@@ -165,6 +165,16 @@ public class TreeGenerator {
             } else if (name.compareTo("MULTIPLICATIVE_EXPRESSION") == 0) {
                 result = new Node(Operation.STAR);
                 setBinaryExpr(result, node);
+            } else if (name.compareTo("ARGUMENT_EXPRESSION_LIST") == 0) {
+                result = new Node(Operation.FUNC_ARGS);
+                for (PTElement el : node.getElements()) {
+                    if (el instanceof PTLeaf)
+                        if (((PTLeaf) el).getToken() != Parser.COMMA) {
+                            Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) el).getToken())), ((PTLeaf) el).getValue());
+                            result.add(leaf);
+                        }
+                }
+
             } else if (name.compareTo("UNARY_EXPRESSION") == 0) {
                 PTElement first = node.getElements().get(0);
                 PTElement second = node.getElements().get(1);

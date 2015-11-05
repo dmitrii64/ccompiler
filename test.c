@@ -23,30 +23,8 @@ int main()
     int i;
     int abc;
     int arr[10];
-    complex abcd = 0i;
-    int ss8329ii;
 
-
-    (true) ? (i = 1) : (i = 2) ;
-
-    if(i==1)
-    {
-        abc = 123;
-        abc = abc + 333;
-    }
-    else
-    {
-    }
-
-    while(abc>100)
-    {
-        abc--;
-    }
-
-    for(i=0;i<100;i++)
-    {
-        abc++;
-    }
+    func_with_two_args(1,2);
 
     return 0;
 }

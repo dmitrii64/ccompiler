@@ -51,6 +51,7 @@ public enum Operation {
     POST_DEC_OP,
 
     FUNC_CALL,
+    FUNC_ARGS,
 
     ARRAY_ACCESS,
 
