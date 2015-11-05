@@ -17,7 +17,6 @@ public class SyntaxTreeJsGenerator implements TreeCallback {
     @Override
     public void processElement(TreeElement e, int level) {
 
-
         if (e != null)
             if (e instanceof Leaf) {
                 Leaf cur = ((Leaf) e);

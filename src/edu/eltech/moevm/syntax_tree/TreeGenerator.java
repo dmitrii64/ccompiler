@@ -43,14 +43,18 @@ public class TreeGenerator {
 
     private void setBinaryExpr(Node output, PTNode input) throws UnsupportedOperationException {
         PTElement first = input.getElements().get(0);
-        if (first instanceof PTLeaf) {
+        PTElement second = input.getElements().get(2);
+        if ((first instanceof PTLeaf) && (second instanceof PTLeaf)) {
             Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())), ((PTLeaf) first).getValue());
             output.add(leaf);
-        }
-        PTElement second = input.getElements().get(2);
-        if (second instanceof PTLeaf) {
-            Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) second).getToken())), ((PTLeaf) second).getValue());
+            Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) second).getToken())), ((PTLeaf) second).getValue());
+            output.add(leaf2);
+        } else if ((first instanceof PTLeaf) && !(second instanceof PTLeaf)) {
+            Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())), ((PTLeaf) first).getValue());
             output.add(leaf);
+        } else if (!(first instanceof PTLeaf) && (second instanceof PTLeaf)) {
+            Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) second).getToken())), ((PTLeaf) second).getValue());
+            output.addleft(leaf);
         }
         PTElement op = input.getElements().get(1);
         output.setOperation(Operation.valueOf(Parser.getTokenName(((PTLeaf) op).getToken())));
@@ -97,15 +101,24 @@ public class TreeGenerator {
                     result.add(leaf2);
                 }
             } else if (name.compareTo(Operation.POSTFIX_EXPRESSION.name()) == 0) {
+
                 PTElement first = node.getElements().get(0);
                 PTElement second = node.getElements().get(1);
                 String op = Parser.getTokenName(((PTLeaf) second).getToken());
+
+                Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())), ((PTLeaf) first).getValue());
+                result.add(leaf);
                 if (op.compareTo("INC_OP") == 0)
                     result.setOperation(Operation.POST_INC_OP);
                 else if (op.compareTo("DEC_OP") == 0)
                     result.setOperation(Operation.POST_DEC_OP);
-                Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())), ((PTLeaf) first).getValue());
-                result.add(leaf);
+                else if (op.compareTo("BRACKETLEFT") == 0) {
+                    result.setOperation(Operation.ARRAY_ACCESS);
+                    PTElement third = node.getElements().get(2);
+                    Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) third).getToken())), ((PTLeaf) third).getValue());
+                    result.add(leaf2);
+                }
+
             }
         } else {
             result = null;
@@ -139,7 +152,6 @@ public class TreeGenerator {
                     Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())), ((PTLeaf) first).getValue());
                     result.add(leaf);
                 }
-
                 if (second instanceof PTLeaf) {
                     Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) second).getToken())), ((PTLeaf) second).getValue());
                     result.add(leaf);

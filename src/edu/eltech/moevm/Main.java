@@ -171,6 +171,18 @@ public class Main {
                 }
             });
 
+            //Reset ids
+            syntaxTree.infixVisit(new TreeCallback() {
+                int id = 0;
+
+                @Override
+                public void processElement(TreeElement e, int level) {
+                    e.setId(id);
+                    id++;
+                }
+            });
+
+
             SyntaxTreeJsGenerator syntaxTreeJsGenerator = new SyntaxTreeJsGenerator();
             syntaxTree.infixVisit(syntaxTreeJsGenerator);
             FileWriter stfileWriter = new FileWriter("syntax_tree.html");

@@ -9,59 +9,68 @@ import java.util.List;
  * Created by vladimir on 31.10.15.
  */
 public class Node extends TreeElement {
-    public void setOperation(Operation operation) {
-        this.operation = operation;
-    }
 
     private Operation operation;
     private String value;
-    private ArrayList<TreeElement> elements;
+    private ArrayList<TreeElement> right_elements;
+    private ArrayList<TreeElement> left_elements;
 
     public Node(Operation operation, ParserVal... elements) {
         this.operation = operation;
-        this.elements = new ArrayList<TreeElement>();
+        this.right_elements = new ArrayList<TreeElement>();
+        this.left_elements = new ArrayList<TreeElement>();
+
         for (ParserVal obj : elements) {
-            this.elements.add((TreeElement) obj.obj);
+            this.left_elements.add((TreeElement) obj.obj);
             ((TreeElement) obj.obj).setParent(this);
         }
         id = counter;
         counter++;
     }
 
+    public void setOperation(Operation operation) {
+        this.operation = operation;
+    }
+
     public Operation getOperation() {
         return operation;
     }
 
-    public boolean haveAny(Operation op)
-    {
-        for(TreeElement e : elements)
-        if(e instanceof Node)
-        {
-            if(((Node)e).getOperation()==op)
-                return true;
-        }
-        return false;
-    }
 
     @Override
     public void add(TreeElement element) throws UnsupportedOperationException {
-        elements.add(element);
+        left_elements.add(element);
+        element.setParent(this);
+    }
+
+    public void addleft(TreeElement element) throws UnsupportedOperationException {
+        right_elements.add(element);
         element.setParent(this);
     }
 
     @Override
     public void remove(TreeElement element) throws UnsupportedOperationException {
-        elements.remove(element);
+        left_elements.remove(element);
     }
 
     @Override
     public void clear() throws UnsupportedOperationException {
-        elements.clear();
+        left_elements.clear();
+        right_elements.clear();
     }
 
     @Override
     public List<TreeElement> getElements() throws UnsupportedOperationException {
-        return elements;
+        ArrayList<TreeElement> temp = new ArrayList<TreeElement>();
+        int i = right_elements.size();
+
+        temp.addAll(left_elements);
+        while (i > 0) {
+            temp.add(right_elements.get(i - 1));
+            i--;
+        }
+
+        return temp;
     }
 
     public String getValue() {

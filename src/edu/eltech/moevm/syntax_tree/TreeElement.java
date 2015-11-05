@@ -12,6 +12,10 @@ public abstract class TreeElement {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     protected int id;
 
     protected TreeElement parent;
