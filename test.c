@@ -23,8 +23,8 @@ int main()
     int i;
     int abc;
     int arr[10];
-
-
+    complex abcd = 0i;
+    int ss8329ii;
 
 
     (true) ? (i = 1) : (i = 2) ;
