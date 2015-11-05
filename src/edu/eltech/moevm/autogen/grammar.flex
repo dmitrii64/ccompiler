@@ -63,7 +63,7 @@ L?'(\\.|[^\\'])+'	{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext())
 /* Complex type */
 ((0[xX]{H}+{IS}?|0{D}+{IS}?|{D}+{IS}?|{D}+{E}{FS}?|{D}*"."{D}+({E})?{FS}?|{D}+"."{D}*({E})?{FS}?)" "*[+-]" "*)?(0[xX]{H}+{IS}?|0{D}+{IS}?|{D}+{IS}?|{D}+{E}{FS}?|{D}*"."{D}+({E})?{FS}?|{D}+"."{D}*({E})?{FS}?)"i" { if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
 
-\".*\"		{ return Parser.STRING_LITERAL; }
+\".*?\"		{ if(yyparser!=null) yyparser.yylval = new ParserVal(yytext().replaceAll("\"$|^\"","")); return Parser.STRING_LITERAL; }
 
 ">>"		{ return Parser.RIGHT_OP; }
 "<<"		{ return Parser.LEFT_OP; }
