@@ -58,6 +58,7 @@ unary_expression
 	| IM RBLEFT IDENTIFIER RBRIGHT         { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, new PTLeaf(Parser.IM), new PTLeaf(Parser.RBLEFT), new PTLeaf(Parser.IDENTIFIER, $3.sval), new PTLeaf(Parser.RBRIGHT))); }
 	| MOD RBLEFT CONSTANT RBRIGHT          { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, new PTLeaf(Parser.MOD), new PTLeaf(Parser.RBLEFT), new PTLeaf(Parser.CONSTANT, $3.sval), new PTLeaf(Parser.RBRIGHT))); }
 	| MOD RBLEFT IDENTIFIER RBRIGHT        { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, new PTLeaf(Parser.MOD), new PTLeaf(Parser.RBLEFT), new PTLeaf(Parser.IDENTIFIER, $3.sval), new PTLeaf(Parser.RBRIGHT))); }
+	| PRINT RBLEFT CONSTANT RBRIGHT        { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, new PTLeaf(Parser.PRINT), new PTLeaf(Parser.RBLEFT), new PTLeaf(Parser.CONSTANT, $3.sval), new PTLeaf(Parser.RBRIGHT))); }
 	| PRINT RBLEFT IDENTIFIER RBRIGHT      { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, new PTLeaf(Parser.PRINT), new PTLeaf(Parser.RBLEFT), new PTLeaf(Parser.IDENTIFIER, $3.sval), new PTLeaf(Parser.RBRIGHT))); }
 	;
 
