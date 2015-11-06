@@ -100,7 +100,7 @@ public class Main {
             bufferedWriter.close();
             fileWriter.close();
 
-            if (true) return;
+//            if (true) return;
             TreeGenerator treeGenerator = new TreeGenerator();
             SyntaxTree syntaxTree = treeGenerator.generate(tree);
 
