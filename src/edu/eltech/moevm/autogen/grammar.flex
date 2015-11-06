@@ -75,7 +75,6 @@ L = [a-zA-Z_]
 ")"  { return Parser.RBRIGHT; }
 "["  { return Parser.BRACKETLEFT; }
 "]"  { return Parser.BRACKETRIGHT; }
-"."  { return Parser.DOT; }
 "&"  { return Parser.AMP; }
 "!"  { return Parser.EXCL; }
 "-"  { return Parser.MINUS; }
