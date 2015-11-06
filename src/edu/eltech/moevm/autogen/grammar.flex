@@ -42,6 +42,7 @@ L = [a-zA-Z_]
 "void"    { return Parser.VOID; }
 "while"   { return Parser.WHILE; }
 
+
 "false"|"true"      { if (yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
 {L}({L}|{D})*       { if (yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.IDENTIFIER; }
 [+-]?{D}+("."{D}+)? { if (yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
@@ -49,6 +50,8 @@ L = [a-zA-Z_]
 /* Complex type */
 (([+-]?{D}+("."{D}+?)?" "*[+-]" "*)|([+-])?)({D}+("."{D}+)?)"i" {
   if (yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
+
+{D}+({L})+ { throw new java.io.IOException("bad variable name"); }
 
 \".*?\" { if (yyparser!=null) yyparser.yylval = new ParserVal(yytext().replaceAll("\"$|^\"","")); return Parser.STRING_LITERAL; }
 
