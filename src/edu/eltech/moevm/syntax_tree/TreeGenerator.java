@@ -76,6 +76,15 @@ public class TreeGenerator {
                 //Setting cycle type
                 PTLeaf itname = (PTLeaf) node.getElements().get(0);
                 result.setValue(Parser.getTokenName(itname.getToken()));
+            } else if (name.compareTo(Operation.SELECTION_STATEMENT.name()) == 0) {
+                PTElement first = node.getElements().get(2);
+                if (first instanceof PTLeaf) {
+                    Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())), ((PTLeaf) first).getValue());
+                    result.add(leaf2);
+                }
+
+
+
             } else if (name.compareTo(Operation.PARAMETER_DECLARATION.name()) == 0) {
                 //Creating leaf for parameter identifier with type
                 PTLeaf type = (PTLeaf) node.getElements().get(0);

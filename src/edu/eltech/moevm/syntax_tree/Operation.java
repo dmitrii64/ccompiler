@@ -40,6 +40,7 @@ public enum Operation {
     PARAMETER_DECLARATION,
 
     EXPRESSION_STATEMENT,
+    SELECTION_STATEMENT,
 
     IF,
     GOTO,

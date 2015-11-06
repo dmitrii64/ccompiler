@@ -9,24 +9,19 @@ int func_with_one_arg(int arg)
     return a;
 }
 
-int func_with_two_args(int arg1,int arg2)
-{
-    int a = arg1*123+arg2*987;
-    a = 1;
-    a--;
-    --a;
-    return a;
-}
-
 int main()
 {
     int i;
     int abc;
     int arr[10];
+    arr[0] = 1;
 
-    func_with_two_args(1,2);
-    i--;
-    --i;
+    if(true)
+    {
+    }
+    else
+    {
+    }
 
     2<5 ? (i = 0) : (i = 1);
 
