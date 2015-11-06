@@ -34,6 +34,7 @@ L = [a-zA-Z_]
 "int"     { return Parser.INT; }
 "long"    { return Parser.LONG; }
 "mod"     { return Parser.MOD; }
+"print"   { return Parser.PRINT; }
 "re"      { return Parser.RE; }
 "return"  { return Parser.RETURN; }
 "short"   { return Parser.SHORT; }

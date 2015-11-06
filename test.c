@@ -24,6 +24,8 @@ int func_with_two_args(int arg1,int arg2)
         goto labelka;
     }
 
+    print(a);
+
     --a;
 labelka#
 
