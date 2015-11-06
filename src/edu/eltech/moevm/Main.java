@@ -192,7 +192,11 @@ public class Main {
             stbufferedWriter.close();
             stfileWriter.close();
 
+            syntaxTree.verifyNameScopes();
+
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SyntaxTree.NameScopeException e) {
             e.printStackTrace();
         }
     }
