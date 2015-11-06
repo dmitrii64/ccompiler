@@ -32,7 +32,7 @@ public class Main {
         try {
 
             ParsingTree tree = (ParsingTree) Parser.ParseFile(filename).obj;
-            //tree.infixVisit(new TreeOptimizer());
+            //tree.infixVisit(new TreeRecursionOptimizer());
             tree.infixVisit(new PTCallback() {
                 @Override
                 public void processElement(PTElement e, int level) {
@@ -57,55 +57,13 @@ public class Main {
                 }
             });
 
-            tree.infixVisit(new TreeOptimizer());
-            tree.infixVisit(new PTCallback() {
-                @Override
-                public void processElement(PTElement e, int level) {
-                    if (!(e instanceof PTNode)) {
-                        return;
-                    }
-                    PTNode ptnode = (PTNode)e;
-                    for (int i = 0; i < ptnode.getElements().size(); i++) {
-                        PTElement child = ptnode.getElements().get(i);
-                        if (!(child instanceof PTNode)) {
-                            continue;
-                        }
-                        PTNode ptnodeChild = (PTNode) child;
-                        if (ptnodeChild.getElements().size() == 1) {
-                            ptnode.insertElementBefore(ptnodeChild, ptnodeChild.getElements().get(0));
-                            System.out.println("(one child) removed " + ptnodeChild.getNonterminal());
-                            ptnode.remove(ptnodeChild);
-                            i--;
-                        }
-                    }
-                }
-            });
-            tree.infixVisit(new PTCallback() {
-                @Override
-                public void processElement(PTElement e, int level) {
-                    if (!(e instanceof PTNode)) {
-                        return;
-                    }
-                    PTNode ptnode = (PTNode)e;
-                    for (int i = 0; i < ptnode.getElements().size(); i++) {
-                        PTElement child = ptnode.getElements().get(i);
-                        if (!(child instanceof PTNode)) {
-                            continue;
-                        }
-                        PTNode ptnodeChild = (PTNode) child;
-                        switch (ptnodeChild.getNonterminal()) {
-                            case DIRECT_DECLARATOR:
-                            case PARAMETER_LIST:
-                                List<PTElement> elements = ptnodeChild.getElements();
-                                for (int j = 0; j < elements.size(); j++) {
-                                    ptnode.insertElementBefore(child, elements.get(j));
-                                }
-                                ptnode.remove(child);
-                                i--;
-                        }
-                    }
-                }
-            });
+
+            // OPTIMIZATION PARSING TREE START
+            tree.infixVisit(new TreeRecursionOptimizer());
+            tree.infixVisit(new TreeOneChildOptimizer());
+            tree.infixVisit(new TreeSkipNodeOptimizer(Nonterminals.DIRECT_DECLARATOR, Nonterminals.PARAMETER_LIST));
+            // OPTIMIZATION PARSING TREE END
+
 
             System.out.println("================Parsing Tree================");
 
@@ -142,6 +100,7 @@ public class Main {
             bufferedWriter.close();
             fileWriter.close();
 
+            if (true) return;
             TreeGenerator treeGenerator = new TreeGenerator();
             SyntaxTree syntaxTree = treeGenerator.generate(tree);
 

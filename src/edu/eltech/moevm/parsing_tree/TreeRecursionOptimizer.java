@@ -2,7 +2,7 @@ package edu.eltech.moevm.parsing_tree;
 
 import edu.eltech.moevm.autogen.Parser;
 
-public class TreeOptimizer implements PTCallback {
+public class TreeRecursionOptimizer implements PTCallback {
     @Override
     public void processElement(PTElement e, int level) {
         if (!(e instanceof PTNode)) {
