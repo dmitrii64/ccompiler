@@ -30,6 +30,7 @@ public class TreeSkipNodeOptimizer implements PTCallback {
                 for (int j = 0; j < elements.size(); j++) {
                     ptnode.insertElementBefore(child, elements.get(j));
                 }
+                System.out.println("(skip node) removed " + ptnodeChild.getNonterminal());
                 ptnode.remove(child);
                 i--;
             }
