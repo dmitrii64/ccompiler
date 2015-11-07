@@ -151,6 +151,7 @@ public class Main {
             stbufferedWriter.close();
             stfileWriter.close();
 
+            System.out.println("=============== Verify name scopes ==============");
             syntaxTree.verifyNameScopes();
 
         } catch (IOException e) {
