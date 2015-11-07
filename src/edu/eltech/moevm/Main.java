@@ -155,7 +155,11 @@ public class Main {
 
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (SyntaxTree.NameScopeException e) {
+        } catch (IdentifierDefinedException e) {
+            e.printStackTrace();
+        } catch (UnexpectedChildCountException e) {
+            e.printStackTrace();
+        } catch (UnexpectedNodeException e) {
             e.printStackTrace();
         }
     }

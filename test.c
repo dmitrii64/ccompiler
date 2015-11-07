@@ -42,7 +42,8 @@ int main()
     i--;
     --i;
     for (i=9; i<22; i++) {
-
+        int j;
+        int ok;
     }
 
     while (true) {
