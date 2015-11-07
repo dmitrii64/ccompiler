@@ -158,7 +158,7 @@ public class SyntaxTree {
         } catch (UnsupportedOperationException ignore) {
         }
 
-        // Check unused identifiers
+        // Check unused identifiers defined in current compound statement
         String name = identifiers[identifiers.length-1].getFirstUnusedIdentifier();
         if (name != null) {
             System.out.println("unused identifier: "+name);

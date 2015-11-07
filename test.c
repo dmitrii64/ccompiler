@@ -6,6 +6,17 @@ char ggg;
 void func_without_args()
 {
     int a;
+    complex b;
+
+    b = 2+2i;
+    b = 2i;
+    b = 2.2i;
+    b = -2.2i;
+    b = 2.2 + 22i;
+    b = 0x33 + 0i;
+    b = -0x33 - 33i;
+    b = -32 + 0.22i;
+
     a = 22 + a + a;
 }
 

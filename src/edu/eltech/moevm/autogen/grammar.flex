@@ -14,6 +14,7 @@ package edu.eltech.moevm.autogen;
 
 D = [0-9]
 L = [a-zA-Z_]
+H = [a-fA-F0-9]
 
 %%
 
@@ -43,18 +44,24 @@ L = [a-zA-Z_]
 "void"    { return Parser.VOID; }
 "while"   { return Parser.WHILE; }
 
+/* boolean type */
+"false"|"true" { if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
 
-"false"|"true"      { if (yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
-{L}({L}|{D})*       { if (yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.IDENTIFIER; }
-[+-]?{D}+("."{D}+)? { if (yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
+{L}({L}|{D})* { if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.IDENTIFIER; }
 
-/* Complex type */
-(([+-]?{D}+("."{D}+?)?" "*[+-]" "*)|([+-])?)({D}+("."{D}+)?)"i" {
-  if (yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
+[+-]?{D}+        { if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
+[+-]?{D}+"."{D}+ { if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
+0[xX]{H}+        { if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
 
-{D}+({L})+ { throw new java.io.IOException("bad variable name"); }
+/* Complex type: */
+/* { ( (unary sign)   (  dec number   or  hex number)               )   or  (unary minus)  }    (dec number)    "i"   */
+   (      ([+-]?   (({D}+("."{D}+)?)  |  (0[xX]{H}+))  " "*[+-]" "* )   |     ([+-]?)      )  ({D}+("."{D}+)?)  "i"    {
+   if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT;
+}
 
-\".*?\" { if (yyparser!=null) yyparser.yylval = new ParserVal(yytext().replaceAll("\"$|^\"","")); return Parser.STRING_LITERAL; }
+
+
+\".*\" { return Parser.STRING_LITERAL; }
 
 ">>" { return Parser.RIGHT_OP; }
 "<<" { return Parser.LEFT_OP; }
@@ -91,3 +98,4 @@ L = [a-zA-Z_]
 "#"  { return Parser.NUMBER_SIGN; }
 
 [ \t\v\n\f] { }
+.           { }
