@@ -48,7 +48,8 @@ public class SyntaxTree {
         }
     }
 
-    public void verifyNameScopes() throws IdentifierDefinedException, UnexpectedNodeException, UnexpectedChildCountException, IdentifierNotDefinedException, UnusedIdentifierException {
+    public void verifyNameScopes() throws IdentifierDefinedException, UnexpectedNodeException,
+            UnexpectedChildCountException, IdentifierNotDefinedException, UnusedIdentifierException, DuplicateArgumentException {
         try {
             IdentifierStore globalNameScope = new IdentifierStore();
 
@@ -67,7 +68,7 @@ public class SyntaxTree {
                             IdentifierStore localNameScope = new IdentifierStore();
 
                             if (nodeElem.getElements().size() > 1) {
-                                // last child nodes of function_definition is N parameter_declarations and
+                                // child nodes of function_definition is 0-N parameter_declarations and
                                 // 1 compound_statement
 
                                 // create parameters
@@ -89,7 +90,11 @@ public class SyntaxTree {
                                     if (identifierElem.getOperand() != Operand.IDENTIFIER) {
                                         throw new UnexpectedNodeException();
                                     }
-                                    localNameScope.createIdentifier(identifierElem.getValue(), identifierElem.getType());
+                                    try {
+                                        localNameScope.createIdentifier(identifierElem.getValue(), identifierElem.getType());
+                                    } catch (IdentifierDefinedException ignore) {
+                                        throw new DuplicateArgumentException();
+                                    }
                                 }
                             }
 
@@ -127,7 +132,8 @@ public class SyntaxTree {
     }
 
     private void verifyNameScopesInCompoundStatement(Node node, IdentifierStore... identifiers) throws
-            IdentifierDefinedException, UnexpectedNodeException, UnexpectedChildCountException, IdentifierNotDefinedException, UnusedIdentifierException {
+            IdentifierDefinedException, UnexpectedNodeException, UnexpectedChildCountException, IdentifierNotDefinedException,
+            UnusedIdentifierException {
         // Work only with compound statement
         if (node.getOperation() != Operation.COMPOUND_STATEMENT) {
             throw new UnexpectedNodeException();

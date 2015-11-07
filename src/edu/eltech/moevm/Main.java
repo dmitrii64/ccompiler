@@ -166,6 +166,8 @@ public class Main {
             e.printStackTrace();
         } catch (UnusedIdentifierException e) {
             e.printStackTrace();
+        } catch (DuplicateArgumentException e) {
+            e.printStackTrace();
         }
     }
 }

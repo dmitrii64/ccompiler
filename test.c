@@ -13,7 +13,7 @@ int func_with_one_arg(int arg)
     return a;
 }
 
-int func_with_two_args(int arg1,int arg2)
+int func_with_two_args(int arg1,int arg2, int arg2)
 {
     int a = arg1*123+arg2*987;
     a = 1;
@@ -37,7 +37,6 @@ int main()
     int i;
 //    int abc;
 //    int arr[10];
-
     func_with_two_args(1,2);
     i--;
     --i;
