@@ -1,6 +1,6 @@
 
 int ccc = 2;
-int ccc1 = 3*3*3*3 + 22;
+int ccc1 = 3*3*3*3 + 22*ccc;
 char ggg;
 
 void func_without_args()

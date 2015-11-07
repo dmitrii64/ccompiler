@@ -57,16 +57,18 @@ public class IdentifierStore {
         return false;
     }
 
-//    public boolean removeIdentifierByName(String name) {
-//        for (Iterator itr = identifiers.listIterator(); itr.hasNext();) {
-//            Identifier identifier = (Identifier)itr.next();
-//            if (identifier.name == name) {
-//                itr.remove();
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
+    public void markAsUsed(String name) throws IdentifierNotDefinedException {
+        if (!identifierExists(name)) {
+            throw new IdentifierNotDefinedException();
+        }
+
+        for (Identifier identifier : identifiers) {
+            if (identifier.name.compareTo(name) == 0) {
+                identifier.used = true;
+                return;
+            }
+        }
+    }
 
     public Identifier getFirstUnusedIdentifier() {
         for (Identifier identifier : identifiers) {

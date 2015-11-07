@@ -161,6 +161,8 @@ public class Main {
             e.printStackTrace();
         } catch (UnexpectedNodeException e) {
             e.printStackTrace();
+        } catch (IdentifierNotDefinedException e) {
+            e.printStackTrace();
         }
     }
 }

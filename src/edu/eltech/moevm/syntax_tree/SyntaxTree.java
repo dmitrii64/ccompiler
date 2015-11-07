@@ -1,5 +1,10 @@
 package edu.eltech.moevm.syntax_tree;
 
+import sun.reflect.generics.tree.Tree;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Vector;
 
 /**
@@ -43,7 +48,7 @@ public class SyntaxTree {
         }
     }
 
-    public void verifyNameScopes() throws IdentifierDefinedException, UnexpectedNodeException, UnexpectedChildCountException {
+    public void verifyNameScopes() throws IdentifierDefinedException, UnexpectedNodeException, UnexpectedChildCountException, IdentifierNotDefinedException {
         try {
             IdentifierStore globalNameScope = new IdentifierStore();
 
@@ -100,57 +105,15 @@ public class SyntaxTree {
 
                             // Verify function body
                             verifyNameScopesInCompoundStatement(compoundStatementNode, globalNameScope, localNameScope);
-                            // вызываем verifyNameScopes для compound_statement
 
                             break;
 
                         case DECLARATION:
-
                             // Variable declaration
 
-                            if (nodeElem.getElements().size() == 1) {
-                                TreeElement child = nodeElem.getElements().get(0);
-                                if (child instanceof Node) {
+                            // Parse nodes and create new variable into last name scope
+                            handleVariableDeclaration(nodeElem, globalNameScope);
 
-                                    // Variable declaration with initializing
-
-                                    Node nchild = (Node) child;
-
-                                    if (nchild.getOperation() != Operation.INIT_DECLARATOR) {
-                                        throw new UnexpectedNodeException();
-                                    }
-                                    try {
-                                        if (nchild.getElements().size() != 2) {
-                                            throw new UnexpectedChildCountException();
-                                        }
-                                        if (!(nchild.getElements().get(0) instanceof Leaf)) {
-                                            throw new UnexpectedNodeException();
-                                        }
-                                        Leaf identifier = (Leaf)nchild.getElements().get(0);
-                                        if (identifier.getOperand() != Operand.IDENTIFIER) {
-                                            throw new UnexpectedNodeException();
-                                        }
-                                        TreeElement value = nchild.getElements().get(1);
-
-                                        globalNameScope.createIdentifier(identifier.getValue(), identifier.getType(), value);
-                                    } catch (UnsupportedOperationException ignore) {
-                                    }
-
-                                } else if (child instanceof Leaf) {
-
-                                    // Variable declaration WITHOUT initializing
-
-                                    Leaf lchild = (Leaf) child;
-                                    if (lchild.getOperand() != Operand.IDENTIFIER) {
-                                        throw new UnexpectedNodeException();
-                                    }
-
-                                    globalNameScope.createIdentifier(lchild.getValue(), lchild.getType());
-                                }
-                            } else {
-                                // Invalid child number
-                                throw new UnexpectedChildCountException();
-                            }
                             break;
 
                         default:
@@ -164,30 +127,132 @@ public class SyntaxTree {
     }
 
     private void verifyNameScopesInCompoundStatement(Node node, IdentifierStore... identifiers) throws
-            IdentifierDefinedException, UnexpectedNodeException, UnexpectedChildCountException
-    {
+            IdentifierDefinedException, UnexpectedNodeException, UnexpectedChildCountException, IdentifierNotDefinedException {
         // Work only with compound statement
         if (node.getOperation() != Operation.COMPOUND_STATEMENT) {
             throw new UnexpectedNodeException();
         }
 
-        // 1. declaration
-        // 1.1 DECLARATION -> INIT_DECLARATOR -> IDENTIFIER, value
-        // 1.2 DECLARATION -> IDENTIFIER
+        if (identifiers.length == 0) {
+            identifiers = new IdentifierStore[] { new IdentifierStore() };
+        }
 
-        // 2. something else
-        // verifyNameScopes(Node)
+        try {
+            for (TreeElement nodeChild : node.getElements()) {
+                if (!(nodeChild instanceof Node)) {
+                    throw new UnexpectedNodeException();
+                }
+                // COMPOUND_STATEMENT cannot contain leaf child
+                Node nodeElem = (Node)nodeChild;
+
+                if (nodeElem.getOperation() == Operation.DECLARATION) {
+                    // Parse nodes and create new variable into last name scope
+                    handleVariableDeclaration(nodeElem, identifiers);
+                } else {
+                    verifyNameScopes(nodeElem, identifiers);
+                }
+            }
+        } catch (UnsupportedOperationException ignore) {
+        }
+
+//        identifiers[identifiers.length-1].getFirstUnusedIdentifier();
     }
 
-    private void verifyNameScopes(TreeElement node, IdentifierStore... identifiers) {
-        // if COMPOUND_STATEMENT
-        // verifyNameScopesInCompoundStatement
+    private void verifyNameScopes(TreeElement element, IdentifierStore... identifiers) throws IdentifierNotDefinedException {
+        if (element instanceof Node) {
+            Node node = (Node) element;
+            if (node.getOperation() == Operation.COMPOUND_STATEMENT) {
 
-        // if IDENTIFIER
-        // check if identifier exists
-        // setup unused flag
+                ArrayList<IdentifierStore> arrayList = new ArrayList<IdentifierStore>(Arrays.asList(identifiers));
+                arrayList.add(new IdentifierStore());
+                try {
+                    verifyNameScopesInCompoundStatement(node, (IdentifierStore[]) arrayList.toArray());
+                } catch (Exception ignore) {
+                }
 
-        // something else
-        // verifyNameScopes
+            } else {
+                try {
+                    for (TreeElement child : node.getElements()) {
+                        verifyNameScopes(child, identifiers);
+                    }
+                } catch (UnsupportedOperationException ignore) {
+                }
+            }
+
+        } else {
+            Leaf leaf = (Leaf) element;
+            if (leaf.getOperand() == Operand.IDENTIFIER) {
+
+                boolean identifierExists = false;
+
+                // Check all name scopes for that identifier
+                for (int i = identifiers.length-1; i >= 0 ; i--) {
+                    System.out.println("identifier used: "+leaf.getValue());
+                    if (identifiers[i].identifierExists(leaf.getValue())) {
+                        identifiers[i].markAsUsed(leaf.getValue());
+                        identifierExists = true;
+                        break;
+                    }
+                }
+
+                if (!identifierExists) {
+                    throw new IdentifierNotDefinedException();
+                }
+            }
+        }
+    }
+
+    private void handleVariableDeclaration(Node nodeElem, IdentifierStore... identifiers) throws
+            UnexpectedNodeException, UnexpectedChildCountException, IdentifierDefinedException, IdentifierNotDefinedException {
+        if (nodeElem.getOperation() != Operation.DECLARATION) {
+            throw new UnexpectedNodeException();
+        }
+
+        try {
+            if (nodeElem.getElements().size() == 1) {
+                TreeElement child = nodeElem.getElements().get(0);
+                if (child instanceof Node) {
+
+                    // Variable declaration with initializing
+
+                    Node nchild = (Node) child;
+
+                    if (nchild.getOperation() != Operation.INIT_DECLARATOR) {
+                        throw new UnexpectedNodeException();
+                    }
+                    if (nchild.getElements().size() != 2) {
+                        throw new UnexpectedChildCountException();
+                    }
+                    if (!(nchild.getElements().get(0) instanceof Leaf)) {
+                        throw new UnexpectedNodeException();
+                    }
+                    Leaf identifier = (Leaf)nchild.getElements().get(0);
+                    if (identifier.getOperand() != Operand.IDENTIFIER) {
+                        throw new UnexpectedNodeException();
+                    }
+                    TreeElement value = nchild.getElements().get(1);
+
+                    System.out.println("verify value of " + identifier.getValue());
+                    verifyNameScopes(value, identifiers);
+
+                    identifiers[identifiers.length-1].createIdentifier(identifier.getValue(), identifier.getType(), value);
+
+                } else if (child instanceof Leaf) {
+
+                    // Variable declaration WITHOUT initializing
+
+                    Leaf lchild = (Leaf) child;
+                    if (lchild.getOperand() != Operand.IDENTIFIER) {
+                        throw new UnexpectedNodeException();
+                    }
+
+                    identifiers[identifiers.length-1].createIdentifier(lchild.getValue(), lchild.getType());
+                }
+            } else {
+                // Invalid child number
+                throw new UnexpectedChildCountException();
+            }
+        } catch (UnsupportedOperationException ignore) {
+        }
     }
 }
