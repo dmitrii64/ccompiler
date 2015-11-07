@@ -35,15 +35,15 @@ labelka#
 int main()
 {
     int i;
-    int abc;
-    int arr[10];
+//    int abc;
+//    int arr[10];
 
     func_with_two_args(1,2);
     i--;
     --i;
     for (i=9; i<22; i++) {
-        int j;
-        int ok;
+//        int j;
+//        int ok;
     }
 
     while (true) {

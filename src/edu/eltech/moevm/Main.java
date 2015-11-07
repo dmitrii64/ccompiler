@@ -163,6 +163,8 @@ public class Main {
             e.printStackTrace();
         } catch (IdentifierNotDefinedException e) {
             e.printStackTrace();
+        } catch (UnusedIdentifierException e) {
+            e.printStackTrace();
         }
     }
 }

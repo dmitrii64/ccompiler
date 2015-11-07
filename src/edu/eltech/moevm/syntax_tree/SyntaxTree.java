@@ -48,7 +48,7 @@ public class SyntaxTree {
         }
     }
 
-    public void verifyNameScopes() throws IdentifierDefinedException, UnexpectedNodeException, UnexpectedChildCountException, IdentifierNotDefinedException {
+    public void verifyNameScopes() throws IdentifierDefinedException, UnexpectedNodeException, UnexpectedChildCountException, IdentifierNotDefinedException, UnusedIdentifierException {
         try {
             IdentifierStore globalNameScope = new IdentifierStore();
 
@@ -127,7 +127,7 @@ public class SyntaxTree {
     }
 
     private void verifyNameScopesInCompoundStatement(Node node, IdentifierStore... identifiers) throws
-            IdentifierDefinedException, UnexpectedNodeException, UnexpectedChildCountException, IdentifierNotDefinedException {
+            IdentifierDefinedException, UnexpectedNodeException, UnexpectedChildCountException, IdentifierNotDefinedException, UnusedIdentifierException {
         // Work only with compound statement
         if (node.getOperation() != Operation.COMPOUND_STATEMENT) {
             throw new UnexpectedNodeException();
@@ -155,7 +155,12 @@ public class SyntaxTree {
         } catch (UnsupportedOperationException ignore) {
         }
 
-//        identifiers[identifiers.length-1].getFirstUnusedIdentifier();
+        // Check unused variables
+        String name = identifiers[identifiers.length-1].getFirstUnusedIdentifier();
+        if (name != null) {
+            System.out.println("unused identifier: "+name);
+            throw new UnusedIdentifierException();
+        }
     }
 
     private void verifyNameScopes(TreeElement element, IdentifierStore... identifiers) throws IdentifierNotDefinedException {

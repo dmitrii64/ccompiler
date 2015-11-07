@@ -70,10 +70,10 @@ public class IdentifierStore {
         }
     }
 
-    public Identifier getFirstUnusedIdentifier() {
+    public String getFirstUnusedIdentifier() {
         for (Identifier identifier : identifiers) {
             if (identifier.unused()) {
-                return identifier;
+                return identifier.name;
             }
         }
         return null;
