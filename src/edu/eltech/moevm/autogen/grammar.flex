@@ -54,8 +54,8 @@ H = [a-fA-F0-9]
 0[xX]{H}+        { if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT; }
 
 /* Complex type: */
-/* { ( (unary sign)   (  dec number   or  hex number)               )   or  (unary minus)  }    (dec number)    "i"   */
-   (      ([+-]?   (({D}+("."{D}+)?)  |  (0[xX]{H}+))  " "*[+-]" "* )   |     ([+-]?)      )  ({D}+("."{D}+)?)  "i"    {
+/* { ( (unary sign)?  (  dec number   or  hex number)               )   or  (unary minus)?  }    (dec number)    "i"   */
+   (      ([+-]?    (({D}+("."{D}+)?)  |  (0[xX]{H}+))  " "*[+-]" "* )   |     ([+-]?)      )  ({D}+("."{D}+)?)  "i"    {
    if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT;
 }
 
