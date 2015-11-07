@@ -38,14 +38,14 @@ public class IdentifierStore {
     }
 
     public void createIdentifier(String name, Type type, TreeElement value) throws IdentifierDefinedException {
-        System.out.println("created identifier: "+name);
         if (identifierExists(name)) {
-            System.out.println("identifier exists: "+name);
+            System.out.println("identifier already exists: "+name);
 
             throw new IdentifierDefinedException();
         }
 
         identifiers.add(new Identifier(name, type, value));
+        System.out.println("created identifier: "+name);
     }
 
     public boolean identifierExists(String name) {

@@ -61,7 +61,7 @@ public class SyntaxTree {
 
                             // Function definition
 
-                            // create identifier if not exists
+                            // create identifier of function if not exists
                             globalNameScope.createIdentifier(nodeElem.getValue(), nodeElem.getType());
 
                             // Create local name store for function parameters
@@ -198,8 +198,8 @@ public class SyntaxTree {
 
                 // Check all name scopes for that identifier
                 for (int i = identifiers.length-1; i >= 0 ; i--) {
-                    System.out.println("identifier used: "+leaf.getValue());
                     if (identifiers[i].identifierExists(leaf.getValue())) {
+                        System.out.println("identifier used: "+leaf.getValue());
                         identifiers[i].markAsUsed(leaf.getValue());
                         identifierExists = true;
                         break;

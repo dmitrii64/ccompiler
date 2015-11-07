@@ -5,6 +5,8 @@ char ggg;
 
 void func_without_args()
 {
+    int a;
+    a = 22 + a + a;
 }
 
 int func_with_one_arg(int arg)
