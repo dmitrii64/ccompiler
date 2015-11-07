@@ -15,7 +15,7 @@ int func_with_one_arg(int arg)
     return a;
 }
 
-int func_with_two_args(int arg1,int arg2, int arg2)
+int func_with_two_args(int arg1,int arg2)
 {
     int a = arg1*123+arg2*987;
     a = 1;
@@ -53,4 +53,37 @@ int main()
     2<5 ? (i = 0) : (i = 1);
 
     return 0;
+}
+
+int a;
+
+int manyScopes(int a) {
+    if (true) {
+        int a;
+        while (true) {
+            int a;
+            int j;
+            for (j = 0; j < 10; j++) {
+                a++;
+            }
+        }
+        a++;
+    } else {
+    }
+    while (true) {
+        int c;
+        while (false) {
+            c++;
+        }
+        a--;
+    }
+    while (true) {
+        a++;
+    }
+    a++;
+}
+
+int test() {
+    int c;
+    c++;
 }

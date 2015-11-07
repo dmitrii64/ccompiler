@@ -1,11 +1,7 @@
 package edu.eltech.moevm.syntax_tree;
 
-import sun.reflect.generics.tree.Tree;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Vector;
 
 /**
  * Created by vladimir on 31.10.15.
@@ -71,7 +67,7 @@ public class SyntaxTree {
                                 // child nodes of function_definition is 0-N parameter_declarations and
                                 // 1 compound_statement
 
-                                // create parameters
+                                // create function parameters
                                 for (int i = 0; i < nodeElem.getElements().size()-1; i++) {
                                     if (!(nodeElem.getElements().get(i) instanceof Node)) {
                                         throw new UnexpectedNodeException();
@@ -162,7 +158,7 @@ public class SyntaxTree {
         } catch (UnsupportedOperationException ignore) {
         }
 
-        // Check unused variables
+        // Check unused identifiers
         String name = identifiers[identifiers.length-1].getFirstUnusedIdentifier();
         if (name != null) {
             System.out.println("unused identifier: "+name);
@@ -203,7 +199,7 @@ public class SyntaxTree {
                 // Check all name scopes for that identifier
                 for (int i = identifiers.length-1; i >= 0 ; i--) {
                     if (identifiers[i].identifierExists(leaf.getValue())) {
-                        System.out.println("identifier used: "+leaf.getValue());
+                        System.out.println("used identifier: "+leaf.getValue());
                         identifiers[i].markAsUsed(leaf.getValue());
                         identifierExists = true;
                         break;
