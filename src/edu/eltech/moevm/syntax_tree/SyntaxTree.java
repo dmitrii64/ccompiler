@@ -134,6 +134,7 @@ public class SyntaxTree {
     private void verifyNameScopesInCompoundStatement(Node node, IdentifierStore... identifiers) throws
             IdentifierDefinedException, UnexpectedNodeException, UnexpectedChildCountException, IdentifierNotDefinedException,
             UnusedIdentifierException {
+
         // Work only with compound statement
         if (node.getOperation() != Operation.COMPOUND_STATEMENT) {
             throw new UnexpectedNodeException();
@@ -169,17 +170,20 @@ public class SyntaxTree {
         }
     }
 
-    private void verifyNameScopes(TreeElement element, IdentifierStore... identifiers) throws IdentifierNotDefinedException {
+    private void verifyNameScopes(TreeElement element, IdentifierStore... identifiers) throws IdentifierNotDefinedException,
+            IdentifierDefinedException, UnexpectedChildCountException, UnexpectedNodeException, UnusedIdentifierException {
+
         if (element instanceof Node) {
             Node node = (Node) element;
             if (node.getOperation() == Operation.COMPOUND_STATEMENT) {
 
+                // Create new name scope
                 ArrayList<IdentifierStore> arrayList = new ArrayList<IdentifierStore>(Arrays.asList(identifiers));
                 arrayList.add(new IdentifierStore());
-                try {
-                    verifyNameScopesInCompoundStatement(node, (IdentifierStore[]) arrayList.toArray());
-                } catch (Exception ignore) {
-                }
+                identifiers = new IdentifierStore[identifiers.length+1];
+                arrayList.toArray(identifiers);
+
+                verifyNameScopesInCompoundStatement(node, identifiers);
 
             } else {
                 try {
@@ -214,7 +218,8 @@ public class SyntaxTree {
     }
 
     private void handleVariableDeclaration(Node nodeElem, IdentifierStore... identifiers) throws
-            UnexpectedNodeException, UnexpectedChildCountException, IdentifierDefinedException, IdentifierNotDefinedException {
+            UnexpectedNodeException, UnexpectedChildCountException, IdentifierDefinedException, IdentifierNotDefinedException,
+            UnusedIdentifierException {
         if (nodeElem.getOperation() != Operation.DECLARATION) {
             throw new UnexpectedNodeException();
         }
