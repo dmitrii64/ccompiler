@@ -5,11 +5,12 @@ package edu.eltech.moevm.autogen;
 %byaccj
 
 %{
-  private Parser yyparser;
-  public Yylex(java.io.Reader r, Parser yyparser) {
-    this(r);
-    this.yyparser = yyparser;
-  }
+    private int yylineno = 1;
+    private Parser yyparser;
+    public Yylex(java.io.Reader r, Parser yyparser) {
+        this(r);
+        this.yyparser = yyparser;
+    }
 %}
 
 D = [0-9]
@@ -58,7 +59,8 @@ H = [a-fA-F0-9]
 
 /*  { ( (sign)?   (  dec number      or  hex number)               )   or  (sign)?  }    (dec number)    "i"  */
     ( (  [+-]?    (({D}+("."{D}+)?)  |  (0[xX]{H}+))  " "*[+-]" "* )   |   ([+-]?)  )  ({D}+("."{D}+)?)  "i"   {
-   if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT;
+
+    if(yyparser!=null) yyparser.yylval = new ParserVal(yytext()); return Parser.CONSTANT;
 }
 
 
@@ -98,5 +100,6 @@ H = [a-fA-F0-9]
 "?"  { return Parser.QUESTION; }
 "#"  { return Parser.NUMBER_SIGN; }
 
-[ \t\v\n\f] { }
-.           { }
+[\n]      { yylineno++; }
+[ \t\v\f] { }
+.         { }
