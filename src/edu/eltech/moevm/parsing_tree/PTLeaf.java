@@ -5,16 +5,23 @@ package edu.eltech.moevm.parsing_tree;
  * Created by vladimir on 31.10.15.
  */
 public class PTLeaf extends PTElement {
-    private short token;
+    // Token type
+    private short tokenConst;
+    // Type of value
+    private Type type;
     private String value;
+    private int line;
 
-    public PTLeaf(short tok, String value) {
-        this.token = tok;
+    public PTLeaf(short tokenConst, int line, Type type, String value) {
+        this.tokenConst = tokenConst;
+        this.line = line;
+        this.type = type;
         this.value = value;
     }
 
-    public PTLeaf(short tok) {
-        this.token = tok;
+    public PTLeaf(short tokenConst, int line) {
+        this.tokenConst = tokenConst;
+        this.line = line;
     }
 
     public String getValue() {
@@ -22,6 +29,10 @@ public class PTLeaf extends PTElement {
     }
 
     public short getToken() {
-        return token;
+        return tokenConst;
     }
+
+    public int getLine() { return line; }
+
+    public Type getType() { return type; }
 }
