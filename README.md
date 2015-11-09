@@ -1,5 +1,5 @@
 # Yet another C compiler
-Simple C compiler
+This is a student project of a simple C compiler written in java with JFlex + Byacc/J.
 
 # Useful links:
 * JFlex + Byacc-j tutorial http://jflex.de/manual.html#Example
@@ -9,13 +9,10 @@ Simple C compiler
 * SLR Description https://en.wikipedia.org/wiki/SLR_grammar
 * Importaint issue https://en.wikipedia.org/wiki/Dangling_else
 
-# Online stuff
+# Online stuff:
 * SLR generator http://hackingoff.com/compilers/slr-1-parser-generator#grammar
 * More powerful SLR generator http://jsmachines.sourceforge.net/machines/slr.html
 
-# Grammar:
+# Original grammar:
 * YACC File - https://www.lysator.liu.se/c/ANSI-C-grammar-y.html
 * LEX File - https://www.lysator.liu.se/c/ANSI-C-grammar-l.html
-
-
-
