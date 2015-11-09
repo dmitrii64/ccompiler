@@ -6,14 +6,13 @@ import edu.eltech.moevm.parsing_tree.*;
 import edu.eltech.moevm.syntax_tree.*;
 
 import java.io.*;
-import java.util.List;
 
 
 public class Main {
 
     public static void main(String[] args) {
         System.out.println("================Input file================");
-        String filename = "test2.c";
+        String filename = "test.c";
         try {
             FileReader reader = new FileReader(filename);
             BufferedReader br = new BufferedReader(reader);
@@ -100,7 +99,7 @@ public class Main {
             bufferedWriter.close();
             fileWriter.close();
 
-            if (true) return;
+
             TreeGenerator treeGenerator = new TreeGenerator();
             SyntaxTree syntaxTree = treeGenerator.generate(tree);
 

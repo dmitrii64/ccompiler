@@ -76,15 +76,20 @@ public class TreeGenerator {
                 //Setting cycle type
                 PTLeaf itname = (PTLeaf) node.getElements().get(0);
                 result.setValue(Parser.getTokenName(itname.getToken()));
+                if (Parser.getTokenName(itname.getToken()).compareTo("WHILE") == 0) {
+                    PTElement cond = node.getElements().get(2);
+                    if (cond instanceof PTLeaf) {
+                        Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) cond).getToken())), ((PTLeaf) cond).getValue());
+                        result.add(leaf2);
+                    }
+                }
+
             } else if (name.compareTo(Operation.SELECTION_STATEMENT.name()) == 0) {
                 PTElement first = node.getElements().get(2);
                 if (first instanceof PTLeaf) {
                     Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())), ((PTLeaf) first).getValue());
                     result.add(leaf2);
                 }
-
-
-
             } else if (name.compareTo(Operation.PARAMETER_DECLARATION.name()) == 0) {
                 //Creating leaf for parameter identifier with type
                 PTLeaf type = (PTLeaf) node.getElements().get(0);
@@ -103,8 +108,10 @@ public class TreeGenerator {
             } else if (name.compareTo(Operation.INIT_DECLARATOR.name()) == 0) {
                 PTElement first = node.getElements().get(0);
                 PTElement second = node.getElements().get(2);
-                Leaf leaf = new Leaf(Operand.IDENTIFIER, ((PTLeaf) first).getValue());
-                result.add(leaf);
+                if (first instanceof PTLeaf) {
+                    Leaf leaf = new Leaf(Operand.IDENTIFIER, ((PTLeaf) first).getValue());
+                    result.add(leaf);
+                }
                 if (second instanceof PTLeaf) {
                     Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) second).getToken())), ((PTLeaf) second).getValue());
                     result.add(leaf2);
