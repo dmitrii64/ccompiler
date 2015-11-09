@@ -4,6 +4,7 @@ import edu.eltech.moevm.autogen.Parser;
 import edu.eltech.moevm.parsing_tree.*;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by lazorg on 11/4/15.
@@ -99,12 +100,19 @@ public class TreeGenerator {
                 result.add(leaf);
             } else if (name.compareTo(Operation.DECLARATION.name()) == 0) {
                 PTElement first = node.getElements().get(0);
-                PTElement second = node.getElements().get(1);
-                if (second instanceof PTLeaf) {
-                    Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) second).getToken())), ((PTLeaf) second).getValue());
-                    leaf.setType(Type.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())));
-                    result.add(leaf);
+                Iterator<PTElement> it = node.getElements().iterator();
+                it.next();
+                while (it.hasNext()) {
+                    PTElement el = it.next();
+                    if (el instanceof PTLeaf)
+                        if (Parser.getTokenName(((PTLeaf) el).getToken()).compareTo("COMMA") != 0)
+                            if (Parser.getTokenName(((PTLeaf) el).getToken()).compareTo("SEMICOLON") != 0) {
+                                Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) el).getToken())), ((PTLeaf) el).getValue());
+                                leaf.setType(Type.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())));
+                                result.add(leaf);
+                            }
                 }
+
             } else if (name.compareTo(Operation.INIT_DECLARATOR.name()) == 0) {
                 PTElement first = node.getElements().get(0);
                 PTElement second = node.getElements().get(2);
