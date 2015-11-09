@@ -460,27 +460,6 @@ public class TreeRecursionOptimizer implements PTCallback {
                         }
                     }
                     break;
-                case CONDITIONAL_EXPRESSION:
-                    // childs = ["logical_or_expression","QUESTION","expression","COLON","conditional_expression"]
-                    if (ptnodeChild.getElements().size() == 5) {
-                        PTElement element0 = ptnodeChild.getElements().get(0);
-                        PTElement element1 = ptnodeChild.getElements().get(1);
-                        PTElement element2 = ptnodeChild.getElements().get(2);
-                        PTElement element3 = ptnodeChild.getElements().get(3);
-                        PTElement element4 = ptnodeChild.getElements().get(4);
-                        if (element0 instanceof PTNode && ((PTNode)element0).getNonterminal() == Nonterminals.LOGICAL_OR_EXPRESSION && element1 instanceof PTLeaf && ((PTLeaf)element1).getToken() == Parser.QUESTION && element2 instanceof PTNode && ((PTNode)element2).getNonterminal() == Nonterminals.EXPRESSION && element3 instanceof PTLeaf && ((PTLeaf)element3).getToken() == Parser.COLON && element4 instanceof PTNode && ((PTNode)element4).getNonterminal() == Nonterminals.CONDITIONAL_EXPRESSION) {
-                            ptnode.insertElementBefore(child, element0);
-                            ptnode.insertElementBefore(child, element1);
-                            ptnode.insertElementBefore(child, element2);
-                            ptnode.insertElementBefore(child, element3);
-                            ptnode.insertElementBefore(child, element4);
-                            System.out.println("(recursive) removed " + ptnodeChild.getNonterminal());
-                            ptnode.remove(child);
-                            i--;
-                            break;
-                        }
-                    }
-                    break;
                 case ASSIGNMENT_EXPRESSION:
                     // childs = ["postfix_expression","EQUAL","assignment_expression"]
                     if (ptnodeChild.getElements().size() == 3) {
