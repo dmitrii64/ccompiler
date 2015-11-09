@@ -63,6 +63,11 @@ public class SyntaxTree {
                             // Create local name store for function parameters
                             IdentifierStore localNameScope = new IdentifierStore();
 
+                            if (nodeElem.getElements().size() == 0) {
+                                throw new UnexpectedChildCountException();
+                            }
+
+                            // If function has parameters
                             if (nodeElem.getElements().size() > 1) {
                                 // child nodes of function_definition is 0-N parameter_declarations and
                                 // 1 compound_statement
@@ -88,7 +93,7 @@ public class SyntaxTree {
                                     }
                                     try {
                                         localNameScope.createIdentifier(identifierElem.getValue(), identifierElem.getType());
-                                    } catch (IdentifierDefinedException ignore) {
+                                    } catch (IdentifierDefinedException e1) {
                                         throw new DuplicateArgumentException();
                                     }
                                 }
@@ -142,14 +147,14 @@ public class SyntaxTree {
 
         try {
             for (TreeElement nodeChild : node.getElements()) {
+                // COMPOUND_STATEMENT cannot contain leaf child
                 if (!(nodeChild instanceof Node)) {
                     throw new UnexpectedNodeException();
                 }
-                // COMPOUND_STATEMENT cannot contain leaf child
                 Node nodeElem = (Node)nodeChild;
 
                 if (nodeElem.getOperation() == Operation.DECLARATION) {
-                    // Parse nodes and create new variable into last name scope
+                    // Parse nodes and create new variable into name scope
                     handleVariableDeclaration(nodeElem, identifiers);
                 } else {
                     verifyNameScopes(nodeElem, identifiers);
@@ -173,7 +178,7 @@ public class SyntaxTree {
             Node node = (Node) element;
             if (node.getOperation() == Operation.COMPOUND_STATEMENT) {
 
-                // Create new name scope
+                // Create new empty name scope
                 ArrayList<IdentifierStore> arrayList = new ArrayList<IdentifierStore>(Arrays.asList(identifiers));
                 arrayList.add(new IdentifierStore());
                 identifiers = new IdentifierStore[identifiers.length+1];
@@ -221,6 +226,7 @@ public class SyntaxTree {
         }
 
         try {
+            // One or more declarations or throw exception
             if (nodeElem.getElements().size() == 0) {
                 // Invalid child number
                 throw new UnexpectedChildCountException();
