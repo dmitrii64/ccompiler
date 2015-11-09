@@ -48,8 +48,8 @@ unary_expression
 	: postfix_expression                   { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTElement)$1.obj)); }
 	| INC_OP unary_expression              { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTLeaf)$1.obj, (PTElement)$2.obj)); }
 	| DEC_OP unary_expression              { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTLeaf)$1.obj, (PTElement)$2.obj)); }
-	| MINUS  cast_expression               { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTLeaf)$1.obj, (PTElement)$2.obj)); }
-	| EXCL  cast_expression                { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTLeaf)$1.obj, (PTElement)$2.obj)); }
+	| MINUS cast_expression                { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTLeaf)$1.obj, (PTElement)$2.obj)); }
+	| EXCL cast_expression                 { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTLeaf)$1.obj, (PTElement)$2.obj)); }
 	| SIZEOF unary_expression              { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTLeaf)$1.obj, (PTElement)$2.obj)); }
 	| SIZEOF RBLEFT type_specifier RBRIGHT { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTLeaf)$1.obj, (PTLeaf)$2.obj, (PTElement)$3.obj, (PTLeaf)$4.obj)); }
 	| RE RBLEFT CONSTANT RBRIGHT           { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTLeaf)$1.obj, (PTLeaf)$2.obj, (PTLeaf)$3.obj, (PTLeaf)$4.obj)); }
