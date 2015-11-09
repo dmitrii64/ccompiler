@@ -221,8 +221,13 @@ public class SyntaxTree {
         }
 
         try {
-            if (nodeElem.getElements().size() == 1) {
-                TreeElement child = nodeElem.getElements().get(0);
+            if (nodeElem.getElements().size() == 0) {
+                // Invalid child number
+                throw new UnexpectedChildCountException();
+            }
+
+            for (int i = 0; i < nodeElem.getElements().size(); i++) {
+                TreeElement child = nodeElem.getElements().get(i);
                 if (child instanceof Node) {
 
                     // Variable declaration with initializing
@@ -238,7 +243,7 @@ public class SyntaxTree {
                     if (!(nchild.getElements().get(0) instanceof Leaf)) {
                         throw new UnexpectedNodeException();
                     }
-                    Leaf identifier = (Leaf)nchild.getElements().get(0);
+                    Leaf identifier = (Leaf) nchild.getElements().get(0);
                     if (identifier.getOperand() != Operand.IDENTIFIER) {
                         throw new UnexpectedNodeException();
                     }
@@ -247,7 +252,7 @@ public class SyntaxTree {
                     System.out.println("verify value of " + identifier.getValue());
                     verifyNameScopes(value, identifiers);
 
-                    identifiers[identifiers.length-1].createIdentifier(identifier.getValue(), identifier.getType(), value);
+                    identifiers[identifiers.length - 1].createIdentifier(identifier.getValue(), identifier.getType(), value);
 
                 } else if (child instanceof Leaf) {
 
@@ -258,11 +263,8 @@ public class SyntaxTree {
                         throw new UnexpectedNodeException();
                     }
 
-                    identifiers[identifiers.length-1].createIdentifier(lchild.getValue(), lchild.getType());
+                    identifiers[identifiers.length - 1].createIdentifier(lchild.getValue(), lchild.getType());
                 }
-            } else {
-                // Invalid child number
-                throw new UnexpectedChildCountException();
             }
         } catch (UnsupportedOperationException ignore) {
         }
