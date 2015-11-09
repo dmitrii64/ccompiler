@@ -13,7 +13,7 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("================Input file================");
-        String filename = "test.c";
+        String filename = "test2.c";
         try {
             FileReader reader = new FileReader(filename);
             BufferedReader br = new BufferedReader(reader);
@@ -100,7 +100,7 @@ public class Main {
             bufferedWriter.close();
             fileWriter.close();
 
-//            if (true) return;
+            if (true) return;
             TreeGenerator treeGenerator = new TreeGenerator();
             SyntaxTree syntaxTree = treeGenerator.generate(tree);
 
