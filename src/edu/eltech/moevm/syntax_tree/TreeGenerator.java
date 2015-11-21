@@ -3,7 +3,6 @@ package edu.eltech.moevm.syntax_tree;
 import edu.eltech.moevm.autogen.Parser;
 import edu.eltech.moevm.parsing_tree.*;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -28,18 +27,6 @@ public class TreeGenerator {
             if (op.name().compareTo(operation) == 0)
                 return true;
         return false;
-    }
-
-    private PTNode getPTNodeByNonterminal(ArrayList<PTElement> list, Nonterminals nonterminal, int num) {
-        for (PTElement el : list)
-            if (el instanceof PTNode)
-                if (((PTNode) el).getNonterminal() == nonterminal) {
-                    if (num == 0)
-                        return (PTNode) el;
-                    else
-                        num--;
-                }
-        return null;
     }
 
     private void setBinaryExpr(Node output, PTNode input) throws UnsupportedOperationException {
@@ -69,88 +56,98 @@ public class TreeGenerator {
         if (operationExist(name)) {
             Operation op = Operation.valueOf(name);
             result = new Node(Operation.valueOf(name));
-            if (Operation.FUNCTION_DEFINITION == op) {
-                //Setting function return type
-                PTLeaf type = (PTLeaf) node.getElements().get(0);
-                result.setType(Type.valueOf(Parser.getTokenName(type.getToken())));
-                //Setting function name
-                PTLeaf fname = (PTLeaf) node.getElements().get(1);
-                result.setValue(fname.getValue());
-            } else if (Operation.ITERATION_STATEMENT == op) {
-                //Setting cycle type
-                PTLeaf itname = (PTLeaf) node.getElements().get(0);
-                result.setValue(Parser.getTokenName(itname.getToken()));
-                if (Parser.getTokenName(itname.getToken()).compareTo("WHILE") == 0) {
-                    PTElement cond = node.getElements().get(2);
-                    if (cond instanceof PTLeaf) {
-                        Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) cond).getToken())), ((PTLeaf) cond).getValue());
+
+            switch (op) {
+                case FUNCTION_DEFINITION:
+                    // Setting function return type
+                    PTLeaf type = (PTLeaf) node.getElements().get(0);
+                    result.setType(Type.valueOf(Parser.getTokenName(type.getToken())));
+                    // Setting function name
+                    PTLeaf fname = (PTLeaf) node.getElements().get(1);
+                    result.setValue(fname.getValue());
+                    break;
+                case ITERATION_STATEMENT:
+                    // Setting cycle type
+                    PTLeaf iterationType = (PTLeaf) node.getElements().get(0);
+                    result.setValue(Parser.getTokenName(iterationType.getToken()));
+                    if (Parser.getTokenName(iterationType.getToken()).compareTo("WHILE") == 0) {
+                        PTElement cond = node.getElements().get(2);
+                        if (cond instanceof PTLeaf) {
+                            Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) cond).getToken())), ((PTLeaf) cond).getValue());
+                            result.add(leaf2);
+                        }
+                    }
+                    break;
+                case SELECTION_STATEMENT:
+                    // "if" statement handling
+                    PTElement conditionNode = node.getElements().get(2);
+                    if (conditionNode instanceof PTLeaf) {
+                        Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) conditionNode).getToken())), ((PTLeaf) conditionNode).getValue());
                         result.add(leaf2);
                     }
-                }
-            } else if (Operation.SELECTION_STATEMENT == op) {
-                PTElement first = node.getElements().get(2);
-                if (first instanceof PTLeaf) {
-                    Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())), ((PTLeaf) first).getValue());
-                    result.add(leaf2);
-                }
-            } else if (Operation.PARAMETER_DECLARATION == op) {
-                //Creating leaf for parameter identifier with type
-                PTLeaf type = (PTLeaf) node.getElements().get(0);
-                PTLeaf fname = (PTLeaf) node.getElements().get(1);
-                Leaf leaf = new Leaf(Operand.IDENTIFIER, fname.getValue());
-                leaf.setType(Type.valueOf(Parser.getTokenName(type.getToken())));
-                result.add(leaf);
-            } else if (Operation.DECLARATION == op) {
-                PTElement first = node.getElements().get(0);
-                Iterator<PTElement> it = node.getElements().iterator();
-                it.next();
-                while (it.hasNext()) {
-                    PTElement el = it.next();
-                    if (el instanceof PTLeaf)
-                        if (Parser.getTokenName(((PTLeaf) el).getToken()).compareTo("COMMA") != 0)
-                            if (Parser.getTokenName(((PTLeaf) el).getToken()).compareTo("SEMICOLON") != 0) {
-                                Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) el).getToken())), ((PTLeaf) el).getValue());
-                                leaf.setType(Type.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())));
-                                result.add(leaf);
-                            }
-                }
-
-            } else if (Operation.INIT_DECLARATOR == op) {
-                PTElement first = node.getElements().get(0);
-                PTElement second = node.getElements().get(2);
-                if (first instanceof PTLeaf) {
-                    Leaf leaf = new Leaf(Operand.IDENTIFIER, ((PTLeaf) first).getValue());
-                    result.add(leaf);
-                }
-                if (second instanceof PTLeaf) {
-                    Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) second).getToken())), ((PTLeaf) second).getValue());
-                    result.add(leaf2);
-                }
-            } else if (Operation.POSTFIX_EXPRESSION == op) {
-                PTElement first = node.getElements().get(0);
-                PTElement second = node.getElements().get(1);
-                String operation = Parser.getTokenName(((PTLeaf) second).getToken());
-
-                Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())), ((PTLeaf) first).getValue());
-                result.add(leaf);
-                if (operation.compareTo("RBLEFT") == 0) {
-                    result.setOperation(Operation.FUNC_CALL);
-
-                } else if (operation.compareTo("BRACKETLEFT") == 0) {
-                    result.setOperation(Operation.ARRAY_ACCESS);
-                    PTElement third = node.getElements().get(2);
-                    Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) third).getToken())), ((PTLeaf) third).getValue());
-                    result.add(leaf2);
-                }
-            } else if (Operation.CONDITIONAL_EXPRESSION == op) {
-                PTElement first = node.getElements().get(0);
-                if (first instanceof PTLeaf) {
-                    Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())), ((PTLeaf) first).getValue());
-                    result.add(leaf2);
-                }
+                    break;
+                case PARAMETER_DECLARATION:
+                    // Creating leaf for parameter identifier with type
+                    PTLeaf parameterType = (PTLeaf) node.getElements().get(0);
+                    PTLeaf parameterName = (PTLeaf) node.getElements().get(1);
+                    Leaf parameterLeaf = new Leaf(Operand.IDENTIFIER, parameterName.getValue());
+                    parameterLeaf.setType(Type.valueOf(Parser.getTokenName(parameterType.getToken())));
+                    result.add(parameterLeaf);
+                    break;
+                case DECLARATION:
+                    // Declaration (with multiple variables) handling
+                    PTElement declarationType = node.getElements().get(0);
+                    Iterator<PTElement> it = node.getElements().iterator();
+                    it.next();
+                    while (it.hasNext()) {
+                        PTElement el = it.next();
+                        if (el instanceof PTLeaf)
+                            if (Parser.getTokenName(((PTLeaf) el).getToken()).compareTo("COMMA") != 0)
+                                if (Parser.getTokenName(((PTLeaf) el).getToken()).compareTo("SEMICOLON") != 0) {
+                                    Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) el).getToken())), ((PTLeaf) el).getValue());
+                                    leaf.setType(Type.valueOf(Parser.getTokenName(((PTLeaf) declarationType).getToken())));
+                                    result.add(leaf);
+                                }
+                    }
+                    break;
+                case INIT_DECLARATOR:
+                    // Declaration with initialization handling
+                    PTElement initDeclaratorNode = node.getElements().get(0);
+                    PTElement initValue = node.getElements().get(2);
+                    if (initDeclaratorNode instanceof PTLeaf) {
+                        Leaf leaf = new Leaf(Operand.IDENTIFIER, ((PTLeaf) initDeclaratorNode).getValue());
+                        result.add(leaf);
+                    }
+                    if (initValue instanceof PTLeaf) {
+                        Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) initValue).getToken())), ((PTLeaf) initValue).getValue());
+                        result.add(leaf2);
+                    }
+                    break;
+                case POSTFIX_EXPRESSION:
+                    // Function calls and array access handling
+                    PTElement baseNode = node.getElements().get(0);
+                    PTElement nextNode = node.getElements().get(1);
+                    String operation = Parser.getTokenName(((PTLeaf) nextNode).getToken());
+                    Leaf postfixLeaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) baseNode).getToken())), ((PTLeaf) baseNode).getValue());
+                    result.add(postfixLeaf);
+                    if (operation.compareTo("RBLEFT") == 0) {
+                        result.setOperation(Operation.FUNC_CALL);
+                    } else if (operation.compareTo("BRACKETLEFT") == 0) {
+                        result.setOperation(Operation.ARRAY_ACCESS);
+                        PTElement arrayIteratonValue = node.getElements().get(2);
+                        Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) arrayIteratonValue).getToken())), ((PTLeaf) arrayIteratonValue).getValue());
+                        result.add(leaf2);
+                    }
+                    break;
+                case CONDITIONAL_EXPRESSION:
+                    // ? operator handling
+                    PTElement condition = node.getElements().get(0);
+                    if (condition instanceof PTLeaf) {
+                        Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) condition).getToken())), ((PTLeaf) condition).getValue());
+                        result.add(leaf2);
+                    }
+                    break;
             }
-
-
         } else {
             result = null;
             if (name.compareTo("RELATIONAL_EXPRESSION") == 0) {
@@ -236,7 +233,6 @@ public class TreeGenerator {
                     result.add(leaf);
                 }
             }
-
         }
 
         for (PTElement child : node.getElements()) {
