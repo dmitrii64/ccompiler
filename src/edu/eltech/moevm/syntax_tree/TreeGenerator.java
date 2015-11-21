@@ -150,11 +150,11 @@ public class TreeGenerator {
             }
         } else {
             result = null;
-            if (name.compareTo("RELATIONAL_EXPRESSION") == 0) {
+            if (nt == Nonterminals.RELATIONAL_EXPRESSION) {
                 PTElement first = node.getElements().get(0);
-                PTElement oper = node.getElements().get(1);
+                PTElement operation = node.getElements().get(1);
                 PTElement second = node.getElements().get(2);
-                Operation op = Operation.valueOf(Parser.getTokenName((((PTLeaf) oper).getToken())));
+                Operation op = Operation.valueOf(Parser.getTokenName((((PTLeaf) operation).getToken())));
 
                 result = new Node(op);
                 if (first instanceof PTLeaf) {
@@ -165,16 +165,16 @@ public class TreeGenerator {
                     Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) second).getToken())), ((PTLeaf) second).getValue());
                     result.add(leaf);
                 }
-            } else if (name.compareTo("ASSIGNMENT_EXPRESSION") == 0) {
+            } else if (nt == Nonterminals.ASSIGNMENT_EXPRESSION) {
                 result = new Node(Operation.EQUAL);
                 setBinaryExpr(result, node);
-            } else if (name.compareTo("ADDITIVE_EXPRESSION") == 0) {
+            } else if (nt == Nonterminals.ADDITIVE_EXPRESSION) {
                 result = new Node(Operation.PLUS);
                 setBinaryExpr(result, node);
-            } else if (name.compareTo("MULTIPLICATIVE_EXPRESSION") == 0) {
+            } else if (nt == Nonterminals.MULTIPLICATIVE_EXPRESSION) {
                 result = new Node(Operation.STAR);
                 setBinaryExpr(result, node);
-            } else if (name.compareTo("ARGUMENT_EXPRESSION_LIST") == 0) {
+            } else if (nt == Nonterminals.ARGUMENT_EXPRESSION_LIST) {
                 result = new Node(Operation.FUNC_ARGS);
                 for (PTElement el : node.getElements()) {
                     if (el instanceof PTLeaf)
@@ -183,7 +183,7 @@ public class TreeGenerator {
                             result.add(leaf);
                         }
                 }
-            } else if (name.compareTo("UNARY_EXPRESSION") == 0) {
+            } else if (nt == Nonterminals.UNARY_EXPRESSION) {
                 PTElement first = node.getElements().get(0);
                 PTElement second = node.getElements().get(1);
 
@@ -197,14 +197,14 @@ public class TreeGenerator {
                 result = new Node(op);
                 Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())), ((PTLeaf) first).getValue());
                 result.add(leaf);
-            } else if (name.compareTo("CAST_EXPRESSION") == 0) {
+            } else if (nt == Nonterminals.CAST_EXPRESSION) {
                 PTElement first = node.getElements().get(0);
                 PTElement second = node.getElements().get(1);
 
                 result = new Node(Operation.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())));
                 Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) second).getToken())), ((PTLeaf) second).getValue());
                 result.add(leaf);
-            } else if (name.compareTo("JUMP_STATEMENT") == 0) {
+            } else if (nt == Nonterminals.JUMP_STATEMENT) {
                 PTElement first = node.getElements().get(0);
                 PTElement second = node.getElements().get(1);
                 result = new Node(Operation.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())));
