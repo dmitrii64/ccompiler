@@ -15,9 +15,9 @@ public enum Operation {
     NOT,    //!
     EQ_OP,  //==
     EQUAL, //=
-    NOT_EQ, //!=
-    GREATER_OR_EQ,    //>=
-    LESS_OR_EQ,  //<=
+    NE_OP, //!=
+    GE_OP,    //>=
+    LE_OP,  //<=
     LEFT_OP,
     RIGHT_OP,
     AND_OP,

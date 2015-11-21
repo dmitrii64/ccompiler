@@ -154,27 +154,8 @@ public class TreeGenerator {
                 PTElement first = node.getElements().get(0);
                 PTElement oper = node.getElements().get(1);
                 PTElement second = node.getElements().get(2);
-                Operation op = Operation.EQUAL;
-                switch (((PTLeaf) oper).getToken()) {
-                    case Parser.EQ_OP:
-                        op = Operation.EQ_OP;
-                        break;
-                    case Parser.LE_OP:
-                        op = Operation.LESS_OR_EQ;
-                        break;
-                    case Parser.GE_OP:
-                        op = Operation.GREATER_OR_EQ;
-                        break;
-                    case Parser.NE_OP:
-                        op = Operation.NOT_EQ;
-                        break;
-                    case Parser.LESS:
-                        op = Operation.LESS;
-                        break;
-                    case Parser.GREATER:
-                        op = Operation.GREATER;
-                        break;
-                }
+                Operation op = Operation.valueOf(Parser.getTokenName((((PTLeaf) oper).getToken())));
+
                 result = new Node(op);
                 if (first instanceof PTLeaf) {
                     Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())), ((PTLeaf) first).getValue());
