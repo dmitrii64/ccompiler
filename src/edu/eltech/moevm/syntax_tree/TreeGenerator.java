@@ -64,16 +64,19 @@ public class TreeGenerator {
     private Node visitNode(PTNode node) throws UnsupportedOperationException {
         Node result;
         String name = node.getNonterminal().name();
+        Nonterminals nt = node.getNonterminal();
+
         if (operationExist(name)) {
+            Operation op = Operation.valueOf(name);
             result = new Node(Operation.valueOf(name));
-            if (name.compareTo(Operation.FUNCTION_DEFINITION.name()) == 0) {
+            if (Operation.FUNCTION_DEFINITION == op) {
                 //Setting function return type
                 PTLeaf type = (PTLeaf) node.getElements().get(0);
                 result.setType(Type.valueOf(Parser.getTokenName(type.getToken())));
                 //Setting function name
                 PTLeaf fname = (PTLeaf) node.getElements().get(1);
                 result.setValue(fname.getValue());
-            } else if (name.compareTo(Operation.ITERATION_STATEMENT.name()) == 0) {
+            } else if (Operation.ITERATION_STATEMENT == op) {
                 //Setting cycle type
                 PTLeaf itname = (PTLeaf) node.getElements().get(0);
                 result.setValue(Parser.getTokenName(itname.getToken()));
@@ -84,21 +87,20 @@ public class TreeGenerator {
                         result.add(leaf2);
                     }
                 }
-
-            } else if (name.compareTo(Operation.SELECTION_STATEMENT.name()) == 0) {
+            } else if (Operation.SELECTION_STATEMENT == op) {
                 PTElement first = node.getElements().get(2);
                 if (first instanceof PTLeaf) {
                     Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())), ((PTLeaf) first).getValue());
                     result.add(leaf2);
                 }
-            } else if (name.compareTo(Operation.PARAMETER_DECLARATION.name()) == 0) {
+            } else if (Operation.PARAMETER_DECLARATION == op) {
                 //Creating leaf for parameter identifier with type
                 PTLeaf type = (PTLeaf) node.getElements().get(0);
                 PTLeaf fname = (PTLeaf) node.getElements().get(1);
                 Leaf leaf = new Leaf(Operand.IDENTIFIER, fname.getValue());
                 leaf.setType(Type.valueOf(Parser.getTokenName(type.getToken())));
                 result.add(leaf);
-            } else if (name.compareTo(Operation.DECLARATION.name()) == 0) {
+            } else if (Operation.DECLARATION == op) {
                 PTElement first = node.getElements().get(0);
                 Iterator<PTElement> it = node.getElements().iterator();
                 it.next();
@@ -113,7 +115,7 @@ public class TreeGenerator {
                             }
                 }
 
-            } else if (name.compareTo(Operation.INIT_DECLARATOR.name()) == 0) {
+            } else if (Operation.INIT_DECLARATOR == op) {
                 PTElement first = node.getElements().get(0);
                 PTElement second = node.getElements().get(2);
                 if (first instanceof PTLeaf) {
@@ -124,30 +126,28 @@ public class TreeGenerator {
                     Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) second).getToken())), ((PTLeaf) second).getValue());
                     result.add(leaf2);
                 }
-            } else if (name.compareTo(Operation.POSTFIX_EXPRESSION.name()) == 0) {
+            } else if (Operation.POSTFIX_EXPRESSION == op) {
                 PTElement first = node.getElements().get(0);
                 PTElement second = node.getElements().get(1);
-                String op = Parser.getTokenName(((PTLeaf) second).getToken());
+                String operation = Parser.getTokenName(((PTLeaf) second).getToken());
 
                 Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())), ((PTLeaf) first).getValue());
                 result.add(leaf);
-                if (op.compareTo("RBLEFT") == 0) {
+                if (operation.compareTo("RBLEFT") == 0) {
                     result.setOperation(Operation.FUNC_CALL);
 
-                }
-                else if (op.compareTo("BRACKETLEFT") == 0) {
+                } else if (operation.compareTo("BRACKETLEFT") == 0) {
                     result.setOperation(Operation.ARRAY_ACCESS);
                     PTElement third = node.getElements().get(2);
                     Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) third).getToken())), ((PTLeaf) third).getValue());
                     result.add(leaf2);
                 }
-            } else if (name.compareTo(Operation.CONDITIONAL_EXPRESSION.name()) == 0) {
+            } else if (Operation.CONDITIONAL_EXPRESSION == op) {
                 PTElement first = node.getElements().get(0);
                 if (first instanceof PTLeaf) {
                     Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())), ((PTLeaf) first).getValue());
                     result.add(leaf2);
                 }
-
             }
 
 
