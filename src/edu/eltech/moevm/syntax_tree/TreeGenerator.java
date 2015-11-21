@@ -33,15 +33,15 @@ public class TreeGenerator {
         PTElement first = input.getElements().get(0);
         PTElement second = input.getElements().get(2);
         if ((first instanceof PTLeaf) && (second instanceof PTLeaf)) {
-            Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())), ((PTLeaf) first).getValue());
+            Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())), ((PTLeaf) first).getValue(), ((PTLeaf) first).getLine());
             output.add(leaf);
-            Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) second).getToken())), ((PTLeaf) second).getValue());
+            Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) second).getToken())), ((PTLeaf) second).getValue(), ((PTLeaf) second).getLine());
             output.add(leaf2);
         } else if ((first instanceof PTLeaf) && !(second instanceof PTLeaf)) {
-            Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())), ((PTLeaf) first).getValue());
+            Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())), ((PTLeaf) first).getValue(), ((PTLeaf) first).getLine());
             output.add(leaf);
         } else if (!(first instanceof PTLeaf) && (second instanceof PTLeaf)) {
-            Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) second).getToken())), ((PTLeaf) second).getValue());
+            Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) second).getToken())), ((PTLeaf) second).getValue(), ((PTLeaf) second).getLine());
             output.addleft(leaf);
         }
         PTElement op = input.getElements().get(1);
@@ -73,7 +73,7 @@ public class TreeGenerator {
                     if (Parser.getTokenName(iterationType.getToken()).compareTo("WHILE") == 0) {
                         PTElement cond = node.getElements().get(2);
                         if (cond instanceof PTLeaf) {
-                            Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) cond).getToken())), ((PTLeaf) cond).getValue());
+                            Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) cond).getToken())), ((PTLeaf) cond).getValue(), ((PTLeaf) cond).getLine());
                             result.add(leaf2);
                         }
                     }
@@ -82,7 +82,7 @@ public class TreeGenerator {
                     // "if" statement handling
                     PTElement conditionNode = node.getElements().get(2);
                     if (conditionNode instanceof PTLeaf) {
-                        Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) conditionNode).getToken())), ((PTLeaf) conditionNode).getValue());
+                        Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) conditionNode).getToken())), ((PTLeaf) conditionNode).getValue(), ((PTLeaf) conditionNode).getLine());
                         result.add(leaf2);
                     }
                     break;
@@ -90,7 +90,7 @@ public class TreeGenerator {
                     // Creating leaf for parameter identifier with type
                     PTLeaf parameterType = (PTLeaf) node.getElements().get(0);
                     PTLeaf parameterName = (PTLeaf) node.getElements().get(1);
-                    Leaf parameterLeaf = new Leaf(Operand.IDENTIFIER, parameterName.getValue());
+                    Leaf parameterLeaf = new Leaf(Operand.IDENTIFIER, parameterName.getValue(), parameterName.getLine());
                     parameterLeaf.setType(Type.valueOf(Parser.getTokenName(parameterType.getToken())));
                     result.add(parameterLeaf);
                     break;
@@ -104,7 +104,7 @@ public class TreeGenerator {
                         if (el instanceof PTLeaf)
                             if (Parser.getTokenName(((PTLeaf) el).getToken()).compareTo("COMMA") != 0)
                                 if (Parser.getTokenName(((PTLeaf) el).getToken()).compareTo("SEMICOLON") != 0) {
-                                    Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) el).getToken())), ((PTLeaf) el).getValue());
+                                    Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) el).getToken())), ((PTLeaf) el).getValue(), ((PTLeaf) el).getLine());
                                     leaf.setType(Type.valueOf(Parser.getTokenName(((PTLeaf) declarationType).getToken())));
                                     result.add(leaf);
                                 }
@@ -112,14 +112,16 @@ public class TreeGenerator {
                     break;
                 case INIT_DECLARATOR:
                     // Declaration with initialization handling
+                    PTElement typeNode = node.getParent().getElements().get(0);
                     PTElement initDeclaratorNode = node.getElements().get(0);
                     PTElement initValue = node.getElements().get(2);
                     if (initDeclaratorNode instanceof PTLeaf) {
-                        Leaf leaf = new Leaf(Operand.IDENTIFIER, ((PTLeaf) initDeclaratorNode).getValue());
+                        Leaf leaf = new Leaf(Operand.IDENTIFIER, ((PTLeaf) initDeclaratorNode).getValue(), ((PTLeaf) initDeclaratorNode).getLine());
+                        leaf.setType(Type.valueOf(Parser.getTokenName(((PTLeaf) typeNode).getToken())));
                         result.add(leaf);
                     }
                     if (initValue instanceof PTLeaf) {
-                        Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) initValue).getToken())), ((PTLeaf) initValue).getValue());
+                        Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) initValue).getToken())), ((PTLeaf) initValue).getValue(), ((PTLeaf) initValue).getLine());
                         result.add(leaf2);
                     }
                     break;
@@ -128,14 +130,14 @@ public class TreeGenerator {
                     PTElement baseNode = node.getElements().get(0);
                     PTElement nextNode = node.getElements().get(1);
                     String operation = Parser.getTokenName(((PTLeaf) nextNode).getToken());
-                    Leaf postfixLeaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) baseNode).getToken())), ((PTLeaf) baseNode).getValue());
+                    Leaf postfixLeaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) baseNode).getToken())), ((PTLeaf) baseNode).getValue(), ((PTLeaf) baseNode).getLine());
                     result.add(postfixLeaf);
                     if (operation.compareTo("RBLEFT") == 0) {
                         result.setOperation(Operation.FUNC_CALL);
                     } else if (operation.compareTo("BRACKETLEFT") == 0) {
                         result.setOperation(Operation.ARRAY_ACCESS);
                         PTElement arrayIteratonValue = node.getElements().get(2);
-                        Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) arrayIteratonValue).getToken())), ((PTLeaf) arrayIteratonValue).getValue());
+                        Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) arrayIteratonValue).getToken())), ((PTLeaf) arrayIteratonValue).getValue(), ((PTLeaf) arrayIteratonValue).getLine());
                         result.add(leaf2);
                     }
                     break;
@@ -143,7 +145,7 @@ public class TreeGenerator {
                     // ? operator handling
                     PTElement condition = node.getElements().get(0);
                     if (condition instanceof PTLeaf) {
-                        Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) condition).getToken())), ((PTLeaf) condition).getValue());
+                        Leaf leaf2 = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) condition).getToken())), ((PTLeaf) condition).getValue(), ((PTLeaf) condition).getLine());
                         result.add(leaf2);
                     }
                     break;
@@ -158,11 +160,11 @@ public class TreeGenerator {
                     PTElement rightExpression = node.getElements().get(2);
                     result = new Node(Operation.valueOf(Parser.getTokenName((((PTLeaf) relationalOperation).getToken()))));
                     if (leftExpression instanceof PTLeaf) {
-                        Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) leftExpression).getToken())), ((PTLeaf) leftExpression).getValue());
+                        Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) leftExpression).getToken())), ((PTLeaf) leftExpression).getValue(), ((PTLeaf) leftExpression).getLine());
                         result.add(leaf);
                     }
                     if (rightExpression instanceof PTLeaf) {
-                        Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) rightExpression).getToken())), ((PTLeaf) rightExpression).getValue());
+                        Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) rightExpression).getToken())), ((PTLeaf) rightExpression).getValue(), ((PTLeaf) rightExpression).getLine());
                         result.add(leaf);
                     }
                     break;
@@ -184,7 +186,7 @@ public class TreeGenerator {
                     for (PTElement el : node.getElements()) {
                         if (el instanceof PTLeaf)
                             if (((PTLeaf) el).getToken() != Parser.COMMA) {
-                                Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) el).getToken())), ((PTLeaf) el).getValue());
+                                Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) el).getToken())), ((PTLeaf) el).getValue(), ((PTLeaf) el).getLine());
                                 result.add(leaf);
                             }
                     }
@@ -200,7 +202,7 @@ public class TreeGenerator {
                     else if (str.compareTo("DEC_OP") == 0)
                         op = Operation.POST_DEC_OP;
                     result = new Node(op);
-                    Leaf unaryLeaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) unaryArg).getToken())), ((PTLeaf) unaryArg).getValue());
+                    Leaf unaryLeaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) unaryArg).getToken())), ((PTLeaf) unaryArg).getValue(), ((PTLeaf) unaryArg).getLine());
                     result.add(unaryLeaf);
                     break;
                 case CAST_EXPRESSION:
@@ -208,7 +210,7 @@ public class TreeGenerator {
                     PTElement castArg = node.getElements().get(0);
                     PTElement castOp = node.getElements().get(1);
                     result = new Node(Operation.valueOf(Parser.getTokenName(((PTLeaf) castArg).getToken())));
-                    Leaf castLeaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) castOp).getToken())), ((PTLeaf) castOp).getValue());
+                    Leaf castLeaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) castOp).getToken())), ((PTLeaf) castOp).getValue(), ((PTLeaf) castOp).getLine());
                     result.add(castLeaf);
                     break;
                 case JUMP_STATEMENT:
@@ -217,7 +219,7 @@ public class TreeGenerator {
                     PTElement jumpArg = node.getElements().get(1);
                     result = new Node(Operation.valueOf(Parser.getTokenName(((PTLeaf) jumpType).getToken())));
                     if (result.getOperation() == Operation.RETURN) {
-                        Leaf jumpLeaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) jumpArg).getToken())), ((PTLeaf) jumpArg).getValue());
+                        Leaf jumpLeaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) jumpArg).getToken())), ((PTLeaf) jumpArg).getValue(), ((PTLeaf) jumpArg).getLine());
                         result.add(jumpLeaf);
                     }
                     break;

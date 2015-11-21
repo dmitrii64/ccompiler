@@ -6,12 +6,18 @@ package edu.eltech.moevm.syntax_tree;
 public class Leaf extends TreeElement {
     private Operand operand;
     private String value;
+    private int line;
 
-    public Leaf(Operand operand, String value) {
+    public Leaf(Operand operand, String value, int ln) {
         this.operand = operand;
         this.value = value;
+        line = ln;
         id = counter;
         counter++;
+    }
+
+    public int getLine() {
+        return line;
     }
 
     public String getValue() {
