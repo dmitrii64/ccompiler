@@ -150,69 +150,77 @@ public class TreeGenerator {
             }
         } else {
             result = null;
-            if (nt == Nonterminals.RELATIONAL_EXPRESSION) {
-                PTElement first = node.getElements().get(0);
-                PTElement operation = node.getElements().get(1);
-                PTElement second = node.getElements().get(2);
-                Operation op = Operation.valueOf(Parser.getTokenName((((PTLeaf) operation).getToken())));
-
-                result = new Node(op);
-                if (first instanceof PTLeaf) {
-                    Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())), ((PTLeaf) first).getValue());
-                    result.add(leaf);
-                }
-                if (second instanceof PTLeaf) {
-                    Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) second).getToken())), ((PTLeaf) second).getValue());
-                    result.add(leaf);
-                }
-            } else if (nt == Nonterminals.ASSIGNMENT_EXPRESSION) {
-                result = new Node(Operation.EQUAL);
-                setBinaryExpr(result, node);
-            } else if (nt == Nonterminals.ADDITIVE_EXPRESSION) {
-                result = new Node(Operation.PLUS);
-                setBinaryExpr(result, node);
-            } else if (nt == Nonterminals.MULTIPLICATIVE_EXPRESSION) {
-                result = new Node(Operation.STAR);
-                setBinaryExpr(result, node);
-            } else if (nt == Nonterminals.ARGUMENT_EXPRESSION_LIST) {
-                result = new Node(Operation.FUNC_ARGS);
-                for (PTElement el : node.getElements()) {
-                    if (el instanceof PTLeaf)
-                        if (((PTLeaf) el).getToken() != Parser.COMMA) {
-                            Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) el).getToken())), ((PTLeaf) el).getValue());
-                            result.add(leaf);
-                        }
-                }
-            } else if (nt == Nonterminals.UNARY_EXPRESSION) {
-                PTElement first = node.getElements().get(0);
-                PTElement second = node.getElements().get(1);
-
-                String str = Parser.getTokenName(((PTLeaf) second).getToken());
-                Operation op = Operation.POST_INC_OP;
-                if (str.compareTo("INC_OP") == 0)
-                    op = Operation.POST_INC_OP;
-                else if (str.compareTo("DEC_OP") == 0)
-                    op = Operation.POST_DEC_OP;
-
-                result = new Node(op);
-                Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())), ((PTLeaf) first).getValue());
-                result.add(leaf);
-            } else if (nt == Nonterminals.CAST_EXPRESSION) {
-                PTElement first = node.getElements().get(0);
-                PTElement second = node.getElements().get(1);
-
-                result = new Node(Operation.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())));
-                Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) second).getToken())), ((PTLeaf) second).getValue());
-                result.add(leaf);
-            } else if (nt == Nonterminals.JUMP_STATEMENT) {
-                PTElement first = node.getElements().get(0);
-                PTElement second = node.getElements().get(1);
-                result = new Node(Operation.valueOf(Parser.getTokenName(((PTLeaf) first).getToken())));
-
-                if (result.getOperation() == Operation.RETURN) {
-                    Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) second).getToken())), ((PTLeaf) second).getValue());
-                    result.add(leaf);
-                }
+            switch (nt) {
+                case RELATIONAL_EXPRESSION:
+                    // Comparision operation handling
+                    PTElement leftExpression = node.getElements().get(0);
+                    PTElement relationalOperation = node.getElements().get(1);
+                    PTElement rightExpression = node.getElements().get(2);
+                    result = new Node(Operation.valueOf(Parser.getTokenName((((PTLeaf) relationalOperation).getToken()))));
+                    if (leftExpression instanceof PTLeaf) {
+                        Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) leftExpression).getToken())), ((PTLeaf) leftExpression).getValue());
+                        result.add(leaf);
+                    }
+                    if (rightExpression instanceof PTLeaf) {
+                        Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) rightExpression).getToken())), ((PTLeaf) rightExpression).getValue());
+                        result.add(leaf);
+                    }
+                    break;
+                case ASSIGNMENT_EXPRESSION:
+                    result = new Node(Operation.EQUAL);
+                    setBinaryExpr(result, node);
+                    break;
+                case ADDITIVE_EXPRESSION:
+                    result = new Node(Operation.PLUS);
+                    setBinaryExpr(result, node);
+                    break;
+                case MULTIPLICATIVE_EXPRESSION:
+                    result = new Node(Operation.STAR);
+                    setBinaryExpr(result, node);
+                    break;
+                case ARGUMENT_EXPRESSION_LIST:
+                    // Functions arguments handling
+                    result = new Node(Operation.FUNC_ARGS);
+                    for (PTElement el : node.getElements()) {
+                        if (el instanceof PTLeaf)
+                            if (((PTLeaf) el).getToken() != Parser.COMMA) {
+                                Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) el).getToken())), ((PTLeaf) el).getValue());
+                                result.add(leaf);
+                            }
+                    }
+                    break;
+                case UNARY_EXPRESSION:
+                    // Postfix operation handling
+                    PTElement unaryArg = node.getElements().get(0);
+                    PTElement unaryOp = node.getElements().get(1);
+                    String str = Parser.getTokenName(((PTLeaf) unaryOp).getToken());
+                    Operation op = Operation.POST_INC_OP;
+                    if (str.compareTo("INC_OP") == 0)
+                        op = Operation.POST_INC_OP;
+                    else if (str.compareTo("DEC_OP") == 0)
+                        op = Operation.POST_DEC_OP;
+                    result = new Node(op);
+                    Leaf unaryLeaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) unaryArg).getToken())), ((PTLeaf) unaryArg).getValue());
+                    result.add(unaryLeaf);
+                    break;
+                case CAST_EXPRESSION:
+                    // Unary operation handling
+                    PTElement castArg = node.getElements().get(0);
+                    PTElement castOp = node.getElements().get(1);
+                    result = new Node(Operation.valueOf(Parser.getTokenName(((PTLeaf) castArg).getToken())));
+                    Leaf castLeaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) castOp).getToken())), ((PTLeaf) castOp).getValue());
+                    result.add(castLeaf);
+                    break;
+                case JUMP_STATEMENT:
+                    // Jump statements and "return" handling
+                    PTElement jumpType = node.getElements().get(0);
+                    PTElement jumpArg = node.getElements().get(1);
+                    result = new Node(Operation.valueOf(Parser.getTokenName(((PTLeaf) jumpType).getToken())));
+                    if (result.getOperation() == Operation.RETURN) {
+                        Leaf jumpLeaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) jumpArg).getToken())), ((PTLeaf) jumpArg).getValue());
+                        result.add(jumpLeaf);
+                    }
+                    break;
             }
         }
 
