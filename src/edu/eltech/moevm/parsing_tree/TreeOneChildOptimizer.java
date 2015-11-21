@@ -17,6 +17,7 @@ public class TreeOneChildOptimizer implements PTCallback {
             }
             PTNode ptnodeChild = (PTNode) child;
             if (ptnodeChild.getElements().size() == 1) {
+                ptnodeChild.getElements().get(0).setParent(ptnode);
                 ptnode.insertElementBefore(ptnodeChild, ptnodeChild.getElements().get(0));
                 System.out.println("(one child) removed " + ptnodeChild.getNonterminal());
                 ptnode.remove(ptnodeChild);
