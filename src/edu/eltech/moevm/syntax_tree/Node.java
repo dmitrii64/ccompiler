@@ -29,14 +29,13 @@ public class Node extends TreeElement {
         counter++;
     }
 
-    public void setOperation(Operation operation) {
-        this.operation = operation;
-    }
-
     public Operation getOperation() {
         return operation;
     }
 
+    public void setOperation(Operation operation) {
+        this.operation = operation;
+    }
 
     @Override
     public void add(TreeElement element) throws UnsupportedOperationException {

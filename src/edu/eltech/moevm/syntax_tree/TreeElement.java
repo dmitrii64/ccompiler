@@ -9,6 +9,9 @@ import java.util.List;
  */
 public abstract class TreeElement {
     protected static int counter = 0;
+    protected int id;
+    protected TreeElement parent;
+    protected Type type;
 
     public int getId() {
         return id;
@@ -18,13 +21,12 @@ public abstract class TreeElement {
         this.id = id;
     }
 
-    protected int id;
-
-    protected TreeElement parent;
-    protected Type type;
-
     public final Type getType() {
         return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 
     public void add(TreeElement element) throws UnsupportedOperationException {
@@ -49,10 +51,6 @@ public abstract class TreeElement {
 
     public void setParent(TreeElement parent) {
         this.parent = parent;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
     }
 
 }

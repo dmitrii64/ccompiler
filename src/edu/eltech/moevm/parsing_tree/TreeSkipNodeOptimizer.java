@@ -14,12 +14,13 @@ public class TreeSkipNodeOptimizer implements PTCallback {
     public TreeSkipNodeOptimizer(Nonterminals... nonterminals) {
         this.nonterminals = Arrays.asList(nonterminals);
     }
+
     @Override
     public void processElement(PTElement e, int level) {
         if (!(e instanceof PTNode)) {
             return;
         }
-        PTNode ptnode = (PTNode)e;
+        PTNode ptnode = (PTNode) e;
         for (int i = 0; i < ptnode.getElements().size(); i++) {
             PTElement child = ptnode.getElements().get(i);
             if (!(child instanceof PTNode)) {

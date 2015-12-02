@@ -24,7 +24,7 @@ public class SyntaxTree {
         try {
             for (TreeElement e : node.getElements()) {
                 if (e != null)
-                    postfixVisit(c, e, level+1);
+                    postfixVisit(c, e, level + 1);
             }
         } catch (UnsupportedOperationException ignored) {
         } finally {
@@ -41,7 +41,7 @@ public class SyntaxTree {
         try {
             for (TreeElement e : node.getElements()) {
                 if (e != null)
-                    infixVisit(c, e, level+1);
+                    infixVisit(c, e, level + 1);
             }
         } catch (UnsupportedOperationException ignored) {
         }
@@ -76,11 +76,11 @@ public class SyntaxTree {
                                 // 1 compound_statement
 
                                 // create function parameters
-                                for (int i = 0; i < nodeElem.getElements().size()-1; i++) {
+                                for (int i = 0; i < nodeElem.getElements().size() - 1; i++) {
                                     if (!(nodeElem.getElements().get(i) instanceof Node)) {
                                         throw new UnexpectedNodeException();
                                     }
-                                    Node paramNode = (Node)nodeElem.getElements().get(i);
+                                    Node paramNode = (Node) nodeElem.getElements().get(i);
                                     if (paramNode.getOperation() != Operation.PARAMETER_DECLARATION) {
                                         throw new UnexpectedNodeException();
                                     }
@@ -90,7 +90,7 @@ public class SyntaxTree {
                                     if (!(paramNode.getElements().get(0) instanceof Leaf)) {
                                         throw new UnexpectedNodeException();
                                     }
-                                    Leaf identifierElem = (Leaf)paramNode.getElements().get(0);
+                                    Leaf identifierElem = (Leaf) paramNode.getElements().get(0);
                                     if (identifierElem.getOperand() != Operand.IDENTIFIER) {
                                         throw new UnexpectedNodeException();
                                     }
@@ -103,11 +103,11 @@ public class SyntaxTree {
                             }
 
                             // Last node must be compound statement
-                            if (!(nodeElem.getElements().get(nodeElem.getElements().size()-1) instanceof Node)) {
+                            if (!(nodeElem.getElements().get(nodeElem.getElements().size() - 1) instanceof Node)) {
                                 throw new UnexpectedNodeException();
                             }
                             // get Compound Statement
-                            Node compoundStatementNode = (Node)nodeElem.getElements().get(nodeElem.getElements().size()-1);
+                            Node compoundStatementNode = (Node) nodeElem.getElements().get(nodeElem.getElements().size() - 1);
                             if (compoundStatementNode.getOperation() != Operation.COMPOUND_STATEMENT) {
                                 throw new UnexpectedNodeException();
                             }
@@ -145,7 +145,7 @@ public class SyntaxTree {
         }
 
         if (identifiers.length == 0) {
-            identifiers = new IdentifierStore[] { new IdentifierStore() };
+            identifiers = new IdentifierStore[]{new IdentifierStore()};
         }
 
         try {
@@ -154,7 +154,7 @@ public class SyntaxTree {
                 if (!(nodeChild instanceof Node)) {
                     throw new UnexpectedNodeException();
                 }
-                Node nodeElem = (Node)nodeChild;
+                Node nodeElem = (Node) nodeChild;
 
                 if (nodeElem.getOperation() == Operation.DECLARATION) {
                     // Parse nodes and create new variable into name scope
@@ -167,9 +167,9 @@ public class SyntaxTree {
         }
 
         // Check unused identifiers defined in current compound statement
-        String name = identifiers[identifiers.length-1].getFirstUnusedIdentifier();
+        String name = identifiers[identifiers.length - 1].getFirstUnusedIdentifier();
         if (name != null) {
-            System.out.println("unused identifier: "+name);
+            System.out.println("unused identifier: " + name);
             throw new UnusedIdentifierException();
         }
     }
@@ -184,7 +184,7 @@ public class SyntaxTree {
                 // Create new empty name scope
                 ArrayList<IdentifierStore> arrayList = new ArrayList<IdentifierStore>(Arrays.asList(identifiers));
                 arrayList.add(new IdentifierStore());
-                identifiers = new IdentifierStore[identifiers.length+1];
+                identifiers = new IdentifierStore[identifiers.length + 1];
                 arrayList.toArray(identifiers);
 
                 verifyNameScopesInCompoundStatement(node, identifiers);
@@ -205,9 +205,9 @@ public class SyntaxTree {
                 boolean identifierExists = false;
 
                 // Check all name scopes for that identifier
-                for (int i = identifiers.length-1; i >= 0 ; i--) {
+                for (int i = identifiers.length - 1; i >= 0; i--) {
                     if (identifiers[i].identifierExists(leaf.getValue())) {
-                        System.out.println("used identifier: "+leaf.getValue());
+                        System.out.println("used identifier: " + leaf.getValue());
                         identifiers[i].markAsUsed(leaf.getValue());
                         identifierExists = true;
                         break;

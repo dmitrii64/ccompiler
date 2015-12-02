@@ -156,9 +156,7 @@ public class TreeGenerator {
                                     result.add(leaf);
                                 }
                             }
-
                         }
-
                     }
                     break;
                 case INIT_DECLARATOR:
@@ -260,9 +258,9 @@ public class TreeGenerator {
                         e.printStackTrace();
                     }
                     Operation op = Operation.POST_INC_OP;
-                    if (str.compareTo("INC_OP") == 0)
+                    if (str.compareTo(Operation.INC_OP.name()) == 0)
                         op = Operation.POST_INC_OP;
-                    else if (str.compareTo("DEC_OP") == 0)
+                    else if (str.compareTo(Operation.DEC_OP.name()) == 0)
                         op = Operation.POST_DEC_OP;
                     result = new Node(op);
                     Leaf unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) unaryArg).getToken()), ((PTLeaf) unaryArg).getValue(), ((PTLeaf) unaryArg).getLine());

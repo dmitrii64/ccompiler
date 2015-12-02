@@ -10,41 +10,19 @@ import java.util.Vector;
 public class IdentifierStore {
     private Vector<Identifier> identifiers = new Vector<Identifier>();
 
-    private class Identifier {
-        public String name;
-        public Type type;
-        public TreeElement value;
-        public boolean used;
-
-        public Identifier(String name, Type type, TreeElement value) {
-            this.name = name;
-            this.type = type;
-            this.used = false;
-            this.value = value;
-        }
-
-        public boolean hasValue() {
-            return value != null;
-        }
-
-        public boolean unused() {
-            return !used;
-        }
-    }
-
     public void createIdentifier(String name, Type type) throws IdentifierDefinedException {
         createIdentifier(name, type, null);
     }
 
     public void createIdentifier(String name, Type type, TreeElement value) throws IdentifierDefinedException {
         if (identifierExists(name)) {
-            System.out.println("identifier already exists: "+name);
+            System.out.println("identifier already exists: " + name);
 
             throw new IdentifierDefinedException();
         }
 
         identifiers.add(new Identifier(name, type, value));
-        System.out.println("created identifier: "+name);
+        System.out.println("created identifier: " + name);
     }
 
     public boolean identifierExists(String name) {
@@ -76,5 +54,27 @@ public class IdentifierStore {
             }
         }
         return null;
+    }
+
+    private class Identifier {
+        public String name;
+        public Type type;
+        public TreeElement value;
+        public boolean used;
+
+        public Identifier(String name, Type type, TreeElement value) {
+            this.name = name;
+            this.type = type;
+            this.used = false;
+            this.value = value;
+        }
+
+        public boolean hasValue() {
+            return value != null;
+        }
+
+        public boolean unused() {
+            return !used;
+        }
     }
 }

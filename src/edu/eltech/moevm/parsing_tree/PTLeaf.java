@@ -33,7 +33,11 @@ public class PTLeaf extends PTElement {
         return tokenConst;
     }
 
-    public int getLine() { return line; }
+    public int getLine() {
+        return line;
+    }
 
-    public Type getType() { return type; }
+    public Type getType() {
+        return type;
+    }
 }

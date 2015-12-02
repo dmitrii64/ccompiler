@@ -9,7 +9,7 @@ public class TreeOneChildOptimizer implements PTCallback {
         if (!(e instanceof PTNode)) {
             return;
         }
-        PTNode ptnode = (PTNode)e;
+        PTNode ptnode = (PTNode) e;
         for (int i = 0; i < ptnode.getElements().size(); i++) {
             PTElement child = ptnode.getElements().get(i);
             if (!(child instanceof PTNode)) {
