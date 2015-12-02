@@ -1,6 +1,7 @@
 package edu.eltech.moevm.syntax_tree;
 
 import edu.eltech.moevm.autogen.ParserVal;
+import edu.eltech.moevm.common.Operation;
 
 import java.util.ArrayList;
 import java.util.List;

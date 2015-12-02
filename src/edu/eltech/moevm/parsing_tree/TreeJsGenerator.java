@@ -1,6 +1,8 @@
 package edu.eltech.moevm.parsing_tree;
 
 import edu.eltech.moevm.autogen.Parser;
+import edu.eltech.moevm.autogen.TokenNotFoundException;
+import edu.eltech.moevm.common.Nonterminals;
 
 import java.util.ArrayList;
 
@@ -23,7 +25,13 @@ public class TreeJsGenerator implements PTCallback {
         if (e != null)
             if (e instanceof PTLeaf) {
                 PTLeaf cur = ((PTLeaf) e);
-                String name = Parser.getTokenName(((PTLeaf) e).getToken());
+                String name = null;
+                try {
+                    name = Parser.getTokenName(((PTLeaf) e).getToken());
+                } catch (TokenNotFoundException e1) {
+                    System.out.println("Unknown token!");
+                    e1.printStackTrace();
+                }
                 int hc = cur.hashCode();
                 nodes.add(new String("g.setNode(" + hc + ",  { label: \"" + name + "\",\t class: \"type-TK\"});"));
             } else if (e instanceof PTNode) {

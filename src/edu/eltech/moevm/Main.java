@@ -2,6 +2,8 @@ package edu.eltech.moevm;
 
 
 import edu.eltech.moevm.autogen.Parser;
+import edu.eltech.moevm.autogen.TokenNotFoundException;
+import edu.eltech.moevm.common.Nonterminals;
 import edu.eltech.moevm.parsing_tree.*;
 import edu.eltech.moevm.syntax_tree.*;
 
@@ -40,7 +42,12 @@ public class Main {
                         System.out.print("--");
                     }
                     if (e instanceof PTLeaf) {
-                        System.out.print("leaf [" + Parser.getTokenName(((PTLeaf) e).getToken()) + "]");
+                        try {
+                            System.out.print("leaf [" + Parser.getTokenName(((PTLeaf) e).getToken()) + "]");
+                        } catch (TokenNotFoundException e1) {
+                            System.out.println("Print error!");
+                            e1.printStackTrace();
+                        }
                         if (((PTLeaf) e).getValue() != null)
                             System.out.print(" (" + ((PTLeaf) e).getValue() + ")");
 
@@ -74,7 +81,12 @@ public class Main {
                         System.out.print("--");
                     }
                     if (e instanceof PTLeaf) {
-                        System.out.print("leaf [" + Parser.getTokenName(((PTLeaf) e).getToken()) + "]");
+                        try {
+                            System.out.print("leaf [" + Parser.getTokenName(((PTLeaf) e).getToken()) + "]");
+                        } catch (TokenNotFoundException e1) {
+                            System.out.println("Print error!");
+                            e1.printStackTrace();
+                        }
                         if (((PTLeaf) e).getValue() != null)
                             System.out.print(" (" + ((PTLeaf) e).getValue() + ")");
 

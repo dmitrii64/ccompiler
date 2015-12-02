@@ -1,6 +1,7 @@
 package edu.eltech.moevm.parsing_tree;
 
 import edu.eltech.moevm.autogen.Parser;
+import edu.eltech.moevm.common.Nonterminals;
 
 public class TreeRecursionOptimizer implements PTCallback {
     @Override

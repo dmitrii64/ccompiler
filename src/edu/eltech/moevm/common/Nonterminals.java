@@ -1,4 +1,4 @@
-package edu.eltech.moevm.parsing_tree;
+package edu.eltech.moevm.common;
 
 public enum Nonterminals {
     PRIMARY_EXPRESSION,

@@ -1,6 +1,7 @@
 %{
   import java.io.*;
   import edu.eltech.moevm.*;
+  import edu.eltech.moevm.common.*;
   import edu.eltech.moevm.parsing_tree.*;
 %}
       
@@ -324,9 +325,14 @@ function_definition
     lexer = new Yylex(r, this);
   }
 
-  public static String getTokenName(short c)
+  public static String getTokenName(short c)  throws TokenNotFoundException
   {
-  	return Parser.yyname[c];
+      String val = "ERROR";
+      if(c<Parser.yyname.length)
+        val =  Parser.yyname[c];
+      else
+        throw new TokenNotFoundException();
+      return val;
   }
 
   public static ParserVal ParseFile(String file) throws IOException {

@@ -1,4 +1,4 @@
-package edu.eltech.moevm.syntax_tree;
+package edu.eltech.moevm.common;
 
 /**
  * Created by lazorg on 11/1/15.

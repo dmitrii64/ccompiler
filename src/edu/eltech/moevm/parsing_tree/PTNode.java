@@ -1,5 +1,7 @@
 package edu.eltech.moevm.parsing_tree;
 
+import edu.eltech.moevm.common.Nonterminals;
+
 import java.util.ArrayList;
 import java.util.List;
 
