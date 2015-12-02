@@ -1,5 +1,7 @@
 package edu.eltech.moevm.syntax_tree;
 
+import edu.eltech.moevm.common.Type;
+
 import java.util.List;
 
 /**

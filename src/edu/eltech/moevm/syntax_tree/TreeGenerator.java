@@ -61,7 +61,7 @@ public class TreeGenerator {
                 case FUNCTION_DEFINITION:
                     // Setting function return type
                     PTLeaf type = (PTLeaf) node.getElements().get(0);
-                    result.setType(Type.valueOf(Parser.getTokenName(type.getToken())));
+                    result.setType(edu.eltech.moevm.common.Type.valueOf(Parser.getTokenName(type.getToken())));
                     // Setting function name
                     PTLeaf fname = (PTLeaf) node.getElements().get(1);
                     result.setValue(fname.getValue());
@@ -91,7 +91,7 @@ public class TreeGenerator {
                     PTLeaf parameterType = (PTLeaf) node.getElements().get(0);
                     PTLeaf parameterName = (PTLeaf) node.getElements().get(1);
                     Leaf parameterLeaf = new Leaf(Operand.IDENTIFIER, parameterName.getValue(), parameterName.getLine());
-                    parameterLeaf.setType(Type.valueOf(Parser.getTokenName(parameterType.getToken())));
+                    parameterLeaf.setType(edu.eltech.moevm.common.Type.valueOf(Parser.getTokenName(parameterType.getToken())));
                     result.add(parameterLeaf);
                     break;
                 case DECLARATION:
@@ -105,7 +105,7 @@ public class TreeGenerator {
                             if (Parser.getTokenName(((PTLeaf) el).getToken()).compareTo("COMMA") != 0)
                                 if (Parser.getTokenName(((PTLeaf) el).getToken()).compareTo("SEMICOLON") != 0) {
                                     Leaf leaf = new Leaf(Operand.valueOf(Parser.getTokenName(((PTLeaf) el).getToken())), ((PTLeaf) el).getValue(), ((PTLeaf) el).getLine());
-                                    leaf.setType(Type.valueOf(Parser.getTokenName(((PTLeaf) declarationType).getToken())));
+                                    leaf.setType(edu.eltech.moevm.common.Type.valueOf(Parser.getTokenName(((PTLeaf) declarationType).getToken())));
                                     result.add(leaf);
                                 }
                     }
@@ -117,7 +117,7 @@ public class TreeGenerator {
                     PTElement initValue = node.getElements().get(2);
                     if (initDeclaratorNode instanceof PTLeaf) {
                         Leaf leaf = new Leaf(Operand.IDENTIFIER, ((PTLeaf) initDeclaratorNode).getValue(), ((PTLeaf) initDeclaratorNode).getLine());
-                        leaf.setType(Type.valueOf(Parser.getTokenName(((PTLeaf) typeNode).getToken())));
+                        leaf.setType(edu.eltech.moevm.common.Type.valueOf(Parser.getTokenName(((PTLeaf) typeNode).getToken())));
                         result.add(leaf);
                     }
                     if (initValue instanceof PTLeaf) {

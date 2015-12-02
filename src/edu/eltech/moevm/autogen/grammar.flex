@@ -1,7 +1,7 @@
 package edu.eltech.moevm.autogen;
 
 import edu.eltech.moevm.parsing_tree.PTLeaf;
-import edu.eltech.moevm.parsing_tree.Type;
+import edu.eltech.moevm.common.Type;
 
 %%
 
@@ -203,7 +203,8 @@ H = [a-fA-F0-9]
 
 0[xX]{H}+ {
     if (yyparser != null) {
-        yyparser.yylval = new ParserVal(new PTLeaf(Parser.CONSTANT, yylineno, Type.INT_HEX, yytext()));
+        //TODO: hex conversion
+        yyparser.yylval = new ParserVal(new PTLeaf(Parser.CONSTANT, yylineno, Type.INT, yytext()));
     }
     return Parser.CONSTANT;
 }
@@ -222,7 +223,7 @@ H = [a-fA-F0-9]
 
 \".*\" {
     if (yyparser != null) {
-        yyparser.yylval = new ParserVal(new PTLeaf(Parser.STRING_LITERAL, yylineno, Type.STRING, yytext()));
+        yyparser.yylval = new ParserVal(new PTLeaf(Parser.STRING_LITERAL, yylineno, Type.CHAR, yytext()));
     }
     return Parser.STRING_LITERAL;
 }

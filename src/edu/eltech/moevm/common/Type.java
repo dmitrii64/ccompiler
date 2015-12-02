@@ -1,4 +1,4 @@
-package edu.eltech.moevm.syntax_tree;
+package edu.eltech.moevm.common;
 
 /**
  * Created by vladimir on 31.10.15.
@@ -12,5 +12,6 @@ public enum Type {
     COMPLEX,
     SHORT,
     DOUBLE,
-    LONG
+    LONG,
+    UNKNOWN
 }

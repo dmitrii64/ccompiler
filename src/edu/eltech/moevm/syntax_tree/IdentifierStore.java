@@ -1,8 +1,7 @@
 package edu.eltech.moevm.syntax_tree;
 
-import sun.reflect.generics.tree.Tree;
+import edu.eltech.moevm.common.Type;
 
-import java.util.Iterator;
 import java.util.Vector;
 
 /**

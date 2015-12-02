@@ -1,5 +1,6 @@
 package edu.eltech.moevm.parsing_tree;
 
+import edu.eltech.moevm.common.Type;
 
 /**
  * Created by vladimir on 31.10.15.
