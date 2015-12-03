@@ -14,7 +14,7 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("================Input file================");
-        String filename = "test2.c";
+        String filename = "tests/test2.c";
         try {
             FileReader reader = new FileReader(filename);
             BufferedReader br = new BufferedReader(reader);
@@ -104,7 +104,7 @@ public class Main {
             });
             TreeJsGenerator treeJsGenerator = new TreeJsGenerator();
             tree.infixVisit(treeJsGenerator);
-            FileWriter fileWriter = new FileWriter("parsing_tree.html");
+            FileWriter fileWriter = new FileWriter("tree_output/parsing_tree.html");
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             String str = treeJsGenerator.genTree();
             bufferedWriter.write(str);
@@ -155,7 +155,7 @@ public class Main {
 
             SyntaxTreeJsGenerator syntaxTreeJsGenerator = new SyntaxTreeJsGenerator();
             syntaxTree.infixVisit(syntaxTreeJsGenerator);
-            FileWriter stfileWriter = new FileWriter("syntax_tree.html");
+            FileWriter stfileWriter = new FileWriter("tree_output/syntax_tree.html");
             BufferedWriter stbufferedWriter = new BufferedWriter(stfileWriter);
             String ststr = syntaxTreeJsGenerator.genTree();
             stbufferedWriter.write(ststr);
