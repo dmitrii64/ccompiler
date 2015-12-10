@@ -16,6 +16,10 @@ public class SyntaxTree {
         this.root = root;
     }
 
+    public TreeElement getRoot() {
+        return root;
+    }
+
     public void postfixVisit(TreeCallback c) {
         postfixVisit(c, root, 0);
     }

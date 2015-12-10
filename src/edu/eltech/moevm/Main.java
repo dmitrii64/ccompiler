@@ -168,7 +168,7 @@ public class Main {
             syntaxTree.verifyNameScopes();
 
             CodeGenerator generator = new CodeGenerator();
-            CodeList codeList = generator.Generate(syntaxTree);
+            CodeList codeList = generator.generate(syntaxTree);
             codeList.print();
 
 

@@ -3,10 +3,10 @@ package edu.eltech.moevm.intermediate;
 /**
  * Created by lazorg on 12/10/15.
  */
-public class Adress {
+public class Address {
     private String value;
 
-    public Adress(String val) {
+    public Address(String val) {
         value = val;
     }
 

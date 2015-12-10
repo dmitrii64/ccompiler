@@ -14,9 +14,11 @@ public class CodeList {
     }
 
     public void print() {
+        System.out.println("======= Generated code =======");
         for (Instruction inst : instructions) {
-            inst.print();
-            System.out.println();
+            if (inst != null) {
+                System.out.println(inst);
+            }
         }
     }
 
@@ -24,4 +26,15 @@ public class CodeList {
         instructions.add(instruction);
     }
 
+    public Instruction get(int i) {
+        return instructions.get(i);
+    }
+
+    public int size() {
+        return instructions.size();
+    }
+
+    public ArrayList<Instruction> getInstructions() {
+        return instructions;
+    }
 }
