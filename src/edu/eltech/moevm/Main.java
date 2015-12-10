@@ -4,6 +4,8 @@ package edu.eltech.moevm;
 import edu.eltech.moevm.autogen.Parser;
 import edu.eltech.moevm.autogen.TokenNotFoundException;
 import edu.eltech.moevm.common.Nonterminals;
+import edu.eltech.moevm.intermediate.CodeGenerator;
+import edu.eltech.moevm.intermediate.CodeList;
 import edu.eltech.moevm.parsing_tree.*;
 import edu.eltech.moevm.syntax_tree.*;
 
@@ -164,6 +166,14 @@ public class Main {
 
             System.out.println("=============== Verify name scopes ==============");
             syntaxTree.verifyNameScopes();
+
+            CodeGenerator generator = new CodeGenerator();
+            CodeList codeList = generator.Generate(syntaxTree);
+            codeList.print();
+
+
+
+
 
         } catch (IOException e) {
             e.printStackTrace();
