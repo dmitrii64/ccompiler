@@ -137,11 +137,15 @@ Decrement identifier value
 CALL func_identifier _ _
 ```
 
-Call function
+Call function. CALL creates return address to the stack(?)
 
 ### RET ###
 
-...?
+```
+RET _ _ _
+```
+
+RET gets return address from stack(?) and jumps
 
 ### DEFL ###
 
@@ -190,6 +194,22 @@ BML lab expr _
 ```
 
 Jump to label lab if expression expr less than 0
+
+### POP ###
+
+```
+POP id _ _
+```
+
+POP writes first value from stack to identifier id
+
+### PUSH ###
+
+```
+PUSH id _ _
+```
+
+PUSH writes value of identifier id to the head of stack
 
 References
 ----------
