@@ -211,6 +211,46 @@ PUSH id _ _
 
 PUSH writes value of identifier id to the head of stack
 
+### SHL ###
+
+```
+SHL expr1 expr2 res
+```
+
+Left shift (expr1 << expr2)
+
+### SHR ###
+
+```
+SHR expr1 expr2 res
+```
+
+Right shift (expr1 >> expr2)
+
+### CMP ###
+
+```
+CMP expr1 expr2 res
+```
+
+Compare expr1 and expr2 (expr1 - expr2)
+
+### MOD ###
+
+```
+MOD expr1 expr2 res
+```
+
+Remainder of the division (expr1 % expr2)
+
+### SUB ###
+
+```
+SUB expr1 expr2 res
+```
+
+Subtract expr2 from expr1
+
 References
 ----------
 
