@@ -1,6 +1,7 @@
 package edu.eltech.moevm.parsing_tree;
 
 import edu.eltech.moevm.common.Nonterminals;
+import edu.eltech.moevm.intermediate.ReduceObserver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ public class PTNode extends PTElement {
             this.elements.add((PTElement) obj);
             ((PTElement) obj).setParent(this);
         }
+//        ReduceObserver.getInstance().generate(this);
     }
 
     @Override

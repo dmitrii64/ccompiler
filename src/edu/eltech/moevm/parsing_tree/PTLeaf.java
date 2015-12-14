@@ -40,4 +40,16 @@ public class PTLeaf extends PTElement {
     public Type getType() {
         return type;
     }
+
+    @Override
+    public String toString() {
+        String str = "";
+        if (type != null) {
+            str += type.name()+" ";
+        }
+        if (value != null) {
+            str += value + " ";
+        }
+        return str;
+    }
 }

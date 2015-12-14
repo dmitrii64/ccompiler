@@ -1,5 +1,7 @@
 package edu.eltech.moevm.parsing_tree;
 
+import edu.eltech.moevm.intermediate.ReduceObserver;
+
 /**
  * Created by vladimir on 31.10.15.
  */
@@ -19,8 +21,9 @@ public class ParsingTree {
     private void postfixVisit(PTCallback c, PTElement node, int level) {
         try {
             for (PTElement e : node.getElements()) {
-                if (e != null)
+                if (e != null) {
                     postfixVisit(c, e, level + 1);
+                }
             }
         } catch (UnsupportedOperationException ignored) {
         }

@@ -16,6 +16,7 @@ public enum IROperation {
 
     MOV,
     ADD,
+    SUB,
     DIV,
     MUL,
     CALL,
@@ -25,6 +26,9 @@ public enum IROperation {
 
     IDENTIFIER,
     CONSTANT,
-    STRING_LITERAL
+    STRING_LITERAL,
+
+    DEFL,
+    BF
 
 }
