@@ -1,7 +1,6 @@
 package edu.eltech.moevm.parsing_tree;
 
 import edu.eltech.moevm.common.Nonterminals;
-import edu.eltech.moevm.intermediate.ReduceObserver;
 
 import java.util.ArrayList;
 import java.util.List;
