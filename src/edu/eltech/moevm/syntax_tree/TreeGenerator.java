@@ -235,6 +235,18 @@ public class TreeGenerator {
                     result = new Node(Operation.STAR);
                     setBinaryExpr(result, node);
                     break;
+                case LOGICAL_OR_EXPRESSION:
+                    result = new Node(Operation.OR_OP);
+                    setBinaryExpr(result, node);
+                    break;
+                case LOGICAL_AND_EXPRESSION:
+                    result = new Node(Operation.AND_OP);
+                    setBinaryExpr(result, node);
+                    break;
+                case EQUALITY_EXPRESSION:
+                    result = new Node(Operation.EQ_OP);
+                    setBinaryExpr(result, node);
+                    break;
                 case ARGUMENT_EXPRESSION_LIST:
                     // Functions arguments handling
                     result = new Node(Operation.FUNC_ARGS);
@@ -250,20 +262,28 @@ public class TreeGenerator {
                     // Postfix operation handling
                     PTElement unaryArg = node.getElements().get(0);
                     PTElement unaryOp = node.getElements().get(1);
-                    String str = null;
+                    String str1 = null;
+                    String str2 = null;
                     try {
-                        str = Parser.getTokenName(((PTLeaf) unaryOp).getToken());
+                        str1 = Parser.getTokenName(((PTLeaf) unaryOp).getToken());
+                        str2 = Parser.getTokenName(((PTLeaf) unaryArg).getToken());
                     } catch (TokenNotFoundException e) {
                         System.out.println("Unknown token in unary expression!");
                         e.printStackTrace();
                     }
                     Operation op = Operation.POST_INC_OP;
-                    if (str.compareTo(Operation.INC_OP.name()) == 0)
+                    if (str1.compareTo(Operation.INC_OP.name()) == 0)
                         op = Operation.POST_INC_OP;
-                    else if (str.compareTo(Operation.DEC_OP.name()) == 0)
+                    else if (str1.compareTo(Operation.DEC_OP.name()) == 0)
                         op = Operation.POST_DEC_OP;
+                    if (str2.compareTo("EXCL") == 0)
+                        op = Operation.NOT;
                     result = new Node(op);
-                    Leaf unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) unaryArg).getToken()), ((PTLeaf) unaryArg).getValue(), ((PTLeaf) unaryArg).getLine());
+                    Leaf unaryLeaf;
+                    if (op != Operation.NOT)
+                        unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) unaryArg).getToken()), ((PTLeaf) unaryArg).getValue(), ((PTLeaf) unaryArg).getLine());
+                    else
+                        unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) unaryOp).getToken()), ((PTLeaf) unaryOp).getValue(), ((PTLeaf) unaryOp).getLine());
                     result.add(unaryLeaf);
                     break;
                 case CAST_EXPRESSION:

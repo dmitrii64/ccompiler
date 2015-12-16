@@ -20,9 +20,9 @@ public enum Operation {
     LE_OP,  //<=
     LEFT_OP,
     RIGHT_OP,
-    AND_OP,
+    AND_OP, //&&
     XOR_OP,
-    OR_OP,
+    OR_OP, //||
     LOGICAL_AND_OP,
     LOGICAL_OR_OP,
     POSTFIX_EXPRESSION,
