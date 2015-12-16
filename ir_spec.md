@@ -179,6 +179,14 @@ BZL lab expr _
 
 Jump to label lab if expression expr is 0
 
+### BNZ ###
+
+```
+BNZ lab expr _
+```
+
+Jump to label lab if expression expr is NOT 0
+
 ### BPL ###
 
 ```
