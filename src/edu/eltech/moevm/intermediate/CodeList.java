@@ -37,4 +37,10 @@ public class CodeList {
     public ArrayList<Instruction> getInstructions() {
         return instructions;
     }
+
+    public void addAll(CodeList code) {
+        if (code != null)
+            if (code.getInstructions() != null)
+                this.instructions.addAll(code.getInstructions());
+    }
 }

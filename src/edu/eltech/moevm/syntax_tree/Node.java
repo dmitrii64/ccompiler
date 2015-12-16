@@ -2,6 +2,7 @@ package edu.eltech.moevm.syntax_tree;
 
 import edu.eltech.moevm.autogen.ParserVal;
 import edu.eltech.moevm.common.Operation;
+import edu.eltech.moevm.intermediate.CodeList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
  * Created by vladimir on 31.10.15.
  */
 public class Node extends TreeElement {
-
+    private CodeList code;
     private Operation operation;
     private String value;
     private ArrayList<TreeElement> right_elements;
@@ -60,7 +61,7 @@ public class Node extends TreeElement {
     }
 
     @Override
-    public List<TreeElement> getElements() throws UnsupportedOperationException {
+    public List<TreeElement> getElements() {
         ArrayList<TreeElement> temp = new ArrayList<TreeElement>();
         int i = right_elements.size();
 
@@ -79,5 +80,14 @@ public class Node extends TreeElement {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public void setCode(CodeList code) {
+        this.code = code;
+    }
+
+    @Override
+    public CodeList getCode() {
+        return code;
     }
 }

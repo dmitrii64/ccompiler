@@ -6,7 +6,6 @@ import edu.eltech.moevm.autogen.TokenNotFoundException;
 import edu.eltech.moevm.common.Nonterminals;
 import edu.eltech.moevm.intermediate.CodeGenerator;
 import edu.eltech.moevm.intermediate.CodeList;
-import edu.eltech.moevm.intermediate.ReduceObserver;
 import edu.eltech.moevm.parsing_tree.*;
 import edu.eltech.moevm.syntax_tree.*;
 
@@ -145,14 +144,14 @@ public class Main {
                 }
             });
 
-            syntaxTree.postfixVisit(new TreeCallback() {
-                @Override
-                public void processElement(TreeElement e, int level) {
-                    ReduceObserver.getInstance().generate(e);
-                }
-            });
-
-            ReduceObserver.getInstance().printCode();
+//            syntaxTree.postfixVisit(new TreeCallback() {
+//                @Override
+//                public void processElement(TreeElement e, int level) {
+//                    ReduceObserver.getInstance().generate(e);
+//                }
+//            });
+//
+//            ReduceObserver.getInstance().printCode();
 
             //Reset ids
             syntaxTree.infixVisit(new TreeCallback() {
@@ -178,9 +177,9 @@ public class Main {
             System.out.println("=============== Verify name scopes ==============");
             syntaxTree.verifyNameScopes();
 
-//            CodeGenerator generator = new CodeGenerator();
-//            CodeList codeList = generator.generate(syntaxTree);
-//            codeList.print();
+            CodeGenerator generator = new CodeGenerator();
+            CodeList codeList = generator.generate(syntaxTree);
+            codeList.print();
 
 
 

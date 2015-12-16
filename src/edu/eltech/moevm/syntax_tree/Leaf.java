@@ -29,4 +29,8 @@ public class Leaf extends TreeElement {
     public Operand getOperand() {
         return operand;
     }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 }

@@ -152,22 +152,19 @@ public class SyntaxTree {
             identifiers = new IdentifierStore[]{new IdentifierStore()};
         }
 
-        try {
-            for (TreeElement nodeChild : node.getElements()) {
-                // COMPOUND_STATEMENT cannot contain leaf child
-                if (!(nodeChild instanceof Node)) {
-                    throw new UnexpectedNodeException();
-                }
-                Node nodeElem = (Node) nodeChild;
-
-                if (nodeElem.getOperation() == Operation.DECLARATION) {
-                    // Parse nodes and create new variable into name scope
-                    handleVariableDeclaration(nodeElem, identifiers);
-                } else {
-                    verifyNameScopes(nodeElem, identifiers);
-                }
+        for (TreeElement nodeChild : node.getElements()) {
+            // COMPOUND_STATEMENT cannot contain leaf child
+            if (!(nodeChild instanceof Node)) {
+                throw new UnexpectedNodeException();
             }
-        } catch (UnsupportedOperationException ignore) {
+            Node nodeElem = (Node) nodeChild;
+
+            if (nodeElem.getOperation() == Operation.DECLARATION) {
+                // Parse nodes and create new variable into name scope
+                handleVariableDeclaration(nodeElem, identifiers);
+            } else {
+                verifyNameScopes(nodeElem, identifiers);
+            }
         }
 
         // Check unused identifiers defined in current compound statement
@@ -194,11 +191,8 @@ public class SyntaxTree {
                 verifyNameScopesInCompoundStatement(node, identifiers);
 
             } else {
-                try {
-                    for (TreeElement child : node.getElements()) {
-                        verifyNameScopes(child, identifiers);
-                    }
-                } catch (UnsupportedOperationException ignore) {
+                for (TreeElement child : node.getElements()) {
+                    verifyNameScopes(child, identifiers);
                 }
             }
 
@@ -232,54 +226,53 @@ public class SyntaxTree {
             throw new UnexpectedNodeException();
         }
 
-        try {
-            // One or more declarations or throw exception
-            if (nodeElem.getElements().size() == 0) {
-                // Invalid child number
-                throw new UnexpectedChildCountException();
-            }
 
-            for (int i = 0; i < nodeElem.getElements().size(); i++) {
-                TreeElement child = nodeElem.getElements().get(i);
-                if (child instanceof Node) {
-
-                    // Variable declaration with initializing
-
-                    Node nchild = (Node) child;
-
-                    if (nchild.getOperation() != Operation.INIT_DECLARATOR) {
-                        throw new UnexpectedNodeException();
-                    }
-                    if (nchild.getElements().size() != 2) {
-                        throw new UnexpectedChildCountException();
-                    }
-                    if (!(nchild.getElements().get(0) instanceof Leaf)) {
-                        throw new UnexpectedNodeException();
-                    }
-                    Leaf identifier = (Leaf) nchild.getElements().get(0);
-                    if (identifier.getOperand() != Operand.IDENTIFIER) {
-                        throw new UnexpectedNodeException();
-                    }
-                    TreeElement value = nchild.getElements().get(1);
-
-                    System.out.println("verify value of " + identifier.getValue());
-                    verifyNameScopes(value, identifiers);
-
-                    identifiers[identifiers.length - 1].createIdentifier(identifier.getValue(), identifier.getType(), value);
-
-                } else if (child instanceof Leaf) {
-
-                    // Variable declaration WITHOUT initializing
-
-                    Leaf lchild = (Leaf) child;
-                    if (lchild.getOperand() != Operand.IDENTIFIER) {
-                        throw new UnexpectedNodeException();
-                    }
-
-                    identifiers[identifiers.length - 1].createIdentifier(lchild.getValue(), lchild.getType());
-                }
-            }
-        } catch (UnsupportedOperationException ignore) {
+        // One or more declarations or throw exception
+        if (nodeElem.getElements().size() == 0) {
+            // Invalid child number
+            throw new UnexpectedChildCountException();
         }
+
+        for (int i = 0; i < nodeElem.getElements().size(); i++) {
+            TreeElement child = nodeElem.getElements().get(i);
+            if (child instanceof Node) {
+
+                // Variable declaration with initializing
+
+                Node nchild = (Node) child;
+
+                if (nchild.getOperation() != Operation.INIT_DECLARATOR) {
+                    throw new UnexpectedNodeException();
+                }
+                if (nchild.getElements().size() != 2) {
+                    throw new UnexpectedChildCountException();
+                }
+                if (!(nchild.getElements().get(0) instanceof Leaf)) {
+                    throw new UnexpectedNodeException();
+                }
+                Leaf identifier = (Leaf) nchild.getElements().get(0);
+                if (identifier.getOperand() != Operand.IDENTIFIER) {
+                    throw new UnexpectedNodeException();
+                }
+                TreeElement value = nchild.getElements().get(1);
+
+                System.out.println("verify value of " + identifier.getValue());
+                verifyNameScopes(value, identifiers);
+
+                identifiers[identifiers.length - 1].createIdentifier(identifier.getValue(), identifier.getType(), value);
+
+            } else if (child instanceof Leaf) {
+
+                // Variable declaration WITHOUT initializing
+
+                Leaf lchild = (Leaf) child;
+                if (lchild.getOperand() != Operand.IDENTIFIER) {
+                    throw new UnexpectedNodeException();
+                }
+
+                identifiers[identifiers.length - 1].createIdentifier(lchild.getValue(), lchild.getType());
+            }
+        }
+
     }
 }

@@ -29,6 +29,12 @@ public enum IROperation {
     STRING_LITERAL,
 
     DEFL,
-    BF
+    BF,
+    BZL,
+    CMP,
+    BML,
+    BPL,
+    BNZ,
+    BRL
 
 }
