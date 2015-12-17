@@ -10,16 +10,18 @@ int main()
         b = a;
     }
 
+    a = !a;
+
     print("hello");
     sizeof(a);
-//
-//    for (a = 0; a < 10; a++) {
-//        c = b;
-//    }
-//
-//while (a<b) {
-//while (c<d) {
-//b = c;
-//}
-//}
+
+    for (a = 0; a < 10; a++) {
+        c = b;
+    }
+
+while (a<b) {
+while (c<d) {
+b = c;
+}
+}
 }

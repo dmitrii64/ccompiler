@@ -39,6 +39,7 @@ public enum IROperation {
     BNF,
     AND,
     OR,
+    NOT,
 
     PRINT,
     SIZEOF
