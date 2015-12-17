@@ -4,9 +4,6 @@ import edu.eltech.moevm.common.Operation;
 import edu.eltech.moevm.syntax_tree.*;
 import edu.eltech.moevm.syntax_tree.UnsupportedOperationException;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EmptyStackException;
 import java.util.Stack;
 
 /**
@@ -132,6 +129,33 @@ public class CodeGenerator {
                         new Address(left.getValue()));
                 code.add(i);
                 break;
+            case AND_OP:
+            case OR_OP:
+                Operation parent = ((Node) node.getParent()).getOperation();
+                if (parent != Operation.SELECTION_STATEMENT && parent != Operation.ITERATION_STATEMENT) {
+                    if (node.getElements().get(0) instanceof Leaf) {
+                        Leaf right = (Leaf) node.getElements().get(0);
+                        leftAddr = new Address(right.getValue());
+                    } else {
+                        Node right = (Node) node.getElements().get(0);
+                        code.addAll(right.getCode());
+                        leftAddr = new Address(reg.pop());
+                    }
+                    if (node.getElements().get(1) instanceof Leaf) {
+                        Leaf right = (Leaf) node.getElements().get(1);
+                        rightAddr = new Address(right.getValue());
+                    } else {
+                        Node right = (Node) node.getElements().get(1);
+                        code.addAll(right.getCode());
+                        rightAddr = new Address(reg.peek());
+                    }
+                    i = new Instruction((node.getOperation() == Operation.AND_OP ? IROperation.AND : IROperation.OR),
+                            rightAddr,
+                            leftAddr,
+                            new Address(reg.push("R" + reg.size())));
+                    code.add(i);
+                }
+                break;
             case LESS:
             case GREATER:
             case EQ_OP:
@@ -161,30 +185,23 @@ public class CodeGenerator {
                 code.add(i);
                 break;
             case SELECTION_STATEMENT:
-                boolean isSwap = false;
                 if (node.getElements().get(0) instanceof Leaf) {
                     left = (Leaf) node.getElements().get(0);
                     rightAddr = new Address(left.getValue());
                     i = new Instruction(IROperation.BF,
-                            new Address(labels.push("L"+labels.size())),
+                            new Address(labels.push("L" + labels.size())),
                             rightAddr);
                 } else {
                     Node leftNode = (Node) node.getElements().get(0);
                     code.addAll(leftNode.getCode());
                     rightAddr = new Address(reg.pop());
-                    i = compareInstruction(code, leftNode.getOperation(), rightAddr);
+                    i = compareInstruction(code, leftNode, rightAddr);
                 }
                 code.add(i);
                 try {
-                    if (isSwap) {
-                        code.addAll(node.getElements().get(2).getCode());
-                        code.add(new Instruction(IROperation.DEFL, new Address(labels.peek())));
-                        code.addAll(node.getElements().get(1).getCode());
-                    } else {
-                        code.addAll(node.getElements().get(1).getCode());
-                        code.add(new Instruction(IROperation.DEFL, new Address(labels.peek())));
-                        code.addAll(node.getElements().get(2).getCode());
-                    }
+                    code.addAll(node.getElements().get(1).getCode());
+                    code.add(new Instruction(IROperation.DEFL, new Address(labels.peek())));
+                    code.addAll(node.getElements().get(2).getCode());
                 } catch (UnsupportedOperationException ignored) {
                 }
                 break;
@@ -203,7 +220,7 @@ public class CodeGenerator {
                         Node leftNode = (Node) node.getElements().get(0);
                         code.addAll(leftNode.getCode());
                         rightAddr = new Address(reg.pop());
-                        i = compareInstruction(code, leftNode.getOperation(), rightAddr);
+                        i = compareInstruction(code, leftNode, rightAddr);
                     }
                     code.add(i);
                     try {
@@ -245,25 +262,63 @@ public class CodeGenerator {
         return null;
     }
 
-    private Instruction compareInstruction(CodeList code, Operation cmpOperation, Address rightAddr) {
+    private Instruction compareInstruction(CodeList code, Node node, Address rightAddr) {
         Instruction i = null;
-        if (cmpOperation == Operation.NE_OP) {
+        if (node.getOperation() == Operation.AND_OP) {
+            i = new Instruction(IROperation.AND,
+                    rightAddr,
+                    new Address(reg.peek()),
+                    new Address(reg.push("R" + reg.size())));
+            code.add(i);
+//            i = new Instruction(IROperation.CMP,
+//                    new Address(reg.get(reg.size() - 2)),
+//                    new Address("true"),
+//                    new Address(reg.push("R" + reg.size())));
+//            code.add(i);
+//            i = new Instruction(IROperation.CMP,
+//                    new Address(reg.pop()),
+//                    new Address(reg.pop()),
+//                    new Address(reg.push("R" + reg.size())));
+//            code.add(i);
+            i = new Instruction(IROperation.BF,
+                    new Address(labels.push("L" + labels.size())),
+                    rightAddr);
+        } else if (node.getOperation() == Operation.OR_OP) {
+            i = new Instruction(IROperation.OR,
+                    rightAddr,
+                    new Address(reg.peek()),
+                    new Address(reg.push("R" + reg.size())));
+            code.add(i);
+//            i = new Instruction(IROperation.CMP,
+//                    new Address(reg.get(reg.size() - 2)),
+//                    new Address("true"),
+//                    new Address(reg.push("R" + reg.size())));
+//            code.add(i);
+//            i = new Instruction(IROperation.CMP,
+//                    new Address(reg.pop()),
+//                    new Address(reg.pop()),
+//                    new Address(reg.push("R" + reg.size())));
+//            code.add(i);
+            i = new Instruction(IROperation.BNF,
+                    new Address(labels.push("L" + labels.size())),
+                    rightAddr);
+        } else if (node.getOperation() == Operation.NE_OP) {
             i = new Instruction(IROperation.BZL,
                     new Address(labels.push("L" + labels.size())),
                     rightAddr);
-        } else if (cmpOperation == Operation.GREATER) {
+        } else if (node.getOperation() == Operation.GREATER) {
             i = new Instruction(IROperation.BPL,
                     new Address(labels.push("L" + labels.size())),
                     rightAddr);
-        } else if (cmpOperation == Operation.EQ_OP) {
+        } else if (node.getOperation() == Operation.EQ_OP) {
             i = new Instruction(IROperation.BNZ,
                     new Address(labels.push("L" + labels.size())),
                     rightAddr);
-        } else if (cmpOperation == Operation.LESS) {
+        } else if (node.getOperation() == Operation.LESS) {
             i = new Instruction(IROperation.BML,
                     new Address(labels.push("L" + labels.size())),
                     rightAddr);
-        } else if (cmpOperation == Operation.GE_OP) {
+        } else if (node.getOperation() == Operation.GE_OP) {
             i = new Instruction(IROperation.BPL,
                     new Address(labels.push("L" + labels.size())),
                     rightAddr);
@@ -271,7 +326,7 @@ public class CodeGenerator {
             i = new Instruction(IROperation.BZL,
                     new Address(labels.peek()),
                     rightAddr);
-        } else if (cmpOperation == Operation.LE_OP) {
+        } else if (node.getOperation() == Operation.LE_OP) {
             i = new Instruction(IROperation.BML,
                     new Address(labels.push("L" + labels.size())),
                     rightAddr);
@@ -305,7 +360,7 @@ public class CodeGenerator {
             code.addAll(leftNode.getCode());
             rightAddr = new Address(reg.pop());
             i = compareInstruction(code,
-                    ((Node)leftNode.getElements().get(0)).getOperation(),
+                    ((Node) leftNode.getElements().get(0)),
                     rightAddr);
         }
         code.add(i);

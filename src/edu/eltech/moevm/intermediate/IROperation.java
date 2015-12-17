@@ -35,6 +35,9 @@ public enum IROperation {
     BML,
     BPL,
     BNZ,
-    BRL
+    BRL,
+    BNF,
+    AND,
+    OR
 
 }

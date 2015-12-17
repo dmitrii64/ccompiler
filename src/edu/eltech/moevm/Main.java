@@ -16,7 +16,7 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("================Input file================");
-        String filename = "tests/test2.c";
+        String filename = "tests/logical.c";
         try {
             FileReader reader = new FileReader(filename);
             BufferedReader br = new BufferedReader(reader);
