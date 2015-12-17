@@ -238,6 +238,18 @@ public class CodeGenerator {
                     iterationFor(code, node);
                 }
                 break;
+            case PRINT:
+                left = (Leaf) node.getElements().get(0);
+                i = new Instruction(IROperation.PRINT,
+                        new Address(left.getValue()));
+                code.add(i);
+                break;
+            case SIZEOF:
+                left = (Leaf) node.getElements().get(0);
+                i = new Instruction(IROperation.SIZEOF,
+                        new Address(left.getValue()));
+                code.add(i);
+                break;
             default:
                 for (TreeElement e : node.getElements()) {
                     try {

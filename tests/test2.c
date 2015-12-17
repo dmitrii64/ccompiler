@@ -9,6 +9,9 @@ int main()
     } else {
         b = a;
     }
+
+    print("hello");
+    sizeof(a);
 //
 //    for (a = 0; a < 10; a++) {
 //        c = b;
