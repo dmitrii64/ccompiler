@@ -21,11 +21,13 @@ public class SyntaxTreeJsGenerator implements TreeCallback {
             if (e instanceof Leaf) {
                 Leaf cur = ((Leaf) e);
                 String name = ((Leaf) e).getOperand().name();
+
                 int hc = cur.getId();
                 if (cur.getValue() != null)
                     name += " (" + cur.getValue() + ")";
                 if (cur.getType() != null)
                     name += " <" + cur.getType() + ">";
+                name = name.replaceAll("\"", "");
                 nodes.add(new String("g.setNode(" + hc + ",  { label: \"" + name + "\",\t class: \"type-TK\"});"));
             } else if (e instanceof Node) {
                 Node cur = ((Node) e);
@@ -36,6 +38,8 @@ public class SyntaxTreeJsGenerator implements TreeCallback {
                     name += " (" + cur.getValue() + ")";
                 if (cur.getType() != null)
                     name += " <" + cur.getType() + ">";
+
+
                 nodes.add(new String("g.setNode(" + hc + ",  { label: \"" + name + "\",\t class: \"type-NT\"});"));
                 if (e instanceof Node) {
                     try {
