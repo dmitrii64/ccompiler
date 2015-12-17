@@ -189,6 +189,8 @@ public class TreeGenerator {
                     result.add(postfixLeaf);
                     if (operation.compareTo("RBLEFT") == 0) {
                         result.setOperation(Operation.FUNC_CALL);
+
+
                     } else if (operation.compareTo("BRACKETLEFT") == 0) {
                         result.setOperation(Operation.ARRAY_ACCESS);
                         PTElement arrayIteratonValue = node.getElements().get(2);
@@ -284,14 +286,13 @@ public class TreeGenerator {
                         op = Operation.PRINT;
                     result = new Node(op);
                     Leaf unaryLeaf;
-                    if (op == Operation.NOT) {// && op != Operation.PRINT )
+                    if (op == Operation.NOT) {
                         unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) unaryOp).getToken()), ((PTLeaf) unaryOp).getValue(), ((PTLeaf) unaryOp).getLine());
                     } else if (op == Operation.PRINT) {
                         PTElement third = node.getElements().get(2);
                         unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) third).getToken()), ((PTLeaf) third).getValue(), ((PTLeaf) third).getLine());
                     } else
                         unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) unaryArg).getToken()), ((PTLeaf) unaryArg).getValue(), ((PTLeaf) unaryArg).getLine());
-
                     result.add(unaryLeaf);
                     break;
                 case CAST_EXPRESSION:
@@ -299,8 +300,21 @@ public class TreeGenerator {
                     PTElement castArg = node.getElements().get(0);
                     PTElement castOp = node.getElements().get(1);
                     result = new Node(getOperationByToken(((PTLeaf) castArg).getToken()));
-                    Leaf castLeaf = new Leaf(getOperandByToken(((PTLeaf) castOp).getToken()), ((PTLeaf) castOp).getValue(), ((PTLeaf) castOp).getLine());
-                    result.add(castLeaf);
+                    TreeElement element;
+                    if (castOp instanceof PTLeaf) {
+                        element = new Leaf(getOperandByToken(((PTLeaf) castOp).getToken()), ((PTLeaf) castOp).getValue(), ((PTLeaf) castOp).getLine());
+                        result.add(element);
+                    } else {
+                        PTNode castNode = (PTNode) castOp;
+                        if (castNode.getNonterminal() == Nonterminals.PRIMARY_EXPRESSION) {
+                            PTElement element1 = castNode.getElements().get(1);
+                            element = new Leaf(getOperandByToken(((PTLeaf) element1).getToken()), ((PTLeaf) element1).getValue(), ((PTLeaf) element1).getLine());
+                            result.add(element);
+                        }
+                        // result.add(args);
+
+                    }
+
                     break;
                 case JUMP_STATEMENT:
                     // Jump statements and "return" handling
