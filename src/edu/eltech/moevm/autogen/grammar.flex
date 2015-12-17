@@ -380,9 +380,9 @@ H = [a-fA-F0-9]
 }
 "/"  {
     if (yyparser != null) {
-        yyparser.yylval = new ParserVal(new PTLeaf(Parser.SLASH, yylineno));
+        yyparser.yylval = new ParserVal(new PTLeaf(Parser.DIVIDE, yylineno));
     }
-    return Parser.SLASH;
+    return Parser.DIVIDE;
 }
 "%"  {
     if (yyparser != null) {

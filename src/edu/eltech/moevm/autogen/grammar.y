@@ -17,7 +17,7 @@
 %token IF ELSE WHILE DO FOR GOTO BREAK RETURN
 
 %token SEMICOLON BRACELEFT BRACERIGHT COMMA COLON EQUAL RBLEFT RBRIGHT BRACKETLEFT
-%token BRACKETRIGHT DOT AMP EXCL MINUS PLUS STAR SLASH PERCENT LESS GREATER
+%token BRACKETRIGHT DOT AMP EXCL MINUS PLUS STAR DIVIDE PERCENT LESS GREATER
 %token CARET BAR QUESTION NUMBER_SIGN
 
 
@@ -71,7 +71,7 @@ cast_expression
 multiplicative_expression
 	: cast_expression                                   { $$ = new ParserVal(new PTNode(Nonterminals.MULTIPLICATIVE_EXPRESSION, (PTElement)$1.obj)); }
 	| multiplicative_expression STAR cast_expression    { $$ = new ParserVal(new PTNode(Nonterminals.MULTIPLICATIVE_EXPRESSION, (PTElement)$1.obj, (PTLeaf)$2.obj, (PTElement)$3.obj)); }
-	| multiplicative_expression SLASH cast_expression   { $$ = new ParserVal(new PTNode(Nonterminals.MULTIPLICATIVE_EXPRESSION, (PTElement)$1.obj, (PTLeaf)$2.obj, (PTElement)$3.obj)); }
+	| multiplicative_expression DIVIDE cast_expression   { $$ = new ParserVal(new PTNode(Nonterminals.MULTIPLICATIVE_EXPRESSION, (PTElement)$1.obj, (PTLeaf)$2.obj, (PTElement)$3.obj)); }
 	| multiplicative_expression PERCENT cast_expression { $$ = new ParserVal(new PTNode(Nonterminals.MULTIPLICATIVE_EXPRESSION, (PTElement)$1.obj, (PTLeaf)$2.obj, (PTElement)$3.obj)); }
 	;
 
