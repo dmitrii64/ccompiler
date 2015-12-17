@@ -60,6 +60,7 @@ public enum Operation {
     TYPE_CAST,
 
     SIZEOF,
+    PRINT,
     SIZEOFTYPE,
 
     RE,

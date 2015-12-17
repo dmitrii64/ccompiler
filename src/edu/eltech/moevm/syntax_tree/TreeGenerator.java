@@ -262,6 +262,7 @@ public class TreeGenerator {
                     // Postfix operation handling
                     PTElement unaryArg = node.getElements().get(0);
                     PTElement unaryOp = node.getElements().get(1);
+
                     String str1 = null;
                     String str2 = null;
                     try {
@@ -276,14 +277,21 @@ public class TreeGenerator {
                         op = Operation.POST_INC_OP;
                     else if (str1.compareTo(Operation.DEC_OP.name()) == 0)
                         op = Operation.POST_DEC_OP;
+
                     if (str2.compareTo("EXCL") == 0)
                         op = Operation.NOT;
+                    else if (str2.compareTo(Operation.PRINT.name()) == 0)
+                        op = Operation.PRINT;
                     result = new Node(op);
                     Leaf unaryLeaf;
-                    if (op != Operation.NOT)
-                        unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) unaryArg).getToken()), ((PTLeaf) unaryArg).getValue(), ((PTLeaf) unaryArg).getLine());
-                    else
+                    if (op == Operation.NOT) {// && op != Operation.PRINT )
                         unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) unaryOp).getToken()), ((PTLeaf) unaryOp).getValue(), ((PTLeaf) unaryOp).getLine());
+                    } else if (op == Operation.PRINT) {
+                        PTElement third = node.getElements().get(2);
+                        unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) third).getToken()), ((PTLeaf) third).getValue(), ((PTLeaf) third).getLine());
+                    } else
+                        unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) unaryArg).getToken()), ((PTLeaf) unaryArg).getValue(), ((PTLeaf) unaryArg).getLine());
+
                     result.add(unaryLeaf);
                     break;
                 case CAST_EXPRESSION:
