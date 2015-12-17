@@ -5,7 +5,7 @@ package edu.eltech.moevm.intermediate;
  */
 public enum IROperation {
     VOID,
-    INT,
+    INTEGER,
     CHAR,
     FLOAT,
     BOOL,
@@ -38,6 +38,9 @@ public enum IROperation {
     BRL,
     BNF,
     AND,
-    OR
+    OR,
+
+    PRINT,
+    SIZEOF
 
 }

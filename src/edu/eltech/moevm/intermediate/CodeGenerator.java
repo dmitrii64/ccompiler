@@ -1,6 +1,7 @@
 package edu.eltech.moevm.intermediate;
 
 import edu.eltech.moevm.common.Operation;
+import edu.eltech.moevm.common.Type;
 import edu.eltech.moevm.syntax_tree.*;
 import edu.eltech.moevm.syntax_tree.UnsupportedOperationException;
 
@@ -56,7 +57,7 @@ public class CodeGenerator {
             case INIT_DECLARATOR:
                 left = (Leaf) node.getElements().get(0);
                 Leaf value = (Leaf) node.getElements().get(1);
-                i = new Instruction(IROperation.valueOf(left.getType().name()),
+                i = new Instruction((left.getType() == Type.INT) ? IROperation.INTEGER : IROperation.valueOf(left.getType().name()),
                         new Address(left.getValue()));
                 code.add(i);
                 i = new Instruction(IROperation.MOV,
