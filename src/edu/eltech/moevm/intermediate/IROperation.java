@@ -4,6 +4,8 @@ package edu.eltech.moevm.intermediate;
  * Created by lazorg on 12/10/15.
  */
 public enum IROperation {
+    NEW,
+    SUBS, //array access: a[i]
     VOID,
     INTEGER,
     CHAR,

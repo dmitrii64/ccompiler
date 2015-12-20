@@ -71,11 +71,17 @@ public class CodeGenerator {
                         code.addAll(e.getCode());
                     } catch (UnsupportedOperationException e1) {
                         Leaf l = (Leaf) e;
-                        i = new Instruction(IROperation.valueOf(l.getType().name()),
+                        i = new Instruction((l.getType() == Type.INT) ? IROperation.INTEGER : IROperation.valueOf(left.getType().name()),
                                 new Address(l.getValue() == null ? "null" : l.getValue()));
                         code.add(i);
                     }
                 }
+                break;
+            case NEW:
+                left = (Leaf) node.getElements().get(0);
+                i = new Instruction(IROperation.NEW,
+                        new Address(reg.push(left.getValue())));
+                code.add(i);
                 break;
             case POST_INC_OP:
                 left = (Leaf) node.getElements().get(0);
@@ -115,7 +121,7 @@ public class CodeGenerator {
                         new Address(reg.push("R" + reg.size())));
                 code.add(i);
                 break;
-            case EQUAL:
+            case ARRAY_ACCESS:
                 left = (Leaf) node.getElements().get(0);
                 if (node.getElements().get(1) instanceof Leaf) {
                     Leaf right = (Leaf) node.getElements().get(1);
@@ -125,10 +131,38 @@ public class CodeGenerator {
                     code.addAll(right.getCode());
                     rightAddr = new Address(reg.pop());
                 }
-                i = new Instruction(IROperation.MOV,
+                i = new Instruction(IROperation.SUBS,
+                        new Address(left.getValue()),
                         rightAddr,
-                        new Address(left.getValue()));
+                        new Address(reg.push("R"+reg.size())));
                 code.add(i);
+                break;
+            case EQUAL:
+                if (node.getElements().get(1) instanceof Leaf) {
+                    Leaf right = (Leaf) node.getElements().get(1);
+                    rightAddr = new Address(right.getValue());
+                } else {
+                    Node right = (Node) node.getElements().get(1);
+                    code.addAll(right.getCode());
+                    rightAddr = new Address(reg.pop());
+                }
+                if (node.getElements().get(0) instanceof Leaf) {
+                    left = (Leaf) node.getElements().get(0);
+                    if (code.get(code.size() - 1).getOperation() != IROperation.NEW) {
+                        i = new Instruction(IROperation.MOV,
+                                rightAddr,
+                                new Address(left.getValue()));
+                        code.add(i);
+                    } else {
+                        code.get(code.size() - 1).setSecond(new Address(left.getValue()));
+                    }
+                } else {
+                    code.addAll(((Node) node.getElements().get(0)).getCode());
+                    i = new Instruction(IROperation.MOV,
+                            rightAddr,
+                            new Address(reg.pop()));
+                    code.add(i);
+                }
                 break;
             case AND_OP:
             case OR_OP:
