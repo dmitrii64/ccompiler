@@ -6,5 +6,5 @@ package edu.eltech.moevm.common;
 public enum Operand {
     IDENTIFIER,
     CONSTANT,
-    STRING_LITERAL,
+    STRING_LITERAL
 }

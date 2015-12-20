@@ -2,7 +2,7 @@
 int main()
 {
 	complex a=4,b,c,d=1,e=2,f=3;
-	d = e/a*b + f*c;
+	d = -e/a*b + f*c;
 
     if (a < c && a<b) {
         a = b;

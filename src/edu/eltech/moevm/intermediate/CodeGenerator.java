@@ -18,6 +18,16 @@ public class CodeGenerator {
     private Stack<String> labels = new Stack<>();
     private ArrayList<String> complexVars = new ArrayList<>();
 
+    public CodeList toAsm() {
+        CodeList asm = new CodeList();
+        if (code != null) {
+            for (int i = 0; i < code.size(); i++) {
+
+            }
+        }
+        return asm;
+    }
+
     public CodeList generate(SyntaxTree tree) {
 
         generate(tree.getRoot());
