@@ -299,16 +299,34 @@ public class TreeGenerator {
                         op = Operation.NOT;
                     else if (str2.compareTo(Operation.PRINT.name()) == 0)
                         op = Operation.PRINT;
+                    else if (str2.compareTo(Operation.NEW.name()) == 0)
+                        op = Operation.NEW;
                     result = new Node(op);
                     Leaf unaryLeaf;
                     if (op == Operation.NOT) {
                         unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) unaryOp).getToken()), ((PTLeaf) unaryOp).getValue(), ((PTLeaf) unaryOp).getLine());
+                        result.add(unaryLeaf);
                     } else if (op == Operation.PRINT) {
                         PTElement third = node.getElements().get(2);
                         unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) third).getToken()), ((PTLeaf) third).getValue(), ((PTLeaf) third).getLine());
-                    } else
+                        result.add(unaryLeaf);
+                    } else if (op == Operation.NEW) {
+                        PTLeaf newtype = (PTLeaf) node.getElements().get(1);
+                        PTElement newsize = (PTLeaf) node.getElements().get(3);
+                        result.setType(getTypeByToken(newtype.getToken()));
+                        if (newsize instanceof PTLeaf) {
+                            Leaf sizeleaf = new Leaf(getOperandByToken(((PTLeaf) newsize).getToken()), ((PTLeaf) newsize).getValue(), ((PTLeaf) newsize).getLine());
+                            result.add(sizeleaf);
+                        }
+
+
+                        //unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) unaryArg).getToken()), ((PTLeaf) unaryArg).getValue(), ((PTLeaf) unaryArg).getLine());
+                    } else {
                         unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) unaryArg).getToken()), ((PTLeaf) unaryArg).getValue(), ((PTLeaf) unaryArg).getLine());
-                    result.add(unaryLeaf);
+                        result.add(unaryLeaf);
+                    }
+
+
                     break;
                 case CAST_EXPRESSION:
                     // Unary operation handling
