@@ -318,15 +318,10 @@ public class TreeGenerator {
                             Leaf sizeleaf = new Leaf(getOperandByToken(((PTLeaf) newsize).getToken()), ((PTLeaf) newsize).getValue(), ((PTLeaf) newsize).getLine());
                             result.add(sizeleaf);
                         }
-
-
-                        //unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) unaryArg).getToken()), ((PTLeaf) unaryArg).getValue(), ((PTLeaf) unaryArg).getLine());
                     } else {
                         unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) unaryArg).getToken()), ((PTLeaf) unaryArg).getValue(), ((PTLeaf) unaryArg).getLine());
                         result.add(unaryLeaf);
                     }
-
-
                     break;
                 case CAST_EXPRESSION:
                     // Unary operation handling
@@ -345,9 +340,7 @@ public class TreeGenerator {
                             result.add(element);
                         }
                         // result.add(args);
-
                     }
-
                     break;
                 case JUMP_STATEMENT:
                     // Jump statements and "return" handling
