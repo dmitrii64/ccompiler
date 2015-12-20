@@ -12,7 +12,7 @@
 %token STATIC
 %token CHAR SHORT INT LONG FLOAT DOUBLE VOID COMPLEX BOOL
 
-%token RE IM MOD PRINT
+%token RE IM MOD PRINT NEW
 
 %token IF ELSE WHILE DO FOR GOTO BREAK RETURN
 
@@ -51,6 +51,7 @@ unary_expression
 	| DEC_OP unary_expression              { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTLeaf)$1.obj, (PTElement)$2.obj)); }
 	| MINUS cast_expression                { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTLeaf)$1.obj, (PTElement)$2.obj)); }
 	| EXCL cast_expression                 { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTLeaf)$1.obj, (PTElement)$2.obj)); }
+	| NEW type_specifier BRACKETLEFT expression BRACKETRIGHT               { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTLeaf)$1.obj, (PTElement)$2.obj, (PTLeaf)$3.obj, (PTElement)$4.obj, (PTLeaf)$5.obj)); }
 	| SIZEOF unary_expression              { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTLeaf)$1.obj, (PTElement)$2.obj)); }
 	| SIZEOF RBLEFT type_specifier RBRIGHT { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTLeaf)$1.obj, (PTLeaf)$2.obj, (PTElement)$3.obj, (PTLeaf)$4.obj)); }
 	| RE RBLEFT CONSTANT RBRIGHT           { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTLeaf)$1.obj, (PTLeaf)$2.obj, (PTLeaf)$3.obj, (PTLeaf)$4.obj)); }

@@ -162,6 +162,12 @@ H = [a-fA-F0-9]
     }
     return Parser.WHILE;
 }
+"new"   {
+     if (yyparser != null) {
+        yyparser.yylval = new ParserVal(new PTLeaf(Parser.NEW, yylineno));
+     }
+     return Parser.NEW;
+}
 
 /* boolean type */
 
