@@ -8,6 +8,7 @@ import edu.eltech.moevm.common.Operand;
 public class Leaf extends TreeElement {
     private Operand operand;
     private String value;
+    private boolean isArray;
     private int line;
 
     public Leaf(Operand operand, String value, int ln) {
@@ -32,5 +33,13 @@ public class Leaf extends TreeElement {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public boolean isArray() {
+        return isArray;
+    }
+
+    public void setIsArray(boolean isArray) {
+        this.isArray = isArray;
     }
 }

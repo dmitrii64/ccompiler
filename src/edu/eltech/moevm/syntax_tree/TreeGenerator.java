@@ -151,9 +151,24 @@ public class TreeGenerator {
                             short token = ((PTLeaf) el).getToken();
                             if (token != Parser.COMMA) {
                                 if (token != Parser.SEMICOLON) {
-                                    Leaf leaf = new Leaf(getOperandByToken(((PTLeaf) el).getToken()), ((PTLeaf) el).getValue(), ((PTLeaf) el).getLine());
-                                    leaf.setType(getTypeByToken(((PTLeaf) declarationType).getToken()));
-                                    result.add(leaf);
+                                    if (token == Parser.IDENTIFIER) {
+                                        Leaf leaf = new Leaf(getOperandByToken(((PTLeaf) el).getToken()), ((PTLeaf) el).getValue(), ((PTLeaf) el).getLine());
+                                        if (it.hasNext()) {
+                                            Iterator<PTElement> it2 = it;
+                                            PTElement next = it2.next();
+                                            if (next instanceof PTLeaf) {
+                                                if (((PTLeaf) next).getToken() == Parser.BRACKETLEFT) {
+                                                    leaf.setIsArray(true);
+                                                }
+                                            }
+                                        }
+
+                                        leaf.setType(getTypeByToken(((PTLeaf) declarationType).getToken()));
+                                        result.add(leaf);
+                                    }
+
+
+
                                 }
                             }
                         }

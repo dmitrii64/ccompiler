@@ -23,10 +23,15 @@ public class SyntaxTreeJsGenerator implements TreeCallback {
                 String name = ((Leaf) e).getOperand().name();
 
                 int hc = cur.getId();
+
                 if (cur.getValue() != null)
                     name += " (" + cur.getValue() + ")";
+
+                if (cur.isArray())
+                    name += " array of";
                 if (cur.getType() != null)
                     name += " <" + cur.getType() + ">";
+
                 name = name.replaceAll("\"", "");
                 nodes.add(new String("g.setNode(" + hc + ",  { label: \"" + name + "\",\t class: \"type-TK\"});"));
             } else if (e instanceof Node) {
