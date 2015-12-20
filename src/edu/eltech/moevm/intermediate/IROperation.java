@@ -16,6 +16,8 @@ public enum IROperation {
     DOUBLE,
     LONG,
 
+    SRE,
+    SIM,
     MOV,
     ADD,
     SUB,

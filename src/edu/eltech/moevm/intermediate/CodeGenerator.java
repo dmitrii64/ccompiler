@@ -5,6 +5,8 @@ import edu.eltech.moevm.common.Type;
 import edu.eltech.moevm.syntax_tree.*;
 import edu.eltech.moevm.syntax_tree.UnsupportedOperationException;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Stack;
 
 /**
@@ -12,12 +14,9 @@ import java.util.Stack;
  */
 public class CodeGenerator {
     private CodeList code = new CodeList();
-    private CodeList tempCode = new CodeList();
-    private Stack<CodeList> childs = new Stack<>();
-    private Stack<String> operands = new Stack<>();
-    private Stack<Leaf> stack = new Stack<>();
     private Stack<String> reg = new Stack<>();
     private Stack<String> labels = new Stack<>();
+    private ArrayList<String> complexVars = new ArrayList<>();
 
     public CodeList generate(SyntaxTree tree) {
 
@@ -60,10 +59,27 @@ public class CodeGenerator {
                 i = new Instruction((left.getType() == Type.INT) ? IROperation.INTEGER : IROperation.valueOf(left.getType().name()),
                         new Address(left.getValue()));
                 code.add(i);
-                i = new Instruction(IROperation.MOV,
-                        new Address(value.getValue()),
-                        new Address(left.getValue()));
-                code.add(i);
+                if (left.getType() != Type.COMPLEX) {
+                    i = new Instruction(IROperation.MOV,
+                            new Address(value.getValue()),
+                            new Address(left.getValue()));
+                    code.add(i);
+                } else {
+                    complexVars.add(left.getValue());
+                    Complex c = Complex.parse(value.getValue());
+                    if (c.getRe() != null) {
+                        i = new Instruction(IROperation.SRE,
+                                new Address(c.getRe()),
+                                new Address(left.getValue()));
+                        code.add(i);
+                    }
+                    if (c.getIm() != null) {
+                        i = new Instruction(IROperation.SIM,
+                                new Address(c.getIm()),
+                                new Address(left.getValue()));
+                        code.add(i);
+                    }
+                }
                 break;
             case DECLARATION:
                 for (TreeElement e : node.getElements()) {
@@ -73,6 +89,9 @@ public class CodeGenerator {
                         Leaf l = (Leaf) e;
                         i = new Instruction((l.getType() == Type.INT) ? IROperation.INTEGER : IROperation.valueOf(left.getType().name()),
                                 new Address(l.getValue() == null ? "null" : l.getValue()));
+                        if (l.getType() == Type.COMPLEX) {
+                            complexVars.add(l.getValue());
+                        }
                         code.add(i);
                     }
                 }
@@ -134,7 +153,7 @@ public class CodeGenerator {
                 i = new Instruction(IROperation.SUBS,
                         new Address(left.getValue()),
                         rightAddr,
-                        new Address(reg.push("R"+reg.size())));
+                        new Address(reg.push("R" + reg.size())));
                 code.add(i);
                 break;
             case EQUAL:
@@ -148,13 +167,52 @@ public class CodeGenerator {
                 }
                 if (node.getElements().get(0) instanceof Leaf) {
                     left = (Leaf) node.getElements().get(0);
-                    if (code.get(code.size() - 1).getOperation() != IROperation.NEW) {
-                        i = new Instruction(IROperation.MOV,
-                                rightAddr,
-                                new Address(left.getValue()));
-                        code.add(i);
+                    if (code.size() > 0) {
+                        if (code.get(code.size() - 1).getOperation() != IROperation.NEW) {
+                            if (left.getType() != Type.COMPLEX) {
+                                i = new Instruction(IROperation.MOV,
+                                        rightAddr,
+                                        new Address(left.getValue()));
+                                code.add(i);
+                            } else {
+                                Complex c = Complex.parse(((Leaf) node.getElements().get(1)).getValue());
+                                if (c.getRe() != null) {
+                                    i = new Instruction(IROperation.SRE,
+                                            new Address(c.getRe()),
+                                            new Address(left.getValue()));
+                                    code.add(i);
+                                }
+                                if (c.getIm() != null) {
+                                    i = new Instruction(IROperation.SIM,
+                                            new Address(c.getIm()),
+                                            new Address(left.getValue()));
+                                    code.add(i);
+                                }
+                            }
+                        } else {
+                            code.get(code.size() - 1).setSecond(new Address(left.getValue()));
+                        }
                     } else {
-                        code.get(code.size() - 1).setSecond(new Address(left.getValue()));
+                        if (!complexVars.contains(left.getValue())) {
+                            i = new Instruction(IROperation.MOV,
+                                    rightAddr,
+                                    new Address(left.getValue()));
+                            code.add(i);
+                        } else {
+                            Complex c = Complex.parse(((Leaf) node.getElements().get(1)).getValue());
+                            if (c.getRe() != null) {
+                                i = new Instruction(IROperation.SRE,
+                                        new Address(c.getRe()),
+                                        new Address(left.getValue()));
+                                code.add(i);
+                            }
+                            if (c.getIm() != null) {
+                                i = new Instruction(IROperation.SIM,
+                                        new Address(c.getIm()),
+                                        new Address(left.getValue()));
+                                code.add(i);
+                            }
+                        }
                     }
                 } else {
                     code.addAll(((Node) node.getElements().get(0)).getCode());
