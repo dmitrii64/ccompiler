@@ -277,35 +277,46 @@ public class TreeGenerator {
                     break;
                 case UNARY_EXPRESSION:
                     // Postfix operation handling
-                    PTElement unaryArg = node.getElements().get(0);
-                    PTElement unaryOp = node.getElements().get(1);
+                    PTElement unaryFirst = node.getElements().get(0);
+                    PTElement unarySecond = node.getElements().get(1);
 
-                    String str1 = null;
-                    String str2 = null;
+
+                    String firstString = null;
+                    String secondString = null;
                     try {
-                        str1 = Parser.getTokenName(((PTLeaf) unaryOp).getToken());
-                        str2 = Parser.getTokenName(((PTLeaf) unaryArg).getToken());
+                        secondString = Parser.getTokenName(((PTLeaf) unarySecond).getToken());
+                        firstString = Parser.getTokenName(((PTLeaf) unaryFirst).getToken());
                     } catch (TokenNotFoundException e) {
                         System.out.println("Unknown token in unary expression!");
                         e.printStackTrace();
                     }
                     Operation op = Operation.POST_INC_OP;
-                    if (str1.compareTo(Operation.INC_OP.name()) == 0)
+                    if (secondString.compareTo(Operation.INC_OP.name()) == 0)
                         op = Operation.POST_INC_OP;
-                    else if (str1.compareTo(Operation.DEC_OP.name()) == 0)
+                    else if (secondString.compareTo(Operation.DEC_OP.name()) == 0)
                         op = Operation.POST_DEC_OP;
+                    else {
+                        if (firstString.compareTo("EXCL") == 0)
+                            op = Operation.NOT;
+                        else if (firstString.compareTo(Operation.PRINT.name()) == 0)
+                            op = Operation.PRINT;
+                        else if (firstString.compareTo(Operation.NEW.name()) == 0)
+                            op = Operation.NEW;
+                        else if (firstString.compareTo("MINUS") == 0)
+                            op = Operation.UMINUS;
+                    }
 
-                    if (str2.compareTo("EXCL") == 0)
-                        op = Operation.NOT;
-                    else if (str2.compareTo(Operation.PRINT.name()) == 0)
-                        op = Operation.PRINT;
-                    else if (str2.compareTo(Operation.NEW.name()) == 0)
-                        op = Operation.NEW;
+
                     result = new Node(op);
                     Leaf unaryLeaf;
                     if (op == Operation.NOT) {
-                        unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) unaryOp).getToken()), ((PTLeaf) unaryOp).getValue(), ((PTLeaf) unaryOp).getLine());
+                        unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) unarySecond).getToken()), ((PTLeaf) unarySecond).getValue(), ((PTLeaf) unarySecond).getLine());
                         result.add(unaryLeaf);
+                    } else if (op == Operation.UMINUS) {
+                        if (unarySecond instanceof PTLeaf) {
+                            unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) unarySecond).getToken()), ((PTLeaf) unarySecond).getValue(), ((PTLeaf) unarySecond).getLine());
+                            result.add(unaryLeaf);
+                        }
                     } else if (op == Operation.PRINT) {
                         PTElement third = node.getElements().get(2);
                         unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) third).getToken()), ((PTLeaf) third).getValue(), ((PTLeaf) third).getLine());
@@ -319,7 +330,7 @@ public class TreeGenerator {
                             result.add(sizeleaf);
                         }
                     } else {
-                        unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) unaryArg).getToken()), ((PTLeaf) unaryArg).getValue(), ((PTLeaf) unaryArg).getLine());
+                        unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) unaryFirst).getToken()), ((PTLeaf) unaryFirst).getValue(), ((PTLeaf) unaryFirst).getLine());
                         result.add(unaryLeaf);
                     }
                     break;
