@@ -2,7 +2,7 @@ package edu.eltech.moevm.syntax_tree;
 
 import edu.eltech.moevm.autogen.ParserVal;
 import edu.eltech.moevm.common.Operation;
-import edu.eltech.moevm.intermediate.CodeList;
+import edu.eltech.moevm.intermediate.IRCodeList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
  * Created by vladimir on 31.10.15.
  */
 public class Node extends TreeElement {
-    private CodeList code;
+    private IRCodeList code;
     private Operation operation;
     private String value;
     private ArrayList<TreeElement> right_elements;
@@ -82,12 +82,12 @@ public class Node extends TreeElement {
         this.value = value;
     }
 
-    public void setCode(CodeList code) {
+    public void setCode(IRCodeList code) {
         this.code = code;
     }
 
     @Override
-    public CodeList getCode() {
+    public IRCodeList getCode() {
         return code;
     }
 }

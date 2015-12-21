@@ -3,31 +3,31 @@ package edu.eltech.moevm.intermediate;
 /**
  * Created by lazorg on 12/10/15.
  */
-public class Instruction {
+public class IRInstruction {
     private IROperation operation;
-    private Address first;
-    private Address second;
-    private Address result;
+    private IROperand first;
+    private IROperand second;
+    private IROperand result;
 
-    public Instruction(IROperation op, Address address) {
+    public IRInstruction(IROperation op, IROperand IROperand) {
         operation = op;
-        first = address;
+        first = IROperand;
         second = null;
         result = null;
     }
 
-    public Instruction(IROperation op, Address address1, Address address2) {
+    public IRInstruction(IROperation op, IROperand IROperand1, IROperand IROperand2) {
         operation = op;
-        first = address1;
-        second = address2;
+        first = IROperand1;
+        second = IROperand2;
         result = null;
     }
 
-    public Instruction(IROperation op, Address address1, Address address2, Address address3) {
+    public IRInstruction(IROperation op, IROperand IROperand1, IROperand IROperand2, IROperand IROperand3) {
         operation = op;
-        first = address1;
-        second = address2;
-        result = address3;
+        first = IROperand1;
+        second = IROperand2;
+        result = IROperand3;
     }
 
     @Override
@@ -47,15 +47,15 @@ public class Instruction {
         return operation;
     }
 
-    public Address getFirst() {
+    public IROperand getFirst() {
         return first;
     }
 
-    public Address getSecond() {
+    public IROperand getSecond() {
         return second;
     }
 
-    public Address getResult() {
+    public IROperand getResult() {
         return result;
     }
 
@@ -63,15 +63,15 @@ public class Instruction {
         this.operation = operation;
     }
 
-    public void setFirst(Address first) {
+    public void setFirst(IROperand first) {
         this.first = first;
     }
 
-    public void setSecond(Address second) {
+    public void setSecond(IROperand second) {
         this.second = second;
     }
 
-    public void setResult(Address result) {
+    public void setResult(IROperand result) {
         this.result = result;
     }
 }

@@ -1,7 +1,7 @@
 package edu.eltech.moevm.syntax_tree;
 
 import edu.eltech.moevm.common.Type;
-import edu.eltech.moevm.intermediate.CodeList;
+import edu.eltech.moevm.intermediate.IRCodeList;
 
 import java.util.List;
 
@@ -54,7 +54,7 @@ public abstract class TreeElement {
         this.parent = parent;
     }
 
-    public CodeList getCode() throws UnsupportedOperationException {
+    public IRCodeList getCode() throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
 
