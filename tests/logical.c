@@ -15,5 +15,5 @@ int main()
     b = 3 <= 6;
     c = a != b;
 
-
+    return 0;
 }

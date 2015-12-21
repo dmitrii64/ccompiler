@@ -92,9 +92,11 @@ int manyScopes(int a) {
         a++;
     }
     a++;
+    return 0;
 }
 
 int test() {
     int c;
     c++;
+    return c;
 }
