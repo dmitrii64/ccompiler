@@ -304,6 +304,10 @@ public class TreeGenerator {
                             op = Operation.NEW;
                         else if (firstString.compareTo("MINUS") == 0)
                             op = Operation.UMINUS;
+                        else if (firstString.compareTo(Operation.RE.name()) == 0)
+                            op = Operation.RE;
+                        else if (firstString.compareTo(Operation.IM.name()) == 0)
+                            op = Operation.IM;
                     }
 
 
@@ -315,6 +319,12 @@ public class TreeGenerator {
                     } else if (op == Operation.UMINUS) {
                         if (unarySecond instanceof PTLeaf) {
                             unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) unarySecond).getToken()), ((PTLeaf) unarySecond).getValue(), ((PTLeaf) unarySecond).getLine());
+                            result.add(unaryLeaf);
+                        }
+                    } else if (op == Operation.RE || op == Operation.IM) {
+                        PTElement third = node.getElements().get(2);
+                        if (third instanceof PTLeaf) {
+                            unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) third).getToken()), ((PTLeaf) third).getValue(), ((PTLeaf) third).getLine());
                             result.add(unaryLeaf);
                         }
                     } else if (op == Operation.PRINT) {
