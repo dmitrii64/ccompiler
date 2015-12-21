@@ -162,13 +162,9 @@ public class TreeGenerator {
                                                 }
                                             }
                                         }
-
                                         leaf.setType(getTypeByToken(((PTLeaf) declarationType).getToken()));
                                         result.add(leaf);
                                     }
-
-
-
                                 }
                             }
                         }
@@ -216,10 +212,25 @@ public class TreeGenerator {
                 case CONDITIONAL_EXPRESSION:
                     // ? operator handling
                     PTElement condition = node.getElements().get(0);
+
                     if (condition instanceof PTLeaf) {
                         Leaf leaf2 = new Leaf(getOperandByToken(((PTLeaf) condition).getToken()), ((PTLeaf) condition).getValue(), ((PTLeaf) condition).getLine());
                         result.add(leaf2);
                     }
+
+                    PTElement firstResult = node.getElements().get(2);
+                    PTElement secondResult = node.getElements().get(4);
+
+                    if (firstResult instanceof PTLeaf) {
+                        Leaf leaf2 = new Leaf(getOperandByToken(((PTLeaf) firstResult).getToken()), ((PTLeaf) firstResult).getValue(), ((PTLeaf) firstResult).getLine());
+                        result.addleft(leaf2);
+                    }
+                    if (secondResult instanceof PTLeaf) {
+                        Leaf leaf2 = new Leaf(getOperandByToken(((PTLeaf) secondResult).getToken()), ((PTLeaf) secondResult).getValue(), ((PTLeaf) secondResult).getLine());
+                        result.addleft(leaf2);
+                    }
+
+
                     break;
             }
         } else {
@@ -262,7 +273,36 @@ public class TreeGenerator {
                     break;
                 case EQUALITY_EXPRESSION:
                     result = new Node(Operation.EQ_OP);
+
                     setBinaryExpr(result, node);
+                    break;
+                case PRIMARY_EXPRESSION:
+                    /*
+                    PTElement root = node.getElements().get(1);
+                    if(root instanceof PTNode)
+                    {
+                        PTNode expr = (PTNode) root;
+                        switch (expr.getNonterminal())
+                        {
+                            case EQUALITY_EXPRESSION:
+                            case EXCLUSIVE_OR_EXPRESSION:
+                            case INCLUSIVE_OR_EXPRESSION:
+                            case LOGICAL_OR_EXPRESSION:
+                            case AND_EXPRESSION:
+                            case LOGICAL_AND_EXPRESSION:
+                            case RELATIONAL_EXPRESSION:
+                                result = new Node(Operation.CONDITION);
+                                break;
+
+                        }
+                    }
+                    else
+                    {
+                        result = new Node(Operation.CONDITION);
+                        Leaf cond = new Leaf(getOperandByToken(((PTLeaf) root).getToken()), ((PTLeaf) root).getValue(), ((PTLeaf) root).getLine());
+                        result.add(cond);
+                    }
+                    */
                     break;
                 case ARGUMENT_EXPRESSION_LIST:
                     // Functions arguments handling

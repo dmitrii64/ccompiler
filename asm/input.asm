@@ -1,8 +1,12 @@
 global _start
 
 section .data
+; String literal example
 msg:	db	"Hello, world!", 10
 .len:	equ	$ - msg
+; db
+
+; New line character
 nl:		db	10
 
 section .bss

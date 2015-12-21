@@ -23,6 +23,10 @@ public enum Operation {
     AND_OP, //&&
     XOR_OP,
     OR_OP, //||
+
+    CONDITION,
+
+
     LOGICAL_AND_OP,
     LOGICAL_OR_OP,
     POSTFIX_EXPRESSION,

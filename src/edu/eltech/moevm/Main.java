@@ -70,6 +70,7 @@ public class Main {
             tree.infixVisit(new TreeRecursionOptimizer());
             tree.infixVisit(new TreeOneChildOptimizer());
             tree.infixVisit(new TreeSkipNodeOptimizer(Nonterminals.DIRECT_DECLARATOR, Nonterminals.PARAMETER_LIST));
+            tree.infixVisit(new TreeParenthesesOptimizer());
             // OPTIMIZATION PARSING TREE END
 
 
