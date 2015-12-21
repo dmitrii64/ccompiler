@@ -1,17 +1,9 @@
 global _start
 
 section .data
-; String literal example
-msg:	db	"Hello, world!", 10
-.len:	equ	$ - msg
-; db
-
-; New line character
-nl:		db	10
-
+a:	dd 0
 section .bss
-    numbuf resb 10
-
+	numbuf resb 10
 section .text
 itoa:
 	enter 4,0
@@ -59,30 +51,22 @@ print_num:
     int 0x80
     ret
 
-println:
+print_str:
 	mov eax, 4
     mov ebx, 1
-    mov ecx, nl
-    mov edx, 1
     int 0x80
     ret
 
-
 _start:
-	mov	eax, 4 ; write
-	mov	ebx, 1 ; stdout
-	mov	ecx, msg
-	mov	edx, msg.len
-	int	0x80   ; write(stdout, msg, strlen(msg));
-
-	mov rax, 1234
+	xor rax,rax
+	xor rbx,rbx
+	xor rcx,rcx
+	xor rdx,rdx
+	xor rax,rax
+	mov rax,12345
+	mov [a],rax
+	mov eax,[a]
 	call print_num
-	call println
-
-	mov rax, 666
-    call print_num
-    call println
-
 
 	mov	eax, 1 ; exit
 	mov	ebx, 0

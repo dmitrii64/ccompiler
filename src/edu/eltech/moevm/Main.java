@@ -1,6 +1,8 @@
 package edu.eltech.moevm;
 
 
+import edu.eltech.moevm.assembler.AsmCode;
+import edu.eltech.moevm.assembler.AsmCodeGenerator;
 import edu.eltech.moevm.autogen.Parser;
 import edu.eltech.moevm.autogen.TokenNotFoundException;
 import edu.eltech.moevm.common.Nonterminals;
@@ -16,7 +18,7 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("================Input file================");
-        String filename = "tests/logical.c";
+        String filename = "tests/simple.c";
         try {
             FileReader reader = new FileReader(filename);
             BufferedReader br = new BufferedReader(reader);
@@ -177,10 +179,22 @@ public class Main {
 
             System.out.println("=============== Verify name scopes ==============");
             syntaxTree.verifyNameScopes();
+            System.out.println("================ Generated IR code ==============");
 
             IRCodeGenerator generator = new IRCodeGenerator();
             IRCodeList IRCodeList = generator.generate(syntaxTree);
             IRCodeList.print();
+
+            System.out.println("=========== Generated Assembler code ============");
+            AsmCodeGenerator asmCodeGenerator = new AsmCodeGenerator();
+            AsmCode asmCode = asmCodeGenerator.generate(IRCodeList);
+            String asmCodeToFile = asmCode.print();
+            System.out.println(asmCodeToFile);
+
+            FileWriter fileWriter1 = new FileWriter("asm/input.asm");
+            fileWriter1.write(asmCodeToFile);
+            fileWriter1.close();
+
 
 
 

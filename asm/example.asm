@@ -59,11 +59,9 @@ print_num:
     int 0x80
     ret
 
-println:
+print_str:
 	mov eax, 4
     mov ebx, 1
-    mov ecx, nl
-    mov edx, 1
     int 0x80
     ret
 
@@ -77,12 +75,9 @@ _start:
 
 	mov rax, 1234
 	call print_num
-	call println
 
 	mov rax, 666
     call print_num
-    call println
-
 
 	mov	eax, 1 ; exit
 	mov	ebx, 0

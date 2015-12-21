@@ -300,7 +300,7 @@ public class TreeGenerator {
                     {
                         result = new Node(Operation.CONDITION);
                         Leaf cond = new Leaf(getOperandByToken(((PTLeaf) root).getToken()), ((PTLeaf) root).getValue(), ((PTLeaf) root).getLine());
-                        result.add(cond);
+                        result.addCode(cond);
                     }
                     */
                     break;
@@ -400,7 +400,7 @@ public class TreeGenerator {
                             element = new Leaf(getOperandByToken(((PTLeaf) element1).getToken()), ((PTLeaf) element1).getValue(), ((PTLeaf) element1).getLine());
                             result.add(element);
                         }
-                        // result.add(args);
+                        // result.addCode(args);
                     }
                     break;
                 case JUMP_STATEMENT:

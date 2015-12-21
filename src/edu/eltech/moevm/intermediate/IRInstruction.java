@@ -8,12 +8,14 @@ public class IRInstruction {
     private IROperand first;
     private IROperand second;
     private IROperand result;
+    private int operands;
 
     public IRInstruction(IROperation op, IROperand IROperand) {
         operation = op;
         first = IROperand;
         second = null;
         result = null;
+        operands = 1;
     }
 
     public IRInstruction(IROperation op, IROperand IROperand1, IROperand IROperand2) {
@@ -21,6 +23,8 @@ public class IRInstruction {
         first = IROperand1;
         second = IROperand2;
         result = null;
+
+        operands = 2;
     }
 
     public IRInstruction(IROperation op, IROperand IROperand1, IROperand IROperand2, IROperand IROperand3) {
@@ -28,6 +32,7 @@ public class IRInstruction {
         first = IROperand1;
         second = IROperand2;
         result = IROperand3;
+        operands = 3;
     }
 
     @Override
@@ -73,5 +78,9 @@ public class IRInstruction {
 
     public void setResult(IROperand result) {
         this.result = result;
+    }
+
+    public int getOperands() {
+        return operands;
     }
 }

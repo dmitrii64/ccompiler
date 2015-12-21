@@ -10,11 +10,9 @@ public class IRCodeList {
 
     public IRCodeList() {
         IRInstructions = new ArrayList<>();
-
     }
 
     public void print() {
-        System.out.println("======= Generated code =======");
         for (IRInstruction inst : IRInstructions) {
             if (inst != null) {
                 System.out.println(inst);

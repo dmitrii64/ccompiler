@@ -6,7 +6,7 @@ int main()
 	d = -e/a*b + f*c;
 
     qwe = 123;
-    qwe = (2+2)*2;
+    qwe = (2 + 2)*2;
 
 
     if (a < c && a<b) {
