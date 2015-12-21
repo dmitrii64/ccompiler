@@ -6,11 +6,19 @@ package edu.eltech.moevm.intermediate;
 public enum IRType {
     VOID,
     INTEGER,
+    INTEGERARRAY,
     CHAR,
+    CHARARRAY,
     FLOAT,
+    FLOATARRAY,
     BOOL,
+    BOOLARRAY,
     COMPLEX,
+    COMPLEXARRAY,
     SHORT,
+    SHORTARRAY,
     DOUBLE,
+    DOUBLEARRAY,
     LONG,
+    LONGARRAY
 }
