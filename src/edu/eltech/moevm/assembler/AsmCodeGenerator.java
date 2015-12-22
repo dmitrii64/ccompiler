@@ -19,7 +19,7 @@ public class AsmCodeGenerator {
 
     public static boolean isConstant(String str) {
         try {
-            double d = Integer.parseInt(str);
+            Integer.parseInt(str);
         } catch (Exception e) {
             return false;
         }
@@ -47,7 +47,6 @@ public class AsmCodeGenerator {
             return reg;
         } else
             return irregister;
-
     }
 
     public AsmCode generate(IRCodeList codeList) {
