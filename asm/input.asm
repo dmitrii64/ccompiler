@@ -73,6 +73,14 @@ _start:
 	imul eax,ebx
 	mov ecx,eax
 	mov [a],ecx
+	mov eax,100
+	mov ebx,[a]
+	cmp eax,ebx
+	mov ecx,eax
+	mov eax,1337
+	mov [c],eax
+L0:	mov eax,666
+	mov [c],eax
 	xor rax,rax
 	mov eax,[a]
 	call print_num

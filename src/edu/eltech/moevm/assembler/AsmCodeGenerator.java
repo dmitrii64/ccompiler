@@ -135,6 +135,14 @@ public class AsmCodeGenerator {
                         result = binaryOp("imul", IRfirst, IRsecond, IRresult, size);
                         asmCode.addCode(result);
                         break;
+                    case CMP:
+                        result = binaryOp("cmp", IRfirst, IRsecond, IRresult, size);
+                        asmCode.addCode(result);
+                        break;
+                    case DEFL:
+                        result = IRfirst + ":";
+                        asmCode.addCode(result);
+                        break;
                     case INTEGER:
                         result = el.getFirst().getValue() + ":\tdd 0\n";
                         asmCode.addData(result);
