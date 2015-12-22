@@ -79,9 +79,10 @@ _start:
 	mov ecx,eax
 	mov eax,1337
 	mov [c],eax
-L0T:	mov eax,666
+	JMP L0F
+L0:	mov eax,666
 	mov [c],eax
-L0F:	xor rax,rax
+L0E:	xor rax,rax
 	mov eax,[a]
 	call print_num
 

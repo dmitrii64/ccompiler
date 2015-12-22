@@ -143,6 +143,10 @@ public class AsmCodeGenerator {
                         result = IRfirst + ":";
                         asmCode.addCode(result);
                         break;
+                    case BRL:
+                        result = "\tJMP " + IRfirst + "\n";
+                        asmCode.addCode(result);
+                        break;
                     case INTEGER:
                         result = el.getFirst().getValue() + ":\tdd 0\n";
                         asmCode.addData(result);
