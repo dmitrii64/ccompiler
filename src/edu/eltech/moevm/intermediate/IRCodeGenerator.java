@@ -303,8 +303,11 @@ public class IRCodeGenerator {
                 code.add(i);
                 try {
                     code.addAll(node.getElements().get(1).getCode());
-                    code.add(new IRInstruction(IROperation.DEFL, new IROperand(labels.peek())));
+                    i = new IRInstruction(IROperation.BRL, new IROperand(labels.peek() + "F"));
+                    code.add(new IRInstruction(IROperation.DEFL, new IROperand(labels.peek() + "T")));
+                    code.add(i);
                     code.addAll(node.getElements().get(2).getCode());
+                    code.add(new IRInstruction(IROperation.DEFL, new IROperand(labels.peek() + "F")));
                 } catch (UnsupportedOperationException ignored) {
                 }
                 break;

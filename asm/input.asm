@@ -79,9 +79,9 @@ _start:
 	mov ecx,eax
 	mov eax,1337
 	mov [c],eax
-L0:	mov eax,666
+L0T:	mov eax,666
 	mov [c],eax
-	xor rax,rax
+L0F:	xor rax,rax
 	mov eax,[a]
 	call print_num
 
