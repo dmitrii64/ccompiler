@@ -259,6 +259,38 @@ SUB expr1 expr2 res
 
 Subtract expr2 from expr1
 
+### SRE ###
+
+```
+SRE expr id _
+```
+
+Writing value of expression expr into identifier of complex number id as real part
+
+### SIM ###
+
+```
+SRE expr id _
+```
+
+Writing value of expression expr into identifier of complex number id as imaginary part 
+
+### GRE ###
+
+```
+GRE id1 id2 _
+```
+
+Getting real part of complex number with identifier id1 and writing result into id2
+
+### GIM ###
+
+```
+GIM id1 id2 _
+```
+
+Getting imaginary part of complex number with identifier id1 and writing result into id2
+
 References
 ----------
 
