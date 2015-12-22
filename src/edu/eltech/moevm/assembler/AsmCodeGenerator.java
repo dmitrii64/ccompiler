@@ -144,7 +144,11 @@ public class AsmCodeGenerator {
                         asmCode.addCode(result);
                         break;
                     case BRL:
-                        result = "\tJMP " + IRfirst + "\n";
+                        result = "\tjmp " + IRfirst + "\n";
+                        asmCode.addCode(result);
+                        break;
+                    case BNZ:
+                        result = "\tjnz " + IRfirst + "\n";
                         asmCode.addCode(result);
                         break;
                     case INTEGER:

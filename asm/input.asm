@@ -77,9 +77,10 @@ _start:
 	mov ebx,[a]
 	cmp eax,ebx
 	mov ecx,eax
+	jnz L0
 	mov eax,1337
 	mov [c],eax
-	JMP L0F
+	jmp L0F
 L0:	mov eax,666
 	mov [c],eax
 L0E:	xor rax,rax
