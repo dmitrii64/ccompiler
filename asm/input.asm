@@ -2,6 +2,8 @@ global _start
 
 section .data
 a:	dd 0
+b:	dd 0
+c:	dd 0
 section .bss
 	numbuf resb 10
 section .text
@@ -58,13 +60,21 @@ print_str:
     ret
 
 _start:
+	mov eax,2
+	mov [b],eax
+	mov eax,5
+	mov [c],eax
+	mov eax,[c]
+	mov ebx,[b]
+	add eax,ebx
+	mov ecx,eax
+	mov [a],ecx
+	mov eax,2
+	mov ebx,[a]
+	add eax,ebx
+	mov ecx,eax
+	mov [a],ecx
 	xor rax,rax
-	xor rbx,rbx
-	xor rcx,rcx
-	xor rdx,rdx
-	xor rax,rax
-	mov rax,12345
-	mov [a],rax
 	mov eax,[a]
 	call print_num
 

@@ -82,10 +82,10 @@ public class AsmCode {
                 "\n");
 
         code.add("_start:\n");
-        code.add("\txor rax,rax\n");
-        code.add("\txor rbx,rbx\n");
-        code.add("\txor rcx,rcx\n");
-        code.add("\txor rdx,rdx\n");
+        //code.add("\txor rax,rax\n");
+        //code.add("\txor rbx,rbx\n");
+        //code.add("\txor rcx,rcx\n");
+        //code.add("\txor rdx,rdx\n");
 
         footer.add("\n" +
                 "\tmov\teax, 1 ; exit\n" +
