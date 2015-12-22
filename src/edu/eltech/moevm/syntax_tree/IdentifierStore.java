@@ -47,6 +47,20 @@ public class IdentifierStore {
         }
     }
 
+    public Type getType(String name) throws IdentifierNotDefinedException {
+        if (!identifierExists(name)) {
+            throw new IdentifierNotDefinedException();
+        }
+
+        for (Identifier identifier : identifiers) {
+            if (identifier.name.compareTo(name) == 0) {
+                return identifier.type;
+            }
+        }
+
+        return null;
+    }
+
     public String getFirstUnusedIdentifier() {
         for (Identifier identifier : identifiers) {
             if (identifier.unused()) {

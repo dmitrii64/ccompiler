@@ -2,6 +2,7 @@ package edu.eltech.moevm.syntax_tree;
 
 import edu.eltech.moevm.common.Operand;
 import edu.eltech.moevm.common.Operation;
+import edu.eltech.moevm.common.Type;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -204,8 +205,10 @@ public class SyntaxTree {
                 // Check all name scopes for that identifier
                 for (int i = identifiers.length - 1; i >= 0; i--) {
                     if (identifiers[i].identifierExists(leaf.getValue())) {
-                        System.out.println("used identifier: " + leaf.getValue());
+                        Type type = identifiers[i].getType(leaf.getValue());
+                        System.out.println("used identifier: " + leaf.getValue() + " <" + type + ">");
                         identifiers[i].markAsUsed(leaf.getValue());
+                        leaf.setType(type);
                         identifierExists = true;
                         break;
                     }
@@ -224,7 +227,6 @@ public class SyntaxTree {
         if (nodeElem.getOperation() != Operation.DECLARATION) {
             throw new UnexpectedNodeException();
         }
-
 
         // One or more declarations or throw exception
         if (nodeElem.getElements().size() == 0) {
