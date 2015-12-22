@@ -21,8 +21,8 @@ public class IRInstruction {
     public IRInstruction(IROperation op, IROperand IROperand1, IROperand IROperand2) {
         operation = op;
         first = IROperand1;
-        second = IROperand2;
-        result = null;
+        second = null;
+        result = IROperand2;
 
         operands = 2;
     }
