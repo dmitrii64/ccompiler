@@ -49,6 +49,32 @@ public class AsmCodeGenerator {
             return irregister;
     }
 
+    public static String binaryOp(String op, String IRfirst, String IRsecond, String IRresult, String size) {
+        String result = "";
+        if (isVariable(IRfirst)) {
+            result += "\tmov " + size + "ax,[" + IRfirst + "]\n";
+        }
+        if (isConstant(IRfirst)) {
+            result += "\tmov " + size + "ax," + IRfirst + "\n";
+        }
+        if (isVariable(IRsecond)) {
+            result += "\tmov " + size + "bx,[" + IRsecond + "]\n";
+        }
+        if (isConstant(IRsecond)) {
+            result += "\tmov " + size + "bx," + IRsecond + "\n";
+        }
+        if (isRegister(IRsecond)) {
+            result += "\tmov " + size + "bx," + getRegister(size, IRsecond) + "\n";
+        }
+        result += "\t" + op + " " + size + "ax," + size + "bx\n";
+        if (isRegister(IRresult)) {
+            result += "\tmov " + getRegister(size, IRresult) + "," + size + "ax\n";
+        } else if (isVariable(IRresult)) {
+            result += "\tmov [" + IRresult + "]," + size + "ax\n";
+        }
+        return result;
+    }
+
     public AsmCode generate(IRCodeList codeList) {
         AsmCode asmCode = new AsmCode();
         if (codeList != null) {
@@ -102,30 +128,12 @@ public class AsmCodeGenerator {
                         asmCode.addCode(result);
                         break;
                     case ADD:
-                        result = "";
-                        if (isVariable(IRfirst)) {
-                            result += "\tmov " + size + "ax,[" + IRfirst + "]\n";
-                        }
-                        if (isConstant(IRfirst)) {
-                            result += "\tmov " + size + "ax," + IRfirst + "\n";
-                        }
-                        if (isVariable(IRsecond)) {
-                            result += "\tmov " + size + "bx,[" + IRsecond + "]\n";
-                        }
-                        if (isConstant(IRsecond)) {
-                            result += "\tmov " + size + "bx," + IRsecond + "\n";
-                        }
-                        result += "\tadd " + size + "ax," + size + "bx\n";
-                        if (isRegister(IRresult)) {
-                            result += "\tmov " + getRegister(size, IRresult) + "," + size + "ax\n";
-                        } else if (isVariable(IRresult)) {
-                            result += "\tmov [" + IRresult + "]," + size + "ax\n";
-                        }
-
+                        result = binaryOp("add", IRfirst, IRsecond, IRresult, size);
                         asmCode.addCode(result);
                         break;
                     case MUL:
-
+                        result = binaryOp("imul", IRfirst, IRsecond, IRresult, size);
+                        asmCode.addCode(result);
                         break;
                     case INTEGER:
                         result = el.getFirst().getValue() + ":\tdd 0\n";

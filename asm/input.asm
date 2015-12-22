@@ -64,14 +64,13 @@ _start:
 	mov [b],eax
 	mov eax,5
 	mov [c],eax
-	mov eax,[c]
+	mov eax,3
 	mov ebx,[b]
 	add eax,ebx
 	mov ecx,eax
-	mov [a],ecx
-	mov eax,2
-	mov ebx,[a]
-	add eax,ebx
+	mov eax,20
+	mov ebx,ecx
+	imul eax,ebx
 	mov ecx,eax
 	mov [a],ecx
 	xor rax,rax
