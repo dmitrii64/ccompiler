@@ -21,6 +21,8 @@ public class AsmCodeGenerator {
         try {
             Integer.parseInt(str);
         } catch (Exception e) {
+            if (str.contains("\""))
+                return true;
             return false;
         }
         return true;
@@ -152,13 +154,26 @@ public class AsmCodeGenerator {
                         asmCode.addCode(result);
                         break;
                     case INTEGER:
-                        result = el.getFirst().getValue() + ":\tdd 0\n";
+                        result = IRfirst + ":\tdd 0\n";
                         asmCode.addData(result);
                         break;
                     case PRINT:
                         result = "\txor rax,rax\n";
-                        result += "\tmov " + size + "ax,[" + el.getFirst().getValue() + "]\n";
-                        result += "\tcall print_num\n";
+                        if (isVariable(IRfirst)) {
+                            result += "\tmov " + size + "ax,[" + IRfirst + "]\n";
+                            result += "\tcall print_num\n";
+                        } else if (isConstant(IRfirst)) {
+                            int stringid = asmCode.getStringid();
+                            asmCode.addData("temp" + stringid + ": db " + IRfirst + "\n");
+                            asmCode.addData(".len: equ\t$ - temp" + stringid + "\n");
+                            result += "\tmov ecx, temp" + stringid + "\n" +
+                                    "\tmov edx, temp" + stringid + ".len\n";
+                            result += "\tcall print_str\n";
+
+
+                        }
+
+
                         asmCode.addCode(result);
                         break;
                 }

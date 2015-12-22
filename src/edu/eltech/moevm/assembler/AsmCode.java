@@ -12,7 +12,11 @@ public class AsmCode {
     private ArrayList<String> code;
     private ArrayList<String> footer;
 
+    private int stringid;
+
+
     public AsmCode() {
+        stringid = 0;
         header = new ArrayList<>();
         data = new ArrayList<>();
         bss = new ArrayList<>();
@@ -24,13 +28,13 @@ public class AsmCode {
         data.add("section .data\n");
 
         bss.add("section .bss\n" +
-                "\tnumbuf resb 10\n");
+                "\tprintbuf resb 10\n");
 
         code.add("section .text\n");
 
         code.add("itoa:\n" +
                 "\tenter 4,0\n" +
-                "\tlea r8,[numbuf+10]\n" +
+                "\tlea r8,[printbuf+10]\n" +
                 "\tmov rcx,10\n" +
                 "\tmov [rbp-4],dword 0\n" +
                 "\n" +
@@ -52,7 +56,7 @@ public class AsmCode {
                 "\tret\n" +
                 "\n" +
                 "clean_buf:\n" +
-                "\tlea r8,[numbuf+10]\n" +
+                "\tlea r8,[printbuf+10]\n" +
                 "\tmov rcx,10\n" +
                 "\t.clear_loop:\n" +
                 "\tmov byte[r8],0\n" +
@@ -69,7 +73,7 @@ public class AsmCode {
                 "\tcall itoa\n" +
                 "\tmov eax, 4\n" +
                 "    mov ebx, 1\n" +
-                "    mov ecx, numbuf\n" +
+                "    mov ecx, printbuf\n" +
                 "    mov edx, 10\n" +
                 "    int 0x80\n" +
                 "    ret\n" +
@@ -133,5 +137,10 @@ public class AsmCode {
 
     public void setCode(ArrayList<String> code) {
         this.code = code;
+    }
+
+    public int getStringid() {
+        stringid++;
+        return stringid;
     }
 }

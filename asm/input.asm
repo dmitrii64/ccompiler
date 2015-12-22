@@ -4,12 +4,14 @@ section .data
 a:	dd 0
 b:	dd 0
 c:	dd 0
+temp1: db "\n"
+.len: equ	$ - temp1
 section .bss
-	numbuf resb 10
+	printbuf resb 10
 section .text
 itoa:
 	enter 4,0
-	lea r8,[numbuf+10]
+	lea r8,[printbuf+10]
 	mov rcx,10
 	mov [rbp-4],dword 0
 
@@ -31,7 +33,7 @@ itoa:
 	ret
 
 clean_buf:
-	lea r8,[numbuf+10]
+	lea r8,[printbuf+10]
 	mov rcx,10
 	.clear_loop:
 	mov byte[r8],0
@@ -48,7 +50,7 @@ print_num:
 	call itoa
 	mov eax, 4
     mov ebx, 1
-    mov ecx, numbuf
+    mov ecx, printbuf
     mov edx, 10
     int 0x80
     ret
@@ -73,17 +75,24 @@ _start:
 	imul eax,ebx
 	mov ecx,eax
 	mov [a],ecx
-	mov eax,100
+	mov eax,101
 	mov ebx,[a]
 	cmp eax,ebx
 	mov ecx,eax
 	jnz L0
 	mov eax,1337
 	mov [c],eax
-	jmp L0F
+	jmp L0E
 L0:	mov eax,666
 	mov [c],eax
 L0E:	xor rax,rax
+	mov ecx, temp1
+	mov edx, temp1.len
+	call print_str
+	xor rax,rax
+	mov eax,[c]
+	call print_num
+	xor rax,rax
 	mov eax,[a]
 	call print_num
 

@@ -4,7 +4,7 @@ int main()
     b = 2;
     c = 5;
     a = (b + 3) * 20;
-    if(a == 100)
+    if(a == 101)
     {
         c = 1337;
     }
@@ -13,6 +13,8 @@ int main()
         c = 666;
     }
 
+    print("\n");
 
+    print(c);
     print(a);
 }
