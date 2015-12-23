@@ -4,7 +4,7 @@ int main()
     long b = 5;
     long c;
 
-    c = (a + b) * 2;
+    c = (-a + b) * 2;
     print("Hello world!");
     print(c);
 }

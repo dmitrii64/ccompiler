@@ -8,7 +8,6 @@ int main()
     d = -1 - 2i;
     a = re(d);
     a = im(d);
-    a = re(22+1i);
     a = 5;
     b = im(k);
 

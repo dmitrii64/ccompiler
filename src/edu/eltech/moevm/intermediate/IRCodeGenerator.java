@@ -54,34 +54,48 @@ public class IRCodeGenerator {
         switch (node.getOperation()) {
             case INIT_DECLARATOR:
                 left = (Leaf) node.getElements().get(0);
-                Leaf value = (Leaf) node.getElements().get(1);
-                i = new IRInstruction((left.getType() == Type.INT) ? IROperation.INTEGER : IROperation.valueOf(left.getType().name()),
-                        new IROperand(left.getValue()), left.getType());
-                code.add(i);
-                if (left.getType() != Type.COMPLEX) {
-                    i = new IRInstruction(IROperation.MOV,
-                            new IROperand(value.getValue()),
-                            new IROperand(left.getValue())
-                            , left.getType());
-                    code.add(i);
+                if (node.getElements().get(1) instanceof Leaf) {
+                    Leaf value = (Leaf) node.getElements().get(1);
+                    rightAddr = new IROperand(value.getValue());
+                    if (left.getType() != Type.COMPLEX) {
+                        i = new IRInstruction((left.getType() == Type.INT) ? IROperation.INTEGER : IROperation.valueOf(left.getType().name()),
+                                new IROperand(left.getValue()),
+                                rightAddr,
+                                left.getType());
+                        code.add(i);
+                    } else {
+                        i = new IRInstruction((left.getType() == Type.INT) ? IROperation.INTEGER : IROperation.valueOf(left.getType().name()),
+                                new IROperand(left.getValue()),
+                                left.getType());
+                        code.add(i);
+                        complexVars.add(left.getValue());
+                        Complex c = Complex.parse(value.getValue());
+                        if (c.getRe() != null) {
+                            i = new IRInstruction(IROperation.SRE,
+                                    new IROperand(c.getRe()),
+                                    new IROperand(left.getValue())
+                                    , left.getType());
+                            code.add(i);
+                        }
+                        if (c.getIm() != null) {
+                            i = new IRInstruction(IROperation.SIM,
+                                    new IROperand(c.getIm()),
+                                    new IROperand(left.getValue())
+                                    , left.getType());
+                            code.add(i);
+                        }
+                    }
                 } else {
-                    complexVars.add(left.getValue());
-                    Complex c = Complex.parse(value.getValue());
-                    if (c.getRe() != null) {
-                        i = new IRInstruction(IROperation.SRE,
-                                new IROperand(c.getRe()),
-                                new IROperand(left.getValue())
-                                , left.getType());
-                        code.add(i);
-                    }
-                    if (c.getIm() != null) {
-                        i = new IRInstruction(IROperation.SIM,
-                                new IROperand(c.getIm()),
-                                new IROperand(left.getValue())
-                                , left.getType());
-                        code.add(i);
-                    }
+                    Node rightNode = (Node) node.getElements().get(1);
+                    code.addAll(rightNode.getCode());
+                    rightAddr = new IROperand(reg.pop());
+                    i = new IRInstruction((left.getType() == Type.INT) ? IROperation.INTEGER : IROperation.valueOf(left.getType().name()),
+                            new IROperand(left.getValue()),
+                            rightAddr,
+                            left.getType());
+                    code.add(i);
                 }
+
                 break;
             case DECLARATION:
                 for (TreeElement e : node.getElements()) {
@@ -114,6 +128,22 @@ public class IRCodeGenerator {
                 left = (Leaf) node.getElements().get(0);
                 i = new IRInstruction(IROperation.DEC,
                         new IROperand(left.getValue() == null ? "null" : left.getValue()), left.getType());
+                code.add(i);
+                break;
+            case UMINUS:
+            case RE:
+            case IM:
+                if (node.getElements().get(0) instanceof Leaf) {
+                    left = (Leaf) node.getElements().get(0);
+                    leftAddr = new IROperand(left.getValue());
+                } else {
+                    Node leftNode = (Node) node.getElements().get(0);
+                    code.addAll(leftNode.getCode());
+                    leftAddr = new IROperand(reg.pop());
+                }
+                i = new IRInstruction(IROperation.valueOf(node.getOperation().name()),
+                        leftAddr,
+                        new IROperand(reg.push("R" + reg.size())), node.getElements().get(0).getType());
                 code.add(i);
                 break;
             case PLUS:
@@ -227,8 +257,8 @@ public class IRCodeGenerator {
             case AND_OP:
             case OR_OP:
                 if (node.getElements().get(0) instanceof Leaf) {
-                    Leaf right = (Leaf) node.getElements().get(0);
-                    leftAddr = new IROperand(right.getValue());
+                    left = (Leaf) node.getElements().get(0);
+                    leftAddr = new IROperand(left.getValue());
                 } else {
                     Node right = (Node) node.getElements().get(0);
                     code.addAll(right.getCode());
@@ -255,8 +285,8 @@ public class IRCodeGenerator {
             case LE_OP:
             case NE_OP:
                 if (node.getElements().get(0) instanceof Leaf) {
-                    Leaf right = (Leaf) node.getElements().get(0);
-                    leftAddr = new IROperand(right.getValue());
+                    left = (Leaf) node.getElements().get(0);
+                    leftAddr = new IROperand(left.getValue());
                 } else {
                     Node right = (Node) node.getElements().get(0);
                     code.addAll(right.getCode());
@@ -291,6 +321,7 @@ public class IRCodeGenerator {
                 code.add(i);
                 break;
             case SELECTION_STATEMENT:
+            case COMPOUND_STATEMENT:
                 if (node.getElements().get(0) instanceof Leaf) {
                     left = (Leaf) node.getElements().get(0);
                     rightAddr = new IROperand(left.getValue());
@@ -305,13 +336,22 @@ public class IRCodeGenerator {
                 }
                 code.add(i);
                 try {
-                    code.addAll(node.getElements().get(1).getCode());
-                    i = new IRInstruction(IROperation.BRL, new IROperand(labels.peek() + "E"), left.getType());
-                    code.add(i);
-                    code.add(new IRInstruction(IROperation.DEFL, new IROperand(labels.peek()), left.getType()));
-
-                    code.addAll(node.getElements().get(2).getCode());
-                    code.add(new IRInstruction(IROperation.DEFL, new IROperand(labels.peek() + "E"), left.getType()));
+                    if (node.getElements().get(1) instanceof Leaf) {
+                        Leaf first = (Leaf) node.getElements().get(1);
+                        reg.push(first.getValue());
+                    } else {
+                        code.addAll(node.getElements().get(1).getCode());
+                        i = new IRInstruction(IROperation.BRL, new IROperand(labels.peek() + "E"), left.getType());
+                        code.add(i);
+                        code.add(new IRInstruction(IROperation.DEFL, new IROperand(labels.peek()), left.getType()));
+                    }
+                    if (node.getElements().get(2) instanceof Leaf) {
+                        Leaf second = (Leaf) node.getElements().get(2);
+                        reg.push(second.getValue());
+                    } else {
+                        code.addAll(node.getElements().get(2).getCode());
+                        code.add(new IRInstruction(IROperation.DEFL, new IROperand(labels.peek() + "E"), left.getType()));
+                    }
                 } catch (UnsupportedOperationException ignored) {
                 }
                 break;

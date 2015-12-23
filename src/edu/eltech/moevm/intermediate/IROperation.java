@@ -16,6 +16,8 @@ public enum IROperation {
     DOUBLE,
     LONG,
 
+    RE,
+    IM,
     SRE,
     SIM,
     MOV,
@@ -27,6 +29,7 @@ public enum IROperation {
     RET,
     INC,
     DEC,
+    UMINUS,
 
     IDENTIFIER,
     CONSTANT,
