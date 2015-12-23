@@ -67,19 +67,25 @@ public class TreeGenerator {
         return null;
     }
 
+    Leaf createLeafFromPTLeaf(PTLeaf ptLeaf) {
+        Leaf ret = new Leaf(getOperandByToken((ptLeaf).getToken()), (ptLeaf).getValue(), (ptLeaf).getLine());
+        ret.setType(ptLeaf.getType());
+        return ret;
+    }
+
     private void setBinaryExpr(Node output, PTNode input) throws UnsupportedOperationException {
         PTElement first = input.getElements().get(0);
         PTElement second = input.getElements().get(2);
         if ((first instanceof PTLeaf) && (second instanceof PTLeaf)) {
-            Leaf leaf = new Leaf(getOperandByToken(((PTLeaf) first).getToken()), ((PTLeaf) first).getValue(), ((PTLeaf) first).getLine());
+            Leaf leaf = createLeafFromPTLeaf((PTLeaf) first);
             output.add(leaf);
-            Leaf leaf2 = new Leaf(getOperandByToken(((PTLeaf) second).getToken()), ((PTLeaf) second).getValue(), ((PTLeaf) second).getLine());
+            Leaf leaf2 = createLeafFromPTLeaf((PTLeaf) second);
             output.add(leaf2);
         } else if ((first instanceof PTLeaf) && !(second instanceof PTLeaf)) {
-            Leaf leaf = new Leaf(getOperandByToken(((PTLeaf) first).getToken()), ((PTLeaf) first).getValue(), ((PTLeaf) first).getLine());
+            Leaf leaf = createLeafFromPTLeaf((PTLeaf) first);
             output.add(leaf);
         } else if (!(first instanceof PTLeaf) && (second instanceof PTLeaf)) {
-            Leaf leaf = new Leaf(getOperandByToken(((PTLeaf) second).getToken()), ((PTLeaf) second).getValue(), ((PTLeaf) second).getLine());
+            Leaf leaf = createLeafFromPTLeaf((PTLeaf) second);
             output.addleft(leaf);
         }
         PTElement op = input.getElements().get(1);
@@ -119,7 +125,7 @@ public class TreeGenerator {
                     if (cycleName.compareTo("WHILE") == 0) {
                         PTElement cond = node.getElements().get(2);
                         if (cond instanceof PTLeaf) {
-                            Leaf leaf2 = new Leaf(getOperandByToken(((PTLeaf) cond).getToken()), ((PTLeaf) cond).getValue(), ((PTLeaf) cond).getLine());
+                            Leaf leaf2 = createLeafFromPTLeaf((PTLeaf) cond);
                             result.add(leaf2);
                         }
                     }
@@ -128,7 +134,7 @@ public class TreeGenerator {
                     // "if" statement handling
                     PTElement conditionNode = node.getElements().get(2);
                     if (conditionNode instanceof PTLeaf) {
-                        Leaf leaf2 = new Leaf(getOperandByToken(((PTLeaf) conditionNode).getToken()), ((PTLeaf) conditionNode).getValue(), ((PTLeaf) conditionNode).getLine());
+                        Leaf leaf2 = createLeafFromPTLeaf((PTLeaf) conditionNode);
                         result.add(leaf2);
                     }
                     break;
@@ -152,7 +158,7 @@ public class TreeGenerator {
                             if (token != Parser.COMMA) {
                                 if (token != Parser.SEMICOLON) {
                                     if (token == Parser.IDENTIFIER) {
-                                        Leaf leaf = new Leaf(getOperandByToken(((PTLeaf) el).getToken()), ((PTLeaf) el).getValue(), ((PTLeaf) el).getLine());
+                                        Leaf leaf = createLeafFromPTLeaf((PTLeaf) el);
                                         if (it.hasNext()) {
                                             Iterator<PTElement> it2 = it;
                                             PTElement next = it2.next();
@@ -181,7 +187,7 @@ public class TreeGenerator {
                         result.add(leaf);
                     }
                     if (initValue instanceof PTLeaf) {
-                        Leaf leaf2 = new Leaf(getOperandByToken(((PTLeaf) initValue).getToken()), ((PTLeaf) initValue).getValue(), ((PTLeaf) initValue).getLine());
+                        Leaf leaf2 = createLeafFromPTLeaf((PTLeaf) initValue);
                         result.add(leaf2);
                     }
                     break;
@@ -196,7 +202,7 @@ public class TreeGenerator {
                         System.out.println("Unknown token in postfix expression!");
                         e.printStackTrace();
                     }
-                    Leaf postfixLeaf = new Leaf(getOperandByToken(((PTLeaf) baseNode).getToken()), ((PTLeaf) baseNode).getValue(), ((PTLeaf) baseNode).getLine());
+                    Leaf postfixLeaf = createLeafFromPTLeaf((PTLeaf) baseNode);
                     result.add(postfixLeaf);
                     if (operation.compareTo("RBLEFT") == 0) {
                         result.setOperation(Operation.FUNC_CALL);
@@ -205,7 +211,7 @@ public class TreeGenerator {
                     } else if (operation.compareTo("BRACKETLEFT") == 0) {
                         result.setOperation(Operation.ARRAY_ACCESS);
                         PTElement arrayIteratonValue = node.getElements().get(2);
-                        Leaf leaf2 = new Leaf(getOperandByToken(((PTLeaf) arrayIteratonValue).getToken()), ((PTLeaf) arrayIteratonValue).getValue(), ((PTLeaf) arrayIteratonValue).getLine());
+                        Leaf leaf2 = createLeafFromPTLeaf((PTLeaf) arrayIteratonValue);
                         result.add(leaf2);
                     }
                     break;
@@ -214,7 +220,7 @@ public class TreeGenerator {
                     PTElement condition = node.getElements().get(0);
 
                     if (condition instanceof PTLeaf) {
-                        Leaf leaf2 = new Leaf(getOperandByToken(((PTLeaf) condition).getToken()), ((PTLeaf) condition).getValue(), ((PTLeaf) condition).getLine());
+                        Leaf leaf2 = createLeafFromPTLeaf((PTLeaf) condition);
                         result.add(leaf2);
                     }
 
@@ -222,11 +228,11 @@ public class TreeGenerator {
                     PTElement secondResult = node.getElements().get(4);
 
                     if (firstResult instanceof PTLeaf) {
-                        Leaf leaf2 = new Leaf(getOperandByToken(((PTLeaf) firstResult).getToken()), ((PTLeaf) firstResult).getValue(), ((PTLeaf) firstResult).getLine());
+                        Leaf leaf2 = createLeafFromPTLeaf((PTLeaf) firstResult);
                         result.addleft(leaf2);
                     }
                     if (secondResult instanceof PTLeaf) {
-                        Leaf leaf2 = new Leaf(getOperandByToken(((PTLeaf) secondResult).getToken()), ((PTLeaf) secondResult).getValue(), ((PTLeaf) secondResult).getLine());
+                        Leaf leaf2 = createLeafFromPTLeaf((PTLeaf) secondResult);
                         result.addleft(leaf2);
                     }
 
@@ -243,11 +249,11 @@ public class TreeGenerator {
                     PTElement rightExpression = node.getElements().get(2);
                     result = new Node(getOperationByToken((((PTLeaf) relationalOperation).getToken())));
                     if (leftExpression instanceof PTLeaf) {
-                        Leaf leaf = new Leaf(getOperandByToken(((PTLeaf) leftExpression).getToken()), ((PTLeaf) leftExpression).getValue(), ((PTLeaf) leftExpression).getLine());
+                        Leaf leaf = createLeafFromPTLeaf((PTLeaf) leftExpression);
                         result.add(leaf);
                     }
                     if (rightExpression instanceof PTLeaf) {
-                        Leaf leaf = new Leaf(getOperandByToken(((PTLeaf) rightExpression).getToken()), ((PTLeaf) rightExpression).getValue(), ((PTLeaf) rightExpression).getLine());
+                        Leaf leaf = createLeafFromPTLeaf((PTLeaf) rightExpression);
                         result.add(leaf);
                     }
                     break;
@@ -299,7 +305,7 @@ public class TreeGenerator {
                     else
                     {
                         result = new Node(Operation.CONDITION);
-                        Leaf cond = new Leaf(getOperandByToken(((PTLeaf) root).getToken()), ((PTLeaf) root).getValue(), ((PTLeaf) root).getLine());
+                        Leaf cond = createLeafFromPTLeaf(root).getToken()), ((PTLeaf) root).getValue(), ((PTLeaf) root).getLine());
                         result.addCode(cond);
                     }
                     */
@@ -310,7 +316,7 @@ public class TreeGenerator {
                     for (PTElement el : node.getElements()) {
                         if (el instanceof PTLeaf)
                             if (((PTLeaf) el).getToken() != Parser.COMMA) {
-                                Leaf leaf = new Leaf(getOperandByToken(((PTLeaf) el).getToken()), ((PTLeaf) el).getValue(), ((PTLeaf) el).getLine());
+                                Leaf leaf = createLeafFromPTLeaf((PTLeaf) el);
                                 result.add(leaf);
                             }
                     }
@@ -354,33 +360,33 @@ public class TreeGenerator {
                     result = new Node(op);
                     Leaf unaryLeaf;
                     if (op == Operation.NOT) {
-                        unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) unarySecond).getToken()), ((PTLeaf) unarySecond).getValue(), ((PTLeaf) unarySecond).getLine());
+                        unaryLeaf = createLeafFromPTLeaf((PTLeaf) unarySecond);
                         result.add(unaryLeaf);
                     } else if (op == Operation.UMINUS) {
                         if (unarySecond instanceof PTLeaf) {
-                            unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) unarySecond).getToken()), ((PTLeaf) unarySecond).getValue(), ((PTLeaf) unarySecond).getLine());
+                            unaryLeaf = createLeafFromPTLeaf((PTLeaf) unarySecond);
                             result.add(unaryLeaf);
                         }
                     } else if (op == Operation.RE || op == Operation.IM) {
                         PTElement third = node.getElements().get(2);
                         if (third instanceof PTLeaf) {
-                            unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) third).getToken()), ((PTLeaf) third).getValue(), ((PTLeaf) third).getLine());
+                            unaryLeaf = createLeafFromPTLeaf((PTLeaf) third);
                             result.add(unaryLeaf);
                         }
                     } else if (op == Operation.PRINT) {
                         PTElement third = node.getElements().get(2);
-                        unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) third).getToken()), ((PTLeaf) third).getValue(), ((PTLeaf) third).getLine());
+                        unaryLeaf = createLeafFromPTLeaf((PTLeaf) third);
                         result.add(unaryLeaf);
                     } else if (op == Operation.NEW) {
                         PTLeaf newtype = (PTLeaf) node.getElements().get(1);
                         PTElement newsize = (PTLeaf) node.getElements().get(3);
                         result.setType(getTypeByToken(newtype.getToken()));
                         if (newsize instanceof PTLeaf) {
-                            Leaf sizeleaf = new Leaf(getOperandByToken(((PTLeaf) newsize).getToken()), ((PTLeaf) newsize).getValue(), ((PTLeaf) newsize).getLine());
+                            Leaf sizeleaf = createLeafFromPTLeaf((PTLeaf) newsize);
                             result.add(sizeleaf);
                         }
                     } else {
-                        unaryLeaf = new Leaf(getOperandByToken(((PTLeaf) unaryFirst).getToken()), ((PTLeaf) unaryFirst).getValue(), ((PTLeaf) unaryFirst).getLine());
+                        unaryLeaf = createLeafFromPTLeaf((PTLeaf) unaryFirst);
                         result.add(unaryLeaf);
                     }
                     break;
@@ -391,13 +397,13 @@ public class TreeGenerator {
                     result = new Node(getOperationByToken(((PTLeaf) castArg).getToken()));
                     TreeElement element;
                     if (castOp instanceof PTLeaf) {
-                        element = new Leaf(getOperandByToken(((PTLeaf) castOp).getToken()), ((PTLeaf) castOp).getValue(), ((PTLeaf) castOp).getLine());
+                        element = createLeafFromPTLeaf((PTLeaf) castOp);
                         result.add(element);
                     } else {
                         PTNode castNode = (PTNode) castOp;
                         if (castNode.getNonterminal() == Nonterminals.PRIMARY_EXPRESSION) {
                             PTElement element1 = castNode.getElements().get(1);
-                            element = new Leaf(getOperandByToken(((PTLeaf) element1).getToken()), ((PTLeaf) element1).getValue(), ((PTLeaf) element1).getLine());
+                            element = createLeafFromPTLeaf((PTLeaf) element1);
                             result.add(element);
                         }
                         // result.addCode(args);
@@ -409,7 +415,7 @@ public class TreeGenerator {
                     PTElement jumpArg = node.getElements().get(1);
                     result = new Node(getOperationByToken(((PTLeaf) jumpType).getToken()));
                     if (result.getOperation() == Operation.RETURN) {
-                        Leaf jumpLeaf = new Leaf(getOperandByToken(((PTLeaf) jumpArg).getToken()), ((PTLeaf) jumpArg).getValue(), ((PTLeaf) jumpArg).getLine());
+                        Leaf jumpLeaf = createLeafFromPTLeaf((PTLeaf) jumpArg);
                         result.add(jumpLeaf);
                     }
                     break;

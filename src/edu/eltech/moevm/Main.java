@@ -168,6 +168,35 @@ public class Main {
             });
 
 
+
+
+            System.out.println("=============== Verify name scopes ==============");
+            syntaxTree.verifyNameScopes();
+
+            syntaxTree.postfixVisit(new TreeCallback() {
+                @Override
+                public void processElement(TreeElement e, int level) {
+                    if (e instanceof Node) {
+                        Node node = (Node) e;
+                        switch (node.getOperation()) {
+                            case EQUAL:
+                            case STAR:
+                            case PLUS:
+                            case MINUS:
+                            case DIVIDE:
+                                TreeElement left = node.getElements().get(0);
+                                TreeElement right = node.getElements().get(1);
+                                if (left.getType() == right.getType())
+                                    node.setType(left.getType());
+                                else
+                                    System.out.println("Type mismatch at " + node.getOperation().name());
+                                break;
+                        }
+                    }
+                }
+            });
+
+            System.out.println("============== Printing tree to file ============");
             SyntaxTreeJsGenerator syntaxTreeJsGenerator = new SyntaxTreeJsGenerator();
             syntaxTree.infixVisit(syntaxTreeJsGenerator);
             FileWriter stfileWriter = new FileWriter("tree_output/syntax_tree.html");
@@ -177,8 +206,6 @@ public class Main {
             stbufferedWriter.close();
             stfileWriter.close();
 
-            System.out.println("=============== Verify name scopes ==============");
-            syntaxTree.verifyNameScopes();
             System.out.println("================ Generated IR code ==============");
 
             IRCodeGenerator generator = new IRCodeGenerator();

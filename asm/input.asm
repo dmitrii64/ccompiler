@@ -4,7 +4,7 @@ section .data
 a:	dd 0
 b:	dd 0
 c:	dd 0
-temp1: db "\n"
+temp1: db "Hello world!"
 .len: equ	$ - temp1
 section .bss
 	printbuf resb 10
@@ -63,37 +63,24 @@ print_str:
 
 _start:
 	mov eax,2
-	mov [b],eax
+	mov [a],eax
 	mov eax,5
-	mov [c],eax
-	mov eax,3
-	mov ebx,[b]
+	mov [b],eax
+	mov eax,[b]
+	mov ebx,[a]
 	add eax,ebx
 	mov ecx,eax
-	mov eax,20
+	mov eax,2
 	mov ebx,ecx
 	imul eax,ebx
 	mov ecx,eax
-	mov [a],ecx
-	mov eax,101
-	mov ebx,[a]
-	cmp eax,ebx
-	mov ecx,eax
-	jnz L0
-	mov eax,1337
-	mov [c],eax
-	jmp L0E
-L0:	mov eax,666
-	mov [c],eax
-L0E:	xor rax,rax
+	mov [c],ecx
+	xor rax,rax
 	mov ecx, temp1
 	mov edx, temp1.len
 	call print_str
 	xor rax,rax
 	mov eax,[c]
-	call print_num
-	xor rax,rax
-	mov eax,[a]
 	call print_num
 
 	mov	eax, 1 ; exit

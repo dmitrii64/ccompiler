@@ -141,6 +141,10 @@ public class AsmCodeGenerator {
                         result = binaryOp("cmp", IRfirst, IRsecond, IRresult, size);
                         asmCode.addCode(result);
                         break;
+                    case SUB:
+                        result = binaryOp("sub", IRsecond, IRfirst, IRresult, size);
+                        asmCode.addCode(result);
+                        break;
                     case DEFL:
                         result = IRfirst + ":";
                         asmCode.addCode(result);

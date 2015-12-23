@@ -1,20 +1,10 @@
 int main()
 {
-    int a,b,c;
-    b = 2;
-    c = 5;
-    a = (b + 3) * 20;
-    if(a == 101)
-    {
-        c = 1337;
-    }
-    else
-    {
-        c = 666;
-    }
+    int a = 2;
+    int b = 5;
+    int c;
 
-    print("\n");
-
+    c = (a + b) * 2;
+    print("Hello world!");
     print(c);
-    print(a);
 }
