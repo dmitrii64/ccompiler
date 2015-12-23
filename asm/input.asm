@@ -79,8 +79,12 @@ _start:
 	mov ebx,ecx
 	add eax,ebx
 	mov ecx,eax
-	mov eax,2
-	mov ebx,ecx
+	mov eax,1
+	mov ebx,1
+	add eax,ebx
+	mov edx,eax
+	mov eax,ecx
+	mov ebx,edx
 	imul eax,ebx
 	mov ecx,eax
 	mov [c],ecx

@@ -4,7 +4,7 @@ int main()
     int b = 5;
     int c;
 
-    c = (-a + b) * 2;
+    c = (-a + b) * (1 + 1);
     while(c<10)
     {
         c++;

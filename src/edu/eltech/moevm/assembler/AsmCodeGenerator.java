@@ -63,6 +63,9 @@ public class AsmCodeGenerator {
         if (isConstant(IRfirst)) {
             result += "\tmov " + size + "ax," + IRfirst + "\n";
         }
+        if (isRegister(IRfirst)) {
+            result += "\tmov " + size + "ax," + getRegister(size, IRfirst) + "\n";
+        }
         if (isVariable(IRsecond)) {
             result += "\tmov " + size + "bx,[" + IRsecond + "]\n";
         }
