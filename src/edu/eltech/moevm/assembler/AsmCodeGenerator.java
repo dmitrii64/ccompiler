@@ -262,6 +262,24 @@ public class AsmCodeGenerator {
                         result = "\tjnz " + IRfirst + "\n";
                         asmCode.addCode(result);
                         break;
+                    case BML:
+                        result = "\tjna " + IRfirst + "\n";
+                        asmCode.addCode(result);
+                        break;
+                    case INC:
+                        if (isRegister(IRfirst))
+                            result = "\tinc " + getRegister(size, IRfirst) + "\n";
+                        else
+                            result = "\tinc dword[" + IRfirst + "]\n";
+                        asmCode.addCode(result);
+                        break;
+                    case DEC:
+                        if (isRegister(IRfirst))
+                            result = "\tdec " + getRegister(size, IRfirst) + "\n";
+                        else
+                            result = "\tdec dword[" + IRfirst + "]\n";
+                        asmCode.addCode(result);
+                        break;
                     case INTEGER:
                         result = IRfirst + ":\tdd " + IRresult + "\n";
                         asmCode.addData(result);

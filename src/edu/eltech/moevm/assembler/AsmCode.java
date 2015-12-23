@@ -86,8 +86,14 @@ public class AsmCode {
                 "\tmov eax, 4\n" +
                 "    mov ebx, 1\n" +
                 "    int 0x80\n" +
-                "    ret\n" +
-                "\n");
+                "    call clean_buf\n" +
+                "    mov byte[printbuf],10\n" +
+                "    mov eax, 4\n" +
+                "    mov ebx, 1\n" +
+                "    mov ecx, printbuf\n" +
+                "    mov edx, 1\n" +
+                "    int 0x80\n" +
+                "    ret\n");
 
         code.add("_start:\n");
         //code.add("\txor rax,rax\n");
