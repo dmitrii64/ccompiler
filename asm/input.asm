@@ -1,11 +1,15 @@
 global _start
 
 section .data
-a:	dd 0,0
-b:	dd 0,0
-c:	dd 0,0
+float_buff:dd 0
+double_buff:dd 0,0
+a:	dd 2.0
+b:	dd 5.0
+c:	dd 0
+const_1: dd 2.0
 temp1: db "Hello world!"
 .len: equ	$ - temp1
+_buff_2: dd 0
 section .bss
 	printbuf resb 10
 section .text
@@ -62,25 +66,26 @@ print_str:
     ret
 
 _start:
-	mov rax,2
-	mov [a],rax
-	mov rax,5
-	mov [b],rax
-	mov rax,[b]
-	mov rbx,[a]
-	add rax,rbx
-	mov rcx,rax
-	mov rax,2
-	mov rbx,rcx
-	imul rax,rbx
-	mov rcx,rax
-	mov [c],rcx
+	fld dword[b]
+	fadd dword[a]
+	fst dword[float_buff]
+	mov ecx,[float_buff]
+	mov eax,[const_1]
+	mov [float_buff],eax
+	fld dword[float_buff]
+	mov [float_buff],ecx
+	fmul dword[float_buff]
+	fst dword[float_buff]
+	mov ecx,[float_buff]
+	mov [c],ecx
 	xor rax,rax
 	mov ecx, temp1
 	mov edx, temp1.len
 	call print_str
 	xor rax,rax
-	mov rax,[c]
+	fld dword[c]
+	fist dword[_buff_2]
+	mov eax,[_buff_2]
 	call print_num
 
 	mov	eax, 1 ; exit

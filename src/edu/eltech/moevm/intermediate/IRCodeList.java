@@ -15,7 +15,7 @@ public class IRCodeList {
     public void print() {
         for (IRInstruction inst : IRInstructions) {
             if (inst != null) {
-                System.out.println(inst);
+                System.out.println("[" + inst.getType().name() + "]" + inst);
             }
         }
     }

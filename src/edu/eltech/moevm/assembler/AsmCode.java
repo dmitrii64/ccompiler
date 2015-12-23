@@ -13,10 +13,12 @@ public class AsmCode {
     private ArrayList<String> footer;
 
     private int stringid;
+    private int tempid;
 
 
     public AsmCode() {
         stringid = 0;
+        tempid = 0;
         header = new ArrayList<>();
         data = new ArrayList<>();
         bss = new ArrayList<>();
@@ -26,6 +28,8 @@ public class AsmCode {
         header.add("global _start\n\n");
 
         data.add("section .data\n");
+        data.add("float_buff:dd 0\n");
+        data.add("double_buff:dd 0,0\n");
 
         bss.add("section .bss\n" +
                 "\tprintbuf resb 10\n");
@@ -142,5 +146,10 @@ public class AsmCode {
     public int getStringid() {
         stringid++;
         return stringid;
+    }
+
+    public int getTempid() {
+        tempid++;
+        return tempid;
     }
 }
