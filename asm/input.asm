@@ -3,13 +3,20 @@ global _start
 section .data
 float_buff:dd 0
 double_buff:dd 0,0
+comp_re:	dd 0
+comp_im:	dd 0
+_const_1: dd 2.1
+_const_2: dd 2.2
 a:	dd 2
 b:	dd 5
 c:	dd 0
-temp1: db "Hello world!"
+p:	dd 0
+temp1: db "Begin"
 .len: equ	$ - temp1
-temp2: db " End"
+temp2: db " С="
 .len: equ	$ - temp2
+temp3: db " End"
+.len: equ	$ - temp3
 section .bss
 	printbuf resb 10
 section .text
@@ -63,15 +70,15 @@ print_str:
 	mov eax, 4
     mov ebx, 1
     int 0x80
-    call clean_buf
-    mov byte[printbuf],10
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, printbuf
-    mov edx, 1
-    int 0x80
     ret
 _start:
+	mov eax,[_const_1]
+	mov [comp_re],eax
+	mov eax,[_const_2]
+	mov [comp_im],eax
+	mov eax,[comp_re]
+	mov ecx,eax
+	mov [p],ecx
 	neg dword[a]
 	mov eax,[a]
 	mov ecx,eax
@@ -88,6 +95,10 @@ _start:
 	imul eax,ebx
 	mov ecx,eax
 	mov [c],ecx
+	xor rax,rax
+	mov ecx, temp1
+	mov edx, temp1.len
+	call print_str
 L0:	mov eax,10
 	mov ebx,[c]
 	cmp eax,ebx
@@ -95,18 +106,18 @@ L0:	mov eax,10
 	jna L1
 	inc dword[c]
 	xor rax,rax
-	mov ecx, temp1
-	mov edx, temp1.len
-	call print_str
-	jmp L0
-L1:	xor rax,rax
-	mov eax,[c]
-	call print_num
-	xor rax,rax
 	mov ecx, temp2
 	mov edx, temp2.len
 	call print_str
+	xor rax,rax
+	mov eax,[c]
+	call print_num
+	jmp L0
+L1:	xor rax,rax
+	mov ecx, temp3
+	mov edx, temp3.len
+	call print_str
 
-	mov	eax, 1 ; exit
+	mov	eax, 1
 	mov	ebx, 0
-	int	0x80   ; exit(0)
+	int	0x80

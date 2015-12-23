@@ -283,6 +283,50 @@ public class AsmCodeGenerator {
                             result = "\tdec dword[" + IRfirst + "]\n";
                         asmCode.addCode(result);
                         break;
+                    case RE:
+                        result = "\tmov eax,[" + IRfirst + "_re]\n";
+                        if (isRegister(IRresult))
+                            result += "\tmov " + getRegister("e", IRresult) + ",eax\n";
+                        else
+                            result += "\tmov [" + IRresult + "],eax\n";
+                        asmCode.addCode(result);
+                        break;
+                    case IM:
+                        result = "\tmov eax,[" + IRfirst + "_im]\n";
+                        if (isRegister(IRresult))
+                            result += "\tmov " + getRegister("e", IRresult) + ",eax\n";
+                        else
+                            result += "\tmov [" + IRresult + "],eax\n";
+                        asmCode.addCode(result);
+                        break;
+                    case SRE:
+                        if (isRegister(IRfirst)) {
+                            result += "\tmov " + getRegister("e", IRfirst) + ",eax\n";
+                        } else if (isVariable(IRfirst)) {
+                            result += "\tmov [" + IRfirst + "],eax\n";
+                        } else {
+                            int id = asmCode.getTempid();
+                            asmCode.addData("_const_" + id + ": dd " + IRfirst + "\n");
+                            result += "\tmov eax,[" + "_const_" + id + "]\n";
+                        }
+                        if (isVariable(IRresult))
+                            result += "\tmov [" + IRresult + "_re],eax\n";
+                        asmCode.addCode(result);
+                        break;
+                    case SIM:
+                        if (isRegister(IRfirst)) {
+                            result += "\tmov " + getRegister("e", IRfirst) + ",eax\n";
+                        } else if (isVariable(IRfirst)) {
+                            result += "\tmov [" + IRfirst + "],eax\n";
+                        } else {
+                            int id = asmCode.getTempid();
+                            asmCode.addData("_const_" + id + ": dd " + IRfirst + "\n");
+                            result += "\tmov eax,[" + "_const_" + id + "]\n";
+                        }
+                        if (isVariable(IRresult))
+                            result += "\tmov [" + IRresult + "_im],eax\n";
+                        asmCode.addCode(result);
+                        break;
                     case INTEGER:
                         result = IRfirst + ":\tdd " + IRresult + "\n";
                         asmCode.addData(result);

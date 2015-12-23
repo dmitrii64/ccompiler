@@ -86,13 +86,6 @@ public class AsmCode {
                 "\tmov eax, 4\n" +
                 "    mov ebx, 1\n" +
                 "    int 0x80\n" +
-                "    call clean_buf\n" +
-                "    mov byte[printbuf],10\n" +
-                "    mov eax, 4\n" +
-                "    mov ebx, 1\n" +
-                "    mov ecx, printbuf\n" +
-                "    mov edx, 1\n" +
-                "    int 0x80\n" +
                 "    ret\n");
 
         code.add("_start:\n");
@@ -102,9 +95,9 @@ public class AsmCode {
         //code.add("\txor rdx,rdx\n");
 
         footer.add("\n" +
-                "\tmov\teax, 1 ; exit\n" +
+                "\tmov\teax, 1\n" +
                 "\tmov\tebx, 0\n" +
-                "\tint\t0x80   ; exit(0)");
+                "\tint\t0x80");
     }
 
 
