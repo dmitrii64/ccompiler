@@ -188,8 +188,11 @@ public class Main {
                                 TreeElement right = node.getElements().get(1);
                                 if (left.getType() == right.getType())
                                     node.setType(left.getType());
-                                else
+                                else {
                                     System.out.println("Type mismatch at " + node.getOperation().name());
+
+                                }
+
                                 break;
                             case RE:
                             case IM:

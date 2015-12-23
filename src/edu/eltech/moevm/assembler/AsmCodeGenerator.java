@@ -235,6 +235,13 @@ public class AsmCodeGenerator {
                             result = floatOp(asmCode, "fmul", IRfirst, IRsecond, IRresult, el.getType());
                         asmCode.addCode(result);
                         break;
+                    case DIV:
+                        if (el.getType() == Type.INT || el.getType() == Type.LONG)
+                            result = binaryOp("idiv", IRfirst, IRsecond, IRresult, el.getType());
+                        else if (el.getType() == Type.FLOAT)
+                            result = floatOp(asmCode, "fdiv", IRfirst, IRsecond, IRresult, el.getType());
+                        asmCode.addCode(result);
+                        break;
                     case CMP:
                         result = binaryOp("cmp", IRfirst, IRsecond, IRresult, el.getType());
                         asmCode.addCode(result);
@@ -276,7 +283,27 @@ public class AsmCodeGenerator {
                         result += IRfirst + "_im" + ":\tdd 0\n";
                         asmCode.addData(result);
                         break;
+                    case UMINUS:
+                        if (el.getType() == Type.FLOAT) {
 
+                        } else {
+                            String size_prefix = "dword";
+                            if (isVariable(IRfirst)) {
+                                result = "\tneg " + size_prefix + "[" + IRfirst + "]\n";
+                                result += "\tmov " + size + "ax," + "[" + IRfirst + "]\n";
+                            } else if (isRegister(IRfirst)) {
+                                result = "\tneg " + getRegister(size, IRfirst) + "\n";
+                                result += "\tmov " + size + "ax," + getRegister(size, IRfirst) + "\n";
+                            } else if (isConstant(IRfirst)) {
+                                int id = asmCode.getTempid();
+                                asmCode.addData("_buff_" + id + ": dd " + IRfirst + "\n");
+                                result = "\tneg " + size_prefix + "[_buff_" + id + "]\n";
+                                result += "\tmov " + size + "ax," + size_prefix + "[_buff_" + id + "]\n";
+                            }
+                            result += "\tmov " + getRegister(size, IRresult) + "," + size + "ax\n";
+                        }
+                        asmCode.addCode(result);
+                        break;
                     case PRINT:
                         result = "\txor rax,rax\n";
                         if (isVariable(IRfirst)) {
