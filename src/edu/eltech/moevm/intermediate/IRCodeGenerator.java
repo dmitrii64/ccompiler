@@ -321,7 +321,7 @@ public class IRCodeGenerator {
                 code.add(i);
                 break;
             case SELECTION_STATEMENT:
-            case COMPOUND_STATEMENT:
+            case CONDITIONAL_EXPRESSION:
                 if (node.getElements().get(0) instanceof Leaf) {
                     left = (Leaf) node.getElements().get(0);
                     rightAddr = new IROperand(left.getValue());
@@ -338,27 +338,38 @@ public class IRCodeGenerator {
                 try {
                     if (node.getElements().get(1) instanceof Leaf) {
                         Leaf first = (Leaf) node.getElements().get(1);
-                        reg.push(first.getValue());
+                        i = new IRInstruction(IROperation.MOV,
+                                new IROperand(first.getValue()),
+                                new IROperand(reg.push("R"+reg.size())),
+                                first.getType());
+                        code.add(i);
                     } else {
                         code.addAll(node.getElements().get(1).getCode());
-                        i = new IRInstruction(IROperation.BRL, new IROperand(labels.peek() + "E"), left.getType());
+                        i = new IRInstruction(IROperation.BRL, new IROperand(labels.peek() + "E"),
+                                node.getElements().get(1).getType());
                         code.add(i);
-                        code.add(new IRInstruction(IROperation.DEFL, new IROperand(labels.peek()), left.getType()));
                     }
+                    code.add(new IRInstruction(IROperation.DEFL, new IROperand(labels.peek()),
+                            node.getElements().get(1).getType()));
                     if (node.getElements().get(2) instanceof Leaf) {
                         Leaf second = (Leaf) node.getElements().get(2);
-                        reg.push(second.getValue());
+                        i = new IRInstruction(IROperation.MOV,
+                                new IROperand(second.getValue()),
+                                new IROperand(reg.peek()),
+                                second.getType());
+                        code.add(i);
                     } else {
                         code.addAll(node.getElements().get(2).getCode());
-                        code.add(new IRInstruction(IROperation.DEFL, new IROperand(labels.peek() + "E"), left.getType()));
                     }
+                    code.add(new IRInstruction(IROperation.DEFL, new IROperand(labels.peek() + "E"),
+                            node.getElements().get(1).getType()));
                 } catch (UnsupportedOperationException ignored) {
                 }
                 break;
             case ITERATION_STATEMENT:
                 if (node.getValue().equals("WHILE")) {
                     i = new IRInstruction(IROperation.DEFL,
-                            new IROperand(labels.push("L" + labels.size())), left.getType());
+                            new IROperand(labels.push("L" + labels.size())), node.getType());
                     code.add(i);
                     if (node.getElements().get(0) instanceof Leaf) {
                         left = (Leaf) node.getElements().get(0);
@@ -378,10 +389,10 @@ public class IRCodeGenerator {
                     } catch (UnsupportedOperationException ignored) {
                     }
                     i = new IRInstruction(IROperation.BRL,
-                            new IROperand(labels.get(labels.size() - 2)), left.getType());
+                            new IROperand(labels.get(labels.size() - 2)), node.getType());
                     code.add(i);
                     i = new IRInstruction(IROperation.DEFL,
-                            new IROperand(labels.peek()), left.getType());
+                            new IROperand(labels.peek()), node.getType());
                     code.add(i);
                 } else {
                     iterationFor(code, node);
