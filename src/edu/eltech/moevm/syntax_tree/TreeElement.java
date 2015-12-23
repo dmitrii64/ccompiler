@@ -22,7 +22,9 @@ public abstract class TreeElement {
         this.id = id;
     }
 
-    public final Type getType() {
+    public Type getType() {
+        if (type == null)
+            return Type.UNKNOWN;
         return type;
     }
 

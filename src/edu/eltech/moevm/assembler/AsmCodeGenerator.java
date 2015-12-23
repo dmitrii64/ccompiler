@@ -82,7 +82,7 @@ public class AsmCodeGenerator {
         if (codeList != null) {
             for (int i = 0; i < codeList.size(); i++) {
                 IRInstruction el = codeList.get(i);
-                String result = "=empty=";
+                String result = "";
                 String IRfirst = null;
                 if (el.getFirst() != null)
                     IRfirst = el.getFirst().getValue();
@@ -94,6 +94,17 @@ public class AsmCodeGenerator {
                     IRresult = el.getResult().getValue();
 
                 String size = "e";
+                switch (el.getType()) {
+                    case INT:
+                    case FLOAT:
+                        size = "e";
+                        break;
+                    case LONG:
+                    case DOUBLE:
+                        size = "r";
+                        break;
+                }
+
 
                 switch (el.getOperation()) {
                     case MOV:
@@ -104,26 +115,26 @@ public class AsmCodeGenerator {
 
                         if (isConstant(IRfirst)) {
                             if (isVariable(IRresult)) {
-                                result = "\tmov " + size + "ax," + IRfirst + "\n";
+                                result += "\tmov " + size + "ax," + IRfirst + "\n";
                                 result += "\tmov [" + IRresult + "]," + size + "ax\n";
                             }
                             if (isRegister(IRresult)) {
-                                result = "\tmov " + getRegister(size, IRresult) + "," + IRfirst + "\n";
+                                result += "\tmov " + getRegister(size, IRresult) + "," + IRfirst + "\n";
                             }
                         } else if (isRegister(IRfirst)) {
                             if (isVariable(IRresult)) {
-                                result = "\tmov [" + IRresult + "]," + getRegister(size, IRfirst) + "\n";
+                                result += "\tmov [" + IRresult + "]," + getRegister(size, IRfirst) + "\n";
                             }
                             if (isRegister(IRresult)) {
-                                result = "\tmov " + getRegister(size, IRresult) + "," + getRegister(size, IRfirst) + "\n";
+                                result += "\tmov " + getRegister(size, IRresult) + "," + getRegister(size, IRfirst) + "\n";
                             }
                         } else if (isVariable(IRfirst)) {
                             if (isVariable(IRresult)) {
-                                result = "\tmov " + size + "ax,[" + IRfirst + "]\n";
+                                result += "\tmov " + size + "ax,[" + IRfirst + "]\n";
                                 result += "\tmov [" + IRresult + "]," + size + "ax\n";
                             }
                             if (isRegister(IRresult)) {
-                                result = "\tmov " + getRegister(size, IRresult) + ",[" + IRfirst + "]\n";
+                                result += "\tmov " + getRegister(size, IRresult) + ",[" + IRfirst + "]\n";
                             }
                         }
 
@@ -161,6 +172,19 @@ public class AsmCodeGenerator {
                         result = IRfirst + ":\tdd 0\n";
                         asmCode.addData(result);
                         break;
+                    case LONG:
+                        result = IRfirst + ":\tdd 0,0\n";
+                        asmCode.addData(result);
+                        break;
+                    case FLOAT:
+                        result = IRfirst + ":\tdd 0\n";
+                        asmCode.addData(result);
+                        break;
+                    case DOUBLE:
+                        result = IRfirst + ":\tdd 0,0\n";
+                        asmCode.addData(result);
+                        break;
+
                     case PRINT:
                         result = "\txor rax,rax\n";
                         if (isVariable(IRfirst)) {

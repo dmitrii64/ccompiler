@@ -1,5 +1,7 @@
 package edu.eltech.moevm.intermediate;
 
+import edu.eltech.moevm.common.Type;
+
 /**
  * Created by lazorg on 12/10/15.
  */
@@ -8,18 +10,21 @@ public class IRInstruction {
     private IROperand first;
     private IROperand second;
     private IROperand result;
+    private Type type;
     private int operands;
 
-    public IRInstruction(IROperation op, IROperand IROperand) {
+    public IRInstruction(IROperation op, IROperand IROperand, Type irType) {
         operation = op;
+        type = irType;
         first = IROperand;
         second = null;
         result = null;
         operands = 1;
     }
 
-    public IRInstruction(IROperation op, IROperand IROperand1, IROperand IROperand2) {
+    public IRInstruction(IROperation op, IROperand IROperand1, IROperand IROperand2, Type irType) {
         operation = op;
+        type = irType;
         first = IROperand1;
         second = null;
         result = IROperand2;
@@ -27,8 +32,9 @@ public class IRInstruction {
         operands = 2;
     }
 
-    public IRInstruction(IROperation op, IROperand IROperand1, IROperand IROperand2, IROperand IROperand3) {
+    public IRInstruction(IROperation op, IROperand IROperand1, IROperand IROperand2, IROperand IROperand3, Type irType) {
         operation = op;
+        type = irType;
         first = IROperand1;
         second = IROperand2;
         result = IROperand3;
@@ -82,5 +88,9 @@ public class IRInstruction {
 
     public int getOperands() {
         return operands;
+    }
+
+    public Type getType() {
+        return type;
     }
 }

@@ -1,9 +1,9 @@
 global _start
 
 section .data
-a:	dd 0
-b:	dd 0
-c:	dd 0
+a:	dd 0,0
+b:	dd 0,0
+c:	dd 0,0
 temp1: db "Hello world!"
 .len: equ	$ - temp1
 section .bss
@@ -62,25 +62,25 @@ print_str:
     ret
 
 _start:
-	mov eax,2
-	mov [a],eax
-	mov eax,5
-	mov [b],eax
-	mov eax,[b]
-	mov ebx,[a]
-	add eax,ebx
-	mov ecx,eax
-	mov eax,2
-	mov ebx,ecx
-	imul eax,ebx
-	mov ecx,eax
-	mov [c],ecx
+	mov rax,2
+	mov [a],rax
+	mov rax,5
+	mov [b],rax
+	mov rax,[b]
+	mov rbx,[a]
+	add rax,rbx
+	mov rcx,rax
+	mov rax,2
+	mov rbx,rcx
+	imul rax,rbx
+	mov rcx,rax
+	mov [c],rcx
 	xor rax,rax
 	mov ecx, temp1
 	mov edx, temp1.len
 	call print_str
 	xor rax,rax
-	mov eax,[c]
+	mov rax,[c]
 	call print_num
 
 	mov	eax, 1 ; exit
