@@ -285,6 +285,23 @@ public class AsmCodeGenerator {
                         break;
                     case UMINUS:
                         if (el.getType() == Type.FLOAT) {
+                            if (isVariable(IRfirst)) {
+                                result = "\tfld dword[" + IRfirst + "]\n";
+                                result += "\tfchs\n";
+                                result += "\tfst dword[float_buff]\n";
+                                result += "\tmov eax,dword[float_buff]\n";
+                            } else if (isRegister(IRfirst)) {
+                                result = "\tmov dword[float_buff]," + getRegister(size, IRresult) + "\n";
+                                result = "\tfld [float_buff]\n";
+                                result += "\tfchs\n";
+                                result += "\tfst dword[float_buff]\n";
+                                result += "\tmov eax,dword[float_buff]\n";
+                            }
+
+                            if (isRegister(IRresult))
+                                result += "\tmov " + getRegister(size, IRresult) + ",eax\n";
+                            else
+                                result += "\tmov [" + IRresult + "],eax\n";
 
                         } else {
                             String size_prefix = "dword";
