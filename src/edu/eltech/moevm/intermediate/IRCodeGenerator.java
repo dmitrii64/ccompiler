@@ -104,7 +104,9 @@ public class IRCodeGenerator {
                     } catch (UnsupportedOperationException e1) {
                         Leaf l = (Leaf) e;
                         i = new IRInstruction((l.getType() == Type.INT) ? IROperation.INTEGER : IROperation.valueOf(l.getType().name()),
-                                new IROperand(l.getValue() == null ? "null" : l.getValue()), l.getType());
+                                new IROperand(l.getValue() == null ? "null" : l.getValue()),
+                                new IROperand("0"),
+                                l.getType());
                         if (l.getType() == Type.COMPLEX) {
                             complexVars.add(l.getValue());
                         }
