@@ -4,7 +4,7 @@ int main()
     float b = 5.0;
     float c;
 
-    c = (a + b) * 2.0;
+    c = (-a + b) * 2.0;
     print("Hello world!");
     print(c);
 }

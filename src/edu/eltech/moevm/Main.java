@@ -191,6 +191,13 @@ public class Main {
                                 else
                                     System.out.println("Type mismatch at " + node.getOperation().name());
                                 break;
+                            case RE:
+                            case IM:
+                            case UMINUS:
+                                TreeElement single = node.getElements().get(0);
+                                node.setType(single.getType());
+                                break;
+
                         }
                     }
                 }

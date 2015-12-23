@@ -67,7 +67,8 @@ print_str:
 
 _start:
 	fld dword[b]
-	fadd dword[a]
+	mov [float_buff],ecx
+	fadd dword[float_buff]
 	fst dword[float_buff]
 	mov ecx,[float_buff]
 	mov eax,[const_1]
