@@ -365,32 +365,8 @@ public class AsmCodeGenerator {
                         result = "\tjnz " + IRfirst + "\n";
                         asmCode.addCode(result);
                         break;
-                    case BL:
-                        result = "\tjl " + IRfirst + "\n";
-                        asmCode.addCode(result);
-                        break;
-                    case BLE:
-                        result = "\tjle " + IRfirst + "\n";
-                        asmCode.addCode(result);
-                        break;
-                    case BG:
-                        result = "\tjg " + IRfirst + "\n";
-                        asmCode.addCode(result);
-                        break;
-                    case BGE:
-                        result = "\tjge " + IRfirst + "\n";
-                        asmCode.addCode(result);
-                        break;
-                    case BE:
-                        result = "\tje " + IRfirst + "\n";
-                        asmCode.addCode(result);
-                        break;
-                    case BNE:
-                        result = "\tjne " + IRfirst + "\n";
-                        asmCode.addCode(result);
-                        break;
-                    case BZ:
-                        result = "\tjz " + IRfirst + "\n";
+                    case BML:
+                        result = "\tjna " + IRfirst + "\n";
                         asmCode.addCode(result);
                         break;
                     case INC:
