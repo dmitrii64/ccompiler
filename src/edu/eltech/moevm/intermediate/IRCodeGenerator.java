@@ -209,16 +209,23 @@ public class IRCodeGenerator {
                                         new IROperand(left.getValue()), left.getType());
                                 code.add(i);
                             } else {
-                                Complex c = Complex.parse(((Leaf) node.getElements().get(1)).getValue());
-                                if (c.getRe() != null) {
-                                    i = new IRInstruction(IROperation.SRE,
-                                            new IROperand(c.getRe()),
-                                            new IROperand(left.getValue()), left.getType());
-                                    code.add(i);
-                                }
-                                if (c.getIm() != null) {
-                                    i = new IRInstruction(IROperation.SIM,
-                                            new IROperand(c.getIm()),
+                                if (node.getElements().get(1) instanceof Leaf) {
+                                    Complex c = Complex.parse(((Leaf) node.getElements().get(1)).getValue());
+                                    if (c.getRe() != null) {
+                                        i = new IRInstruction(IROperation.SRE,
+                                                new IROperand(c.getRe()),
+                                                new IROperand(left.getValue()), left.getType());
+                                        code.add(i);
+                                    }
+                                    if (c.getIm() != null) {
+                                        i = new IRInstruction(IROperation.SIM,
+                                                new IROperand(c.getIm()),
+                                                new IROperand(left.getValue()), left.getType());
+                                        code.add(i);
+                                    }
+                                } else {
+                                    i = new IRInstruction(IROperation.MOV,
+                                            rightAddr,
                                             new IROperand(left.getValue()), left.getType());
                                     code.add(i);
                                 }
