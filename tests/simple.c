@@ -6,7 +6,7 @@ int main()
 
     float p;
 
-    comp3 = comp + comp2;
+    comp3 = comp - comp2;
 
 
     print("RE: ");

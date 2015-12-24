@@ -101,22 +101,22 @@ _start:
 	mov [comp3_re],eax
 	mov eax,[_const_6]
 	mov [comp3_im],eax
-	mov eax,dword[comp2_re]
-	mov dword[float_buff],eax
-	fld dword[float_buff]
 	mov eax,dword[comp_re]
 	mov dword[float_buff],eax
-	fadd dword[float_buff]
+	fld dword[float_buff]
+	mov eax,dword[comp2_re]
+	mov dword[float_buff],eax
+	fsub dword[float_buff]
 	fst dword[float_buff]
 	mov eax,dword[float_buff]
 	mov ecx,eax
 	shl rcx,32
-	mov eax,dword[comp2_im]
+	mov eax,dword[comp_im]
 	mov dword[float_buff],eax
 	fld dword[float_buff]
-	mov eax,[comp_im]
+	mov eax,[comp2_im]
 	mov dword[float_buff],eax
-	fadd dword[float_buff]
+	fsub dword[float_buff]
 	fst dword[float_buff]
 	xor rax,rax
 	mov eax,dword[float_buff]
