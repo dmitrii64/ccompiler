@@ -5,16 +5,23 @@ float_buff:dd 0
 double_buff:dd 0,0
 comp_re:	dd 0
 comp_im:	dd 0
-_const_1: dd 2.1
-_const_2: dd 2.2
-a:	dd 2
-b:	dd 5
-c:	dd 0
+_const_1: dd 3.2
+_const_2: dd 8.2
+comp2_re:	dd 0
+comp2_im:	dd 0
+_const_3: dd 2.7
+_const_4: dd 2.3
+comp3_re:	dd 0
+comp3_im:	dd 0
+_const_5: dd 2.1
+_const_6: dd 3.4
 p:	dd 0
-temp1: db "Begin"
+temp1: db "RE: "
 .len: equ	$ - temp1
-temp2: db " С="
+_buff_7: dd 0
+temp2: db " IM: "
 .len: equ	$ - temp2
+_buff_8: dd 0
 temp3: db " End"
 .len: equ	$ - temp3
 section .bss
@@ -57,6 +64,11 @@ clean_buf:
 	ret
 
 print_num:
+	push rax
+	push rbx
+	push rcx
+	push rdx
+	push r8
 	call clean_buf
 	call itoa
 	mov eax, 4
@@ -64,6 +76,11 @@ print_num:
     mov ecx, printbuf
     mov edx, 10
     int 0x80
+    pop r8
+    pop rdx
+    pop rcx
+    pop rbx
+    pop rax
     ret
 
 print_str:
@@ -76,44 +93,64 @@ _start:
 	mov [comp_re],eax
 	mov eax,[_const_2]
 	mov [comp_im],eax
-	mov eax,[comp_re]
+	mov eax,[_const_3]
+	mov [comp2_re],eax
+	mov eax,[_const_4]
+	mov [comp2_im],eax
+	mov eax,[_const_5]
+	mov [comp3_re],eax
+	mov eax,[_const_6]
+	mov [comp3_im],eax
+	mov eax,dword[comp2_re]
+	mov dword[float_buff],eax
+	fld dword[float_buff]
+	mov eax,dword[comp_re]
+	mov dword[float_buff],eax
+	fadd dword[float_buff]
+	fst dword[float_buff]
+	mov eax,dword[float_buff]
 	mov ecx,eax
-	mov [p],ecx
-	neg dword[a]
-	mov eax,[a]
-	mov ecx,eax
-	mov eax,[b]
-	mov ebx,ecx
-	add eax,ebx
-	mov ecx,eax
-	mov eax,1
-	mov ebx,1
-	add eax,ebx
-	mov edx,eax
+	shl rcx,32
+	mov eax,dword[comp2_im]
+	mov dword[float_buff],eax
+	fld dword[float_buff]
+	mov eax,[comp_im]
+	mov dword[float_buff],eax
+	fadd dword[float_buff]
+	fst dword[float_buff]
+	xor rax,rax
+	mov eax,dword[float_buff]
+	or rcx,rax
+	mov rax,rcx
+	shr rax,32
+	mov [comp3_re],eax
 	mov eax,ecx
-	mov ebx,edx
-	imul eax,ebx
-	mov ecx,eax
-	mov [c],ecx
+	mov [comp3_im],eax
 	xor rax,rax
 	mov ecx, temp1
 	mov edx, temp1.len
 	call print_str
-L0:	mov eax,10
-	mov ebx,[c]
-	cmp eax,ebx
+	mov eax,[comp3_re]
 	mov ecx,eax
-	jna L1
-	inc dword[c]
+	mov [p],ecx
+	xor rax,rax
+	fld dword[p]
+	fist dword[_buff_7]
+	mov eax,[_buff_7]
+	call print_num
 	xor rax,rax
 	mov ecx, temp2
 	mov edx, temp2.len
 	call print_str
+	mov eax,[comp3_im]
+	mov ecx,eax
+	mov [p],ecx
 	xor rax,rax
-	mov eax,[c]
+	fld dword[p]
+	fist dword[_buff_8]
+	mov eax,[_buff_8]
 	call print_num
-	jmp L0
-L1:	xor rax,rax
+	xor rax,rax
 	mov ecx, temp3
 	mov edx, temp3.len
 	call print_str

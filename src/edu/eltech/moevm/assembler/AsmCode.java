@@ -73,6 +73,11 @@ public class AsmCode {
                 "\tret\n" +
                 "\n" +
                 "print_num:\n" +
+                "\tpush rax\n" +
+                "\tpush rbx\n" +
+                "\tpush rcx\n" +
+                "\tpush rdx\n" +
+                "\tpush r8\n" +
                 "\tcall clean_buf\n" +
                 "\tcall itoa\n" +
                 "\tmov eax, 4\n" +
@@ -80,6 +85,11 @@ public class AsmCode {
                 "    mov ecx, printbuf\n" +
                 "    mov edx, 10\n" +
                 "    int 0x80\n" +
+                "    pop r8\n" +
+                "    pop rdx\n" +
+                "    pop rcx\n" +
+                "    pop rbx\n" +
+                "    pop rax\n" +
                 "    ret\n" +
                 "\n" +
                 "print_str:\n" +
