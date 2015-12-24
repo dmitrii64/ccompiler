@@ -310,8 +310,8 @@ public class IRCodeGenerator {
                     rightAddr = new IROperand(reg.peek());
                 }
                 i = new IRInstruction(toCMPOperation(node.getOperation()),
-                        rightAddr,
                         leftAddr,
+                        rightAddr,
                         new IROperand(reg.push("R"+reg.size())),
                         node.getType());
                 code.add(i);
