@@ -6,8 +6,8 @@ int main()
     int a;
     float b = re(d);
     d = -1 - 2i;
-    a = re(d);
-    a = im(d);
+    b = re(d);
+    b = im(d);
     a = 5;
     b = im(k);
 

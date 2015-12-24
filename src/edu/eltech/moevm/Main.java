@@ -220,7 +220,11 @@ public class Main {
 
             IRCodeGenerator generator = new IRCodeGenerator();
             IRCodeList IRCodeList = generator.generate(syntaxTree);
-            IRCodeList.print();
+            String irCodeToFile = IRCodeList.print();
+            System.out.println(irCodeToFile);
+            FileWriter fileWriter1 = new FileWriter("ir/code.txt");
+            fileWriter1.write(irCodeToFile);
+            fileWriter1.close();
 
             System.out.println("=========== Generated Assembler code ============");
             AsmCodeGenerator asmCodeGenerator = new AsmCodeGenerator();
@@ -228,9 +232,9 @@ public class Main {
             String asmCodeToFile = asmCode.print();
             System.out.println(asmCodeToFile);
 
-            FileWriter fileWriter1 = new FileWriter("asm/input.asm");
-            fileWriter1.write(asmCodeToFile);
-            fileWriter1.close();
+            FileWriter fileWriter2 = new FileWriter("asm/input.asm");
+            fileWriter2.write(asmCodeToFile);
+            fileWriter2.close();
 
 
 

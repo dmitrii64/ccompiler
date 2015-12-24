@@ -1,21 +1,20 @@
 int main()
 {
-    complex comp = 2.1+2.2i;
-    int a = 2;
-    int b = 5;
-    int c;
+    complex comp = 3.2+8.2i;
+    complex comp2 = 2.7+2.3i;
+    complex comp3 = 2.1+3.4i;
+
     float p;
 
-    p = re(comp);
-    c = (-a + b) * (1 + 1);
+    comp3 = comp + comp2;
 
-    print("Begin");
-    while(c<10)
-    {
-        c++;
-        print(" С=");
-        print(c);
 
-    }
+    print("RE: ");
+    p = re(comp3);
+    print(p);
+    print(" IM: ");
+    p = im(comp3);
+    print(p);
+
     print(" End");
 }

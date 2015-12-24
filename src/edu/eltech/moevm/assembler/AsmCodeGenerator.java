@@ -13,7 +13,6 @@ public class AsmCodeGenerator {
 
     }
 
-
     public static boolean isRegister(String str) {
         return str.charAt(0) == 'R';
     }
@@ -29,8 +28,29 @@ public class AsmCodeGenerator {
         return true;
     }
 
+
     public static boolean isVariable(String str) {
         return !isRegister(str) && !isConstant(str);
+    }
+
+    public static String getSize(Type type) {
+        String size = "e";
+        switch (type) {
+            case BOOL:
+            case CHAR:
+                size = "";
+                break;
+            case INT:
+            case FLOAT:
+                size = "e";
+                break;
+            case LONG:
+            case DOUBLE:
+            case COMPLEX:
+                size = "r";
+                break;
+        }
+        return size;
     }
 
     public static String getRegister(String size, String irregister) {
@@ -45,7 +65,15 @@ public class AsmCodeGenerator {
                 case 1:
                     reg = size + "dx";
                     break;
-
+                default:
+                    if (register < 8) {
+                        int newreg = (register + 6);
+                        reg = size + newreg;
+                    } else {
+                        System.out.println("Not enough registers!");
+                        reg = null;
+                    }
+                    break;
             }
             return reg;
         } else
@@ -54,9 +82,7 @@ public class AsmCodeGenerator {
 
     public static String binaryOp(String op, String IRfirst, String IRsecond, String IRresult, Type type) {
         String result = "";
-        String size = "e";
-        if (type == Type.LONG)
-            size = "r";
+        String size = getSize(type);
         if (isVariable(IRfirst)) {
             result += "\tmov " + size + "ax,[" + IRfirst + "]\n";
         }
@@ -136,19 +162,131 @@ public class AsmCodeGenerator {
                     result += "\tmov [float_buff]," + getRegister("e", IRsecond) + "\n";
                     result += "\t" + op + " dword[float_buff]" + "\n";
                 }
-
             }
-
             if (isVariable(IRresult))
                 result += "\tfst dword[" + IRresult + "]\n";
             else if (isRegister(IRresult)) {
                 result += "\tfst dword[float_buff]\n";
                 result += "\tmov " + getRegister("e", IRresult) + ",[float_buff]\n";
             }
+        }
+        return result;
+    }
 
+    public static String complexOp(AsmCode code, String op, String IRfirst, String IRsecond, String IRresult, Type type) {
+        String result = "";
+        if (isVariable(IRfirst)) {
+            result += "\tmov eax,dword[" + IRfirst + "_re]\n";
+        } else if (isRegister(IRfirst)) {
+            result += "\tmov rax," + getRegister("r", IRfirst) + "\n";
+            result += "\tshr rax,32\n";
+        }
+        result += "\tmov dword[float_buff],eax\n";
+        result += "\tfld dword[float_buff]\n";
+        if (isVariable(IRsecond)) {
+            result += "\tmov eax,dword[" + IRsecond + "_re]\n";
+        } else if (isRegister(IRsecond)) {
+            result += "\tmov rax," + getRegister("r", IRsecond) + "\n";
+            result += "\tshr rax,32\t";
+        }
+        result += "\tmov dword[float_buff],eax\n";
+        result += "\t" + op + " dword[float_buff]\n";
+        result += "\tfst dword[float_buff]\n";
+        result += "\tmov eax,dword[float_buff]\n";
+        if (isVariable(IRresult)) {
+            result += "\tmov [" + IRresult + "_re],eax\n";
+        } else if (isRegister(IRresult)) {
+            result += "\tmov " + getRegister("e", IRresult) + ",eax\n";
+            result += "\tshl " + getRegister("r", IRresult) + ",32\n";
         }
 
+        if (isVariable(IRfirst)) {
+            result += "\tmov eax,dword[" + IRfirst + "_im]\n";
+        } else if (isRegister(IRfirst)) {
+            result += "\tmov rax," + getRegister("r", IRfirst) + "\n";
+        }
+        result += "\tmov dword[float_buff],eax\n";
+        result += "\tfld dword[float_buff]\n";
+        if (isVariable(IRsecond)) {
+            result += "\tmov eax,[" + IRsecond + "_im]\n";
+        } else if (isRegister(IRsecond)) {
+            result += "\tmov rax," + getRegister("r", IRsecond) + "\n";
+        }
+        result += "\tmov dword[float_buff],eax\n";
+        result += "\t" + op + " dword[float_buff]\n";
+        result += "\tfst dword[float_buff]\n";
+        result += "\txor rax,rax\n";
+        result += "\tmov eax,dword[float_buff]\n";
+        if (isVariable(IRresult)) {
+            result += "\tmov [" + IRresult + "_im],eax\n";
+        } else if (isRegister(IRresult)) {
+            result += "\tor " + getRegister("r", IRresult) + ",rax\n";
+        }
+        return result;
+    }
 
+    public static String movOp(AsmCode asmCode, String IRfirst, String IRresult, Type type) {
+        String size = getSize(type);
+
+        String result = "";
+        if (isConstant(IRfirst)) {
+            if (type == Type.FLOAT) {
+                int temp = asmCode.getTempid();
+                asmCode.addData("const_" + temp + ": dd " + IRfirst + "\n");
+                if (isVariable(IRresult)) {
+                    result += "\tmov " + size + "ax," + "[" + "const_" + temp + "]" + "\n";
+                    result += "\tmov [" + IRresult + "]," + size + "ax\n";
+                } else if (isRegister(IRresult)) {
+                    result += "\tmov " + getRegister(size, IRresult) + "," + "[const_" + temp + "]\n";
+                }
+            } else if (type == Type.INT || type == Type.LONG) {
+                if (isVariable(IRresult)) {
+                    result += "\tmov " + size + "ax," + IRfirst + "\n";
+                    result += "\tmov [" + IRresult + "]," + size + "ax\n";
+                } else if (isRegister(IRresult)) {
+                    result += "\tmov " + getRegister(size, IRresult) + "," + IRfirst + "\n";
+                }
+            }
+        } else if (isRegister(IRfirst)) {
+            if (type == Type.INT || type == Type.LONG || type == Type.FLOAT) {
+                if (isVariable(IRresult)) {
+                    result += "\tmov [" + IRresult + "]," + getRegister(size, IRfirst) + "\n";
+                } else if (isRegister(IRresult)) {
+                    result += "\tmov " + getRegister(size, IRresult) + "," + getRegister(size, IRfirst) + "\n";
+                }
+            } else if (type == Type.COMPLEX) {
+                if (isVariable(IRresult)) {
+                    result += "\tmov rax," + getRegister("r", IRfirst) + "\n";
+                    result += "\tshr rax,32\n";
+                    result += "\tmov [" + IRresult + "_re],eax\n";
+                    result += "\tmov eax," + getRegister("e", IRfirst) + "\n";
+                    result += "\tmov [" + IRresult + "_im],eax\n";
+                } else if (isRegister(IRresult)) {
+                    result += "\tmov " + getRegister("r", IRresult) + "," + getRegister("r", IRfirst) + "\n";
+                }
+            }
+        } else if (isVariable(IRfirst)) {
+            if (type == Type.INT || type == Type.LONG || type == Type.FLOAT) {
+                if (isVariable(IRresult)) {
+                    result += "\tmov " + size + "ax,[" + IRfirst + "]\n";
+                    result += "\tmov [" + IRresult + "]," + size + "ax\n";
+                } else if (isRegister(IRresult)) {
+                    result += "\tmov " + getRegister(size, IRresult) + ",[" + IRfirst + "]\n";
+                }
+            } else if (type == Type.COMPLEX) {
+                if (isVariable(IRresult)) {
+                    result += "\tmov eax,[" + IRfirst + "_re]\n";
+                    result += "\tmov [" + IRresult + "_re],eax\n";
+                    result += "\tmov eax,[" + IRfirst + "_im]\n";
+                    result += "\tmov [" + IRresult + "_im],eax\n";
+                } else if (isRegister(IRresult)) {
+                    result += "\tmov eax,[" + IRfirst + "_re]\n";
+                    result += "\tshl rax,32\n";
+                    result += "\tmov eax,[" + IRfirst + "_im]\n";
+                    result += "\tmov " + getRegister("r", IRresult) + ",rax\n";
+                }
+            }
+        }
         return result;
     }
 
@@ -168,59 +306,11 @@ public class AsmCodeGenerator {
                 if (el.getResult() != null)
                     IRresult = el.getResult().getValue();
 
-                String size = "e";
-                switch (el.getType()) {
-                    case INT:
-                    case FLOAT:
-                        size = "e";
-                        break;
-                    case LONG:
-                    case DOUBLE:
-                        size = "r";
-                        break;
-                }
-
+                String size = getSize(el.getType());
 
                 switch (el.getOperation()) {
                     case MOV:
-
-                        //second = getRegister(second);
-                        //first = getRegister(first);
-
-
-                        if (isConstant(IRfirst)) {
-                            if (el.getType() == Type.FLOAT) {
-                                int temp = asmCode.getTempid();
-                                asmCode.addData("const_" + temp + ": dd " + IRfirst + "\n");
-                                if (isVariable(IRresult)) {
-                                    result += "\tmov " + size + "ax," + "[" + "const_" + temp + "]" + "\n";
-                                    result += "\tmov [" + IRresult + "]," + size + "ax\n";
-                                } else if (isRegister(IRresult)) {
-                                    result += "\tmov " + getRegister(size, IRresult) + "," + "[const_" + temp + "]\n";
-                                }
-                            } else {
-                                if (isVariable(IRresult)) {
-                                    result += "\tmov " + size + "ax," + IRfirst + "\n";
-                                    result += "\tmov [" + IRresult + "]," + size + "ax\n";
-                                } else if (isRegister(IRresult)) {
-                                    result += "\tmov " + getRegister(size, IRresult) + "," + IRfirst + "\n";
-                                }
-                            }
-                        } else if (isRegister(IRfirst)) {
-                            if (isVariable(IRresult)) {
-                                result += "\tmov [" + IRresult + "]," + getRegister(size, IRfirst) + "\n";
-                            } else if (isRegister(IRresult)) {
-                                result += "\tmov " + getRegister(size, IRresult) + "," + getRegister(size, IRfirst) + "\n";
-                            }
-                        } else if (isVariable(IRfirst)) {
-                            if (isVariable(IRresult)) {
-                                result += "\tmov " + size + "ax,[" + IRfirst + "]\n";
-                                result += "\tmov [" + IRresult + "]," + size + "ax\n";
-                            } else if (isRegister(IRresult)) {
-                                result += "\tmov " + getRegister(size, IRresult) + ",[" + IRfirst + "]\n";
-                            }
-                        }
-
+                        result = movOp(asmCode, IRfirst, IRresult, el.getType());
                         asmCode.addCode(result);
                         break;
                     case ADD:
@@ -228,7 +318,8 @@ public class AsmCodeGenerator {
                             result = binaryOp("add", IRfirst, IRsecond, IRresult, el.getType());
                         else if (el.getType() == Type.FLOAT)
                             result = floatOp(asmCode, "fadd", IRfirst, IRsecond, IRresult, el.getType());
-
+                        else if (el.getType() == Type.COMPLEX)
+                            result = complexOp(asmCode, "fadd", IRfirst, IRsecond, IRresult, el.getType());
                         asmCode.addCode(result);
                         break;
                     case MUL:
@@ -236,6 +327,8 @@ public class AsmCodeGenerator {
                             result = binaryOp("imul", IRfirst, IRsecond, IRresult, el.getType());
                         else if (el.getType() == Type.FLOAT)
                             result = floatOp(asmCode, "fmul", IRfirst, IRsecond, IRresult, el.getType());
+                        else if (el.getType() == Type.COMPLEX)
+                            result = complexOp(asmCode, "fmul", IRfirst, IRsecond, IRresult, el.getType());
                         asmCode.addCode(result);
                         break;
                     case DIV:
@@ -243,6 +336,8 @@ public class AsmCodeGenerator {
                             result = binaryOp("idiv", IRfirst, IRsecond, IRresult, el.getType());
                         else if (el.getType() == Type.FLOAT)
                             result = floatOp(asmCode, "fdiv", IRfirst, IRsecond, IRresult, el.getType());
+                        else if (el.getType() == Type.COMPLEX)
+                            result = complexOp(asmCode, "fdiv", IRfirst, IRsecond, IRresult, el.getType());
                         asmCode.addCode(result);
                         break;
                     case CMP:
@@ -250,7 +345,12 @@ public class AsmCodeGenerator {
                         asmCode.addCode(result);
                         break;
                     case SUB:
-                        result = binaryOp("sub", IRsecond, IRfirst, IRresult, el.getType());
+                        if (el.getType() == Type.INT || el.getType() == Type.LONG)
+                            result = binaryOp("sub", IRsecond, IRfirst, IRresult, el.getType());
+                        else if (el.getType() == Type.FLOAT)
+                            result = floatOp(asmCode, "fsub", IRfirst, IRsecond, IRresult, el.getType());
+                        else if (el.getType() == Type.COMPLEX)
+                            result = complexOp(asmCode, "fsub", IRfirst, IRsecond, IRresult, el.getType());
                         asmCode.addCode(result);
                         break;
                     case DEFL:
@@ -284,7 +384,11 @@ public class AsmCodeGenerator {
                         asmCode.addCode(result);
                         break;
                     case RE:
-                        result = "\tmov eax,[" + IRfirst + "_re]\n";
+                        if (isRegister(IRfirst)) {
+                            result += "\tmov rax," + getRegister("r", IRfirst) + "\n";
+                            result += "\tshr rax,32\n";
+                        } else
+                            result += "\tmov eax,[" + IRfirst + "_re]\n";
                         if (isRegister(IRresult))
                             result += "\tmov " + getRegister("e", IRresult) + ",eax\n";
                         else
@@ -292,7 +396,10 @@ public class AsmCodeGenerator {
                         asmCode.addCode(result);
                         break;
                     case IM:
-                        result = "\tmov eax,[" + IRfirst + "_im]\n";
+                        if (isRegister(IRfirst)) {
+                            result += "\tmov rax," + getRegister("r", IRfirst) + "\n";
+                        } else
+                            result += "\tmov eax,[" + IRfirst + "_im]\n";
                         if (isRegister(IRresult))
                             result += "\tmov " + getRegister("e", IRresult) + ",eax\n";
                         else
@@ -367,7 +474,6 @@ public class AsmCodeGenerator {
                                 result += "\tmov " + getRegister(size, IRresult) + ",eax\n";
                             else
                                 result += "\tmov [" + IRresult + "],eax\n";
-
                         } else {
                             String size_prefix = "dword";
                             if (isVariable(IRfirst)) {
@@ -407,11 +513,7 @@ public class AsmCodeGenerator {
                             result += "\tmov ecx, temp" + stringid + "\n" +
                                     "\tmov edx, temp" + stringid + ".len\n";
                             result += "\tcall print_str\n";
-
-
                         }
-
-
                         asmCode.addCode(result);
                         break;
                 }
