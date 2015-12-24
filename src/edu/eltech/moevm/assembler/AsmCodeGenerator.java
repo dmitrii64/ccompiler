@@ -13,7 +13,6 @@ public class AsmCodeGenerator {
 
     }
 
-
     public static boolean isRegister(String str) {
         return str.charAt(0) == 'R';
     }
@@ -29,8 +28,29 @@ public class AsmCodeGenerator {
         return true;
     }
 
+
     public static boolean isVariable(String str) {
         return !isRegister(str) && !isConstant(str);
+    }
+
+    public static String getSize(Type type) {
+        String size = "e";
+        switch (type) {
+            case BOOL:
+            case CHAR:
+                size = "";
+                break;
+            case INT:
+            case FLOAT:
+                size = "e";
+                break;
+            case LONG:
+            case DOUBLE:
+            case COMPLEX:
+                size = "r";
+                break;
+        }
+        return size;
     }
 
     public static String getRegister(String size, String irregister) {
@@ -45,9 +65,15 @@ public class AsmCodeGenerator {
                 case 1:
                     reg = size + "dx";
                     break;
-                case 2:
-                    reg = "r8";
-
+                default:
+                    if (register < 8) {
+                        int newreg = (register + 6);
+                        reg = size + newreg;
+                    } else {
+                        System.out.println("Not enough registers!");
+                        reg = null;
+                    }
+                    break;
             }
             return reg;
         } else
@@ -56,9 +82,7 @@ public class AsmCodeGenerator {
 
     public static String binaryOp(String op, String IRfirst, String IRsecond, String IRresult, Type type) {
         String result = "";
-        String size = "e";
-        if (type == Type.LONG)
-            size = "r";
+        String size = getSize(type);
         if (isVariable(IRfirst)) {
             result += "\tmov " + size + "ax,[" + IRfirst + "]\n";
         }
@@ -138,19 +162,14 @@ public class AsmCodeGenerator {
                     result += "\tmov [float_buff]," + getRegister("e", IRsecond) + "\n";
                     result += "\t" + op + " dword[float_buff]" + "\n";
                 }
-
             }
-
             if (isVariable(IRresult))
                 result += "\tfst dword[" + IRresult + "]\n";
             else if (isRegister(IRresult)) {
                 result += "\tfst dword[float_buff]\n";
                 result += "\tmov " + getRegister("e", IRresult) + ",[float_buff]\n";
             }
-
         }
-
-
         return result;
     }
 
@@ -207,18 +226,8 @@ public class AsmCodeGenerator {
     }
 
     public static String movOp(AsmCode asmCode, String IRfirst, String IRresult, Type type) {
-        String size = "e";
-        switch (type) {
-            case INT:
-            case FLOAT:
-                size = "e";
-                break;
-            case LONG:
-            case DOUBLE:
-            case COMPLEX:
-                size = "r";
-                break;
-        }
+        String size = getSize(type);
+
         String result = "";
         if (isConstant(IRfirst)) {
             if (type == Type.FLOAT) {
@@ -297,19 +306,7 @@ public class AsmCodeGenerator {
                 if (el.getResult() != null)
                     IRresult = el.getResult().getValue();
 
-                String size = "e";
-                switch (el.getType()) {
-                    case INT:
-                    case FLOAT:
-                        size = "e";
-                        break;
-                    case LONG:
-                    case DOUBLE:
-                    case COMPLEX:
-                        size = "r";
-                        break;
-                }
-
+                String size = getSize(el.getType());
 
                 switch (el.getOperation()) {
                     case MOV:

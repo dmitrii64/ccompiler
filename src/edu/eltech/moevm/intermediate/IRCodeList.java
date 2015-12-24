@@ -12,12 +12,14 @@ public class IRCodeList {
         IRInstructions = new ArrayList<>();
     }
 
-    public void print() {
+    public String print() {
+        String str = "";
         for (IRInstruction inst : IRInstructions) {
             if (inst != null) {
-                System.out.println("[" + inst.getType().name() + "]" + inst);
+                str += "[" + inst.getType().name() + "]" + inst + "\n";
             }
         }
+        return str;
     }
 
     public void add(IRInstruction IRInstruction) {
