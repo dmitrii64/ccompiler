@@ -102,10 +102,16 @@ public class AsmCodeGenerator {
             result += "\tmov " + size + "bx," + getRegister(size, IRsecond) + "\n";
         }
         result += "\t" + op + " " + size + "ax," + size + "bx\n";
-        if (isRegister(IRresult)) {
-            result += "\tmov " + getRegister(size, IRresult) + "," + size + "ax\n";
-        } else if (isVariable(IRresult)) {
-            result += "\tmov [" + IRresult + "]," + size + "ax\n";
+        if(op.compareTo("cmp")==0)
+        {
+
+        }
+        else {
+            if (isRegister(IRresult)) {
+                result += "\tmov " + getRegister(size, IRresult) + "," + size + "ax\n";
+            } else if (isVariable(IRresult)) {
+                result += "\tmov [" + IRresult + "]," + size + "ax\n";
+            }
         }
         return result;
     }
@@ -363,6 +369,10 @@ public class AsmCodeGenerator {
                         break;
                     case BNZ:
                         result = "\tjnz " + IRfirst + "\n";
+                        asmCode.addCode(result);
+                        break;
+                    case BZL:
+                        result = "\tjz " + IRfirst + "\n";
                         asmCode.addCode(result);
                         break;
                     case BML:
