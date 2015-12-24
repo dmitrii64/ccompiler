@@ -279,7 +279,7 @@ public class IRCodeGenerator {
                 } else {
                     Node right = (Node) node.getElements().get(1);
                     code.addAll(right.getCode());
-                    rightAddr = new IROperand(reg.peek());
+                    rightAddr = new IROperand(reg.pop());
                 }
                 i = new IRInstruction((node.getOperation() == Operation.AND_OP ? IROperation.AND : IROperation.OR),
                         rightAddr,
@@ -309,9 +309,11 @@ public class IRCodeGenerator {
                     code.addAll(right.getCode());
                     rightAddr = new IROperand(reg.peek());
                 }
-                i = new IRInstruction(IROperation.CMP,
+                i = new IRInstruction(toCMPOperation(node.getOperation()),
                         rightAddr,
-                        leftAddr, node.getType());
+                        leftAddr,
+                        new IROperand(reg.push("R"+reg.size())),
+                        node.getType());
                 code.add(i);
                 break;
             case NOT:
@@ -338,7 +340,8 @@ public class IRCodeGenerator {
                 } else {
                     Node leftNode = (Node) node.getElements().get(0);
                     code.addAll(leftNode.getCode());
-                    i = compareInstruction(code, leftNode, null);
+                    rightAddr = new IROperand(reg.pop());
+                    i = compareInstruction(code, leftNode, rightAddr);
                 }
                 code.add(i);
                 try {
@@ -385,7 +388,8 @@ public class IRCodeGenerator {
                     } else {
                         Node leftNode = (Node) node.getElements().get(0);
                         code.addAll(leftNode.getCode());
-                        i = compareInstruction(code, leftNode, null);
+                        rightAddr = new IROperand(reg.pop());
+                        i = compareInstruction(code, leftNode, rightAddr);
                     }
                     code.add(i);
                     try {
@@ -520,10 +524,10 @@ public class IRCodeGenerator {
         } else {
             Node leftNode = (Node) node.getElements().get(1);
             code.addAll(leftNode.getCode());
-            //rightAddr = new IROperand(reg.pop());
+            rightAddr = new IROperand(reg.pop());
             i = compareInstruction(code,
                     ((Node) leftNode.getElements().get(0)),
-                    null);
+                    rightAddr);
         }
         code.add(i);
         try {
@@ -537,6 +541,10 @@ public class IRCodeGenerator {
         i = new IRInstruction(IROperation.DEFL,
                 new IROperand(labels.peek()), node.getType());
         code.add(i);
+    }
+
+    private IROperation toCMPOperation(Operation op) {
+        return IROperation.valueOf(op.name());
     }
 
 }
