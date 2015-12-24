@@ -520,10 +520,10 @@ public class IRCodeGenerator {
         } else {
             Node leftNode = (Node) node.getElements().get(1);
             code.addAll(leftNode.getCode());
-            rightAddr = new IROperand(reg.pop());
+            //rightAddr = new IROperand(reg.pop());
             i = compareInstruction(code,
                     ((Node) leftNode.getElements().get(0)),
-                    rightAddr);
+                    null);
         }
         code.add(i);
         try {
