@@ -169,8 +169,8 @@ public class IRCodeGenerator {
                     rightAddr = new IROperand(reg.pop());
                 }
                 i = new IRInstruction(toMathOperation(node.getOperation()),
-                        rightAddr,
                         leftAddr,
+                        rightAddr,
                         new IROperand(reg.push("R" + reg.size())), node.getElements().get(0).getType());
                 code.add(i);
                 break;

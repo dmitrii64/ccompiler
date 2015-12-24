@@ -35,6 +35,7 @@ public enum IROperation {
     CONSTANT,
     STRING_LITERAL,
 
+
     DEFL,
     BZ,
     CMP,
