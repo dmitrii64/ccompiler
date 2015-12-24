@@ -265,7 +265,7 @@ public class AsmCodeGenerator {
                         result = "\tjnz " + IRfirst + "\n";
                         asmCode.addCode(result);
                         break;
-                    case BML:
+                    case BL:
                         result = "\tjna " + IRfirst + "\n";
                         asmCode.addCode(result);
                         break;
