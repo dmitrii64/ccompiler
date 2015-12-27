@@ -1,5 +1,7 @@
 package edu.eltech.moevm.syntax_tree;
 
+import edu.eltech.moevm.common.Type;
+
 /**
  * Created by lazorg on 12/28/15.
  */
@@ -19,7 +21,12 @@ public class TypeValidator implements TreeCallback {
                     if (left.getType() == right.getType())
                         node.setType(left.getType());
                     else {
-                        System.out.println("Type mismatch at " + node.getOperation().name());
+                        try {
+                            throw new TypeMismatchException();
+                        } catch (TypeMismatchException e1) {
+                            System.out.println("Type mismatch!");
+                            e1.printStackTrace();
+                        }
                     }
                     break;
                 case RE:
@@ -33,7 +40,13 @@ public class TypeValidator implements TreeCallback {
                     TreeElement complex = node.getElements().get(0);
                     node.setType(complex.getType());
                     TreeElement arg = node.getElements().get(1);
-                    //node.setType(complex.getType());
+                    if (arg.getType() != Type.FLOAT)
+                        try {
+                            throw new TypeMismatchException();
+                        } catch (TypeMismatchException e1) {
+                            System.out.println("2nd argument type mismatch!");
+                            e1.printStackTrace();
+                        }
                     break;
             }
         }
