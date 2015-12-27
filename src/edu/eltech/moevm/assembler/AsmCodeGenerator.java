@@ -397,22 +397,22 @@ public class AsmCodeGenerator {
                         if (isRegister(IRfirst)) {
                             result += "\tmov rax," + getRegister("r", IRfirst) + "\n";
                             result += "\tshr rax,32\n";
-                        } else
+                        } else if (isVariable(IRfirst))
                             result += "\tmov eax,[" + IRfirst + "_re]\n";
                         if (isRegister(IRresult))
                             result += "\tmov " + getRegister("e", IRresult) + ",eax\n";
-                        else
+                        else if (isVariable(IRresult))
                             result += "\tmov [" + IRresult + "],eax\n";
                         asmCode.addCode(result);
                         break;
                     case IM:
                         if (isRegister(IRfirst)) {
                             result += "\tmov rax," + getRegister("r", IRfirst) + "\n";
-                        } else
+                        } else if (isVariable(IRfirst))
                             result += "\tmov eax,[" + IRfirst + "_im]\n";
                         if (isRegister(IRresult))
                             result += "\tmov " + getRegister("e", IRresult) + ",eax\n";
-                        else
+                        else if (isVariable(IRresult))
                             result += "\tmov [" + IRresult + "],eax\n";
                         asmCode.addCode(result);
                         break;
@@ -420,7 +420,7 @@ public class AsmCodeGenerator {
                         if (isRegister(IRfirst)) {
                             result += "\tmov " + getRegister("e", IRfirst) + ",eax\n";
                         } else if (isVariable(IRfirst)) {
-                            result += "\tmov [" + IRfirst + "],eax\n";
+                            result += "\tmov eax,[" + IRfirst + "]\n";
                         } else {
                             int id = asmCode.getTempid();
                             asmCode.addData("_const_" + id + ": dd " + IRfirst + "\n");
@@ -434,7 +434,7 @@ public class AsmCodeGenerator {
                         if (isRegister(IRfirst)) {
                             result += "\tmov " + getRegister("e", IRfirst) + ",eax\n";
                         } else if (isVariable(IRfirst)) {
-                            result += "\tmov [" + IRfirst + "],eax\n";
+                            result += "\tmov eax,[" + IRfirst + "]\n";
                         } else {
                             int id = asmCode.getTempid();
                             asmCode.addData("_const_" + id + ": dd " + IRfirst + "\n");

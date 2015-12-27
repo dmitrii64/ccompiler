@@ -7,7 +7,9 @@ comp_re:	dd 0
 comp_im:	dd 0
 _const_1: dd 3.2
 _const_2: dd 8.2
-p:	dd 2.1
+p:	dd 666.1
+z:	dd 0
+const_3: dd 1.0
 temp1: db " End "
 .len: equ	$ - temp1
 section .bss
@@ -79,7 +81,19 @@ _start:
 	mov [comp_re],eax
 	mov eax,[_const_2]
 	mov [comp_im],eax
-	xor rax,rax
+L0:	mov eax,0
+	mov ebx,[p]
+	cmp eax,ebx
+	mov eax,[const_3]
+	mov [float_buff],eax
+	fld dword[float_buff]
+	fld dword[p]
+	fadd dword[float_buff]
+	fst dword[float_buff]
+	mov edx,[float_buff]
+	mov [p],edx
+	jmp L0
+L1:	xor rax,rax
 	mov ecx, temp1
 	mov edx, temp1.len
 	call print_str

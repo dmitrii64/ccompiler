@@ -49,6 +49,7 @@ public class IRCodeGenerator {
         IRCodeList code = new IRCodeList();
         IRInstruction i = null;
         Leaf left = null;
+
         IROperand rightAddr;
         IROperand leftAddr;
         switch (node.getOperation()) {
@@ -146,6 +147,30 @@ public class IRCodeGenerator {
                 i = new IRInstruction(IROperation.valueOf(node.getOperation().name()),
                         leftAddr,
                         new IROperand(reg.push("R" + reg.size())), node.getElements().get(0).getType());
+                code.add(i);
+                break;
+            case SRE:
+            case SIM:
+                if (node.getElements().get(0) instanceof Leaf) {
+                    left = (Leaf) node.getElements().get(0);
+                    leftAddr = new IROperand(left.getValue());
+                } else {
+                    Node leftNode = (Node) node.getElements().get(0);
+                    code.addAll(leftNode.getCode());
+                    leftAddr = new IROperand(reg.pop());
+                }
+                Leaf rightArg = null;
+                if (node.getElements().get(1) instanceof Leaf) {
+                    rightArg = (Leaf) node.getElements().get(1);
+                    rightAddr = new IROperand(rightArg.getValue());
+                } else {
+                    Node rightNode = (Node) node.getElements().get(1);
+                    code.addAll(rightNode.getCode());
+                    rightAddr = new IROperand(reg.pop());
+                }
+
+                i = new IRInstruction(IROperation.valueOf(node.getOperation().name()),
+                        rightAddr, leftAddr, node.getElements().get(0).getType());
                 code.add(i);
                 break;
             case PLUS:
