@@ -7,11 +7,16 @@ comp_re:	dd 0
 comp_im:	dd 0
 _const_1: dd 3.2
 _const_2: dd 8.2
-p:	dd 666.1
+i_var:	dd 1
+p:	dd 0
 z:	dd 0
-const_3: dd 1.0
-temp1: db " End "
+_const_3: dd 10.0
+const_4: dd 1.0
+_buff_5: dd 0
+temp1: db " "
 .len: equ	$ - temp1
+temp2: db " End "
+.len: equ	$ - temp2
 section .bss
 	printbuf resb 10
 section .text
@@ -81,21 +86,32 @@ _start:
 	mov [comp_re],eax
 	mov eax,[_const_2]
 	mov [comp_im],eax
-L0:	mov eax,0
-	mov ebx,[p]
-	cmp eax,ebx
-	mov eax,[const_3]
+L0:	fld dword[_const_3]
+	fcomp dword[p]
+	wait
+	fstsw ax
+	sahf
+	jbe L1
+	mov eax,[const_4]
 	mov [float_buff],eax
 	fld dword[float_buff]
-	fld dword[p]
-	fadd dword[float_buff]
-	fst dword[float_buff]
+	fadd dword[p]
+	fstp dword[float_buff]
 	mov edx,[float_buff]
 	mov [p],edx
-	jmp L0
-L1:	xor rax,rax
+	xor rax,rax
+	fld dword[p]
+	fistp dword[_buff_5]
+	mov eax,[_buff_5]
+	call print_num
+	xor rax,rax
 	mov ecx, temp1
 	mov edx, temp1.len
+	call print_str
+	jmp L0
+L1:	xor rax,rax
+	mov ecx, temp2
+	mov edx, temp2.len
 	call print_str
 
 	mov	eax, 1

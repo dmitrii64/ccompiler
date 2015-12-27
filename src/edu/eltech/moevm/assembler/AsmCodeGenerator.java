@@ -80,14 +80,16 @@ public class AsmCodeGenerator {
             return irregister;
     }
 
-    public static String binaryOp(String op, String IRfirst, String IRsecond, String IRresult, Type type) {
+    public static String binaryOp(AsmCode code, String op, String IRfirst, String IRsecond, String IRresult, Type type) {
         String result = "";
         String size = getSize(type);
         if (isVariable(IRfirst)) {
             result += "\tmov " + size + "ax,[" + IRfirst + "]\n";
         }
         if (isConstant(IRfirst)) {
-            result += "\tmov " + size + "ax," + IRfirst + "\n";
+            int temp = code.getTempid();
+            code.addData("_const_" + temp + ": dd " + IRfirst + "\n");
+            result += "\tmov " + size + "ax," + "[_const_" + temp + "]\n";
         }
         if (isRegister(IRfirst)) {
             result += "\tmov " + size + "ax," + getRegister(size, IRfirst) + "\n";
@@ -96,7 +98,9 @@ public class AsmCodeGenerator {
             result += "\tmov " + size + "bx,[" + IRsecond + "]\n";
         }
         if (isConstant(IRsecond)) {
-            result += "\tmov " + size + "bx," + IRsecond + "\n";
+            int temp = code.getTempid();
+            code.addData("_const_" + temp + ": dd " + IRsecond + "\n");
+            result += "\tmov " + size + "ax," + "[_const_" + temp + "]\n";
         }
         if (isRegister(IRsecond)) {
             result += "\tmov " + size + "bx," + getRegister(size, IRsecond) + "\n";
@@ -125,54 +129,30 @@ public class AsmCodeGenerator {
                 result += "\tmov eax,[" + "const_" + temp1 + "]\n";
                 result += "\tmov [float_buff],eax\n";
                 result += "\tfld dword[float_buff]" + "\n";
-                if (isConstant(IRsecond)) {
-                    int temp2 = code.getTempid();
-                    code.addData("const_" + temp2 + ": dd " + IRsecond + "\n");
-                    result += "\tmov eax,[" + "const_" + temp2 + "]\n";
-                    result += "\tmov [float_buff],eax\n";
-                    result += "\t" + op + " dword[float_buff]" + "\n";
-                } else if (isVariable(IRsecond)) {
-                    result += "\tfld dword[" + IRsecond + "]" + "\n";
-                    result += "\t" + op + " dword[float_buff]" + "\n";
-                } else if (isRegister(IRsecond)) {
-                    result += "\tmov [float_buff]," + getRegister("e", IRsecond) + "\n";
-                    result += "\t" + op + " dword[float_buff]" + "\n";
-                }
-
             } else if (isVariable(IRfirst)) {
                 result += "\tfld dword[" + IRfirst + "]" + "\n";
-                if (isConstant(IRsecond)) {
-                    int temp2 = code.getTempid();
-                    code.addData("const_" + temp2 + ": dd " + IRsecond + "\n");
-                    result += "\tmov eax,[" + "const_" + temp2 + "]\n";
-                    result += "\tmov [float_buff],eax\n";
-                    result += "\t" + op + " dword[float_buff]" + "\n";
-                } else if (isVariable(IRsecond)) {
-                    result += "\t" + op + " dword[" + IRsecond + "]" + "\n";
-                } else if (isRegister(IRsecond)) {
-                    result += "\tmov [float_buff]," + getRegister("e", IRsecond) + "\n";
-                    result += "\t" + op + " dword[float_buff]" + "\n";
-                }
             } else if (isRegister(IRfirst)) {
                 result += "\tmov [float_buff]," + getRegister("e", IRfirst) + "\n";
                 result += "\tfld dword[float_buff]" + "\n";
-                if (isConstant(IRsecond)) {
-                    int temp2 = code.getTempid();
-                    code.addData("const_" + temp2 + ": dd " + IRsecond + "\n");
-                    result += "\tmov eax,[" + "const_" + temp2 + "]\n";
-                    result += "\tmov [float_buff],eax\n";
-                    result += "\t" + op + " dword[float_buff]" + "\n";
-                } else if (isVariable(IRsecond)) {
-                    result += "\t" + op + " dword[" + IRsecond + "]" + "\n";
-                } else if (isRegister(IRsecond)) {
-                    result += "\tmov [float_buff]," + getRegister("e", IRsecond) + "\n";
-                    result += "\t" + op + " dword[float_buff]" + "\n";
-                }
             }
+
+            if (isConstant(IRsecond)) {
+                int temp2 = code.getTempid();
+                code.addData("const_" + temp2 + ": dd " + IRsecond + "\n");
+                result += "\tmov eax,[" + "const_" + temp2 + "]\n";
+                result += "\tmov [float_buff],eax\n";
+                result += "\t" + op + " dword[float_buff]" + "\n";
+            } else if (isVariable(IRsecond)) {
+                result += "\t" + op + " dword[" + IRsecond + "]" + "\n";
+            } else if (isRegister(IRsecond)) {
+                result += "\tmov [float_buff]," + getRegister("e", IRsecond) + "\n";
+                result += "\t" + op + " dword[float_buff]" + "\n";
+            }
+
             if (isVariable(IRresult))
-                result += "\tfst dword[" + IRresult + "]\n";
+                result += "\tfstp dword[" + IRresult + "]\n";
             else if (isRegister(IRresult)) {
-                result += "\tfst dword[float_buff]\n";
+                result += "\tfstp dword[float_buff]\n";
                 result += "\tmov " + getRegister("e", IRresult) + ",[float_buff]\n";
             }
         }
@@ -197,7 +177,7 @@ public class AsmCodeGenerator {
         }
         result += "\tmov dword[float_buff],eax\n";
         result += "\t" + op + " dword[float_buff]\n";
-        result += "\tfst dword[float_buff]\n";
+        result += "\tfstp dword[float_buff]\n";
         result += "\tmov eax,dword[float_buff]\n";
         if (isVariable(IRresult)) {
             result += "\tmov [" + IRresult + "_re],eax\n";
@@ -220,7 +200,7 @@ public class AsmCodeGenerator {
         }
         result += "\tmov dword[float_buff],eax\n";
         result += "\t" + op + " dword[float_buff]\n";
-        result += "\tfst dword[float_buff]\n";
+        result += "\tfstp dword[float_buff]\n";
         result += "\txor rax,rax\n";
         result += "\tmov eax,dword[float_buff]\n";
         if (isVariable(IRresult)) {
@@ -321,7 +301,7 @@ public class AsmCodeGenerator {
                         break;
                     case ADD:
                         if (el.getType() == Type.INT || el.getType() == Type.LONG)
-                            result = binaryOp("add", IRfirst, IRsecond, IRresult, el.getType());
+                            result = binaryOp(asmCode, "add", IRfirst, IRsecond, IRresult, el.getType());
                         else if (el.getType() == Type.FLOAT)
                             result = floatOp(asmCode, "fadd", IRfirst, IRsecond, IRresult, el.getType());
                         else if (el.getType() == Type.COMPLEX)
@@ -330,7 +310,7 @@ public class AsmCodeGenerator {
                         break;
                     case MUL:
                         if (el.getType() == Type.INT || el.getType() == Type.LONG)
-                            result = binaryOp("imul", IRfirst, IRsecond, IRresult, el.getType());
+                            result = binaryOp(asmCode, "imul", IRfirst, IRsecond, IRresult, el.getType());
                         else if (el.getType() == Type.FLOAT)
                             result = floatOp(asmCode, "fmul", IRfirst, IRsecond, IRresult, el.getType());
                         else if (el.getType() == Type.COMPLEX)
@@ -339,7 +319,7 @@ public class AsmCodeGenerator {
                         break;
                     case DIV:
                         if (el.getType() == Type.INT || el.getType() == Type.LONG)
-                            result = binaryOp("idiv", IRfirst, IRsecond, IRresult, el.getType());
+                            result = binaryOp(asmCode, "idiv", IRfirst, IRsecond, IRresult, el.getType());
                         else if (el.getType() == Type.FLOAT)
                             result = floatOp(asmCode, "fdiv", IRfirst, IRsecond, IRresult, el.getType());
                         else if (el.getType() == Type.COMPLEX)
@@ -347,12 +327,41 @@ public class AsmCodeGenerator {
                         asmCode.addCode(result);
                         break;
                     case CMP:
-                        result = binaryOp("cmp", IRfirst, IRsecond, IRresult, el.getType());
+                        if (el.getType() != Type.FLOAT)
+                            result = binaryOp(asmCode, "cmp", IRfirst, IRsecond, IRresult, el.getType());
+                        else {
+
+                            if (isConstant(IRfirst)) {
+                                int temp = asmCode.getTempid();
+                                asmCode.addData("_const_" + temp + ": dd " + IRfirst + "\n");
+                                result += "\tfld dword[_const_" + temp + "]\n";
+                            } else if (isVariable(IRfirst)) {
+                                result += "\tfld dword[" + IRfirst + "]\n";
+                            } else if (isRegister(IRfirst)) {
+                                result += "\tmov dword[float_buff]," + getRegister("e", IRfirst) + "\n";
+                                result += "\tfld dword[float_buff]\n";
+                            }
+                            if (isConstant(IRsecond)) {
+                                int temp = asmCode.getTempid();
+                                asmCode.addData("_const_" + temp + ": dd " + IRsecond + "\n");
+                                result += "\tfcomp dword[_const_" + temp + "]\n";
+                            } else if (isVariable(IRsecond)) {
+                                result += "\tfcomp dword[" + IRsecond + "]\n";
+                            } else if (isRegister(IRsecond)) {
+                                result += "\tmov dword[float_buff]," + getRegister("e", IRsecond) + "\n";
+                                result += "\tfcomp dword[float_buff]\n";
+                            }
+
+                            result += "\twait\n" +
+                                    "\tfstsw ax\n" +
+                                    "\tsahf\n";
+
+                        }
                         asmCode.addCode(result);
                         break;
                     case SUB:
                         if (el.getType() == Type.INT || el.getType() == Type.LONG)
-                            result = binaryOp("sub", IRsecond, IRfirst, IRresult, el.getType());
+                            result = binaryOp(asmCode, "sub", IRsecond, IRfirst, IRresult, el.getType());
                         else if (el.getType() == Type.FLOAT)
                             result = floatOp(asmCode, "fsub", IRfirst, IRsecond, IRresult, el.getType());
                         else if (el.getType() == Type.COMPLEX)
@@ -376,7 +385,7 @@ public class AsmCodeGenerator {
                         asmCode.addCode(result);
                         break;
                     case BML:
-                        result = "\tjna " + IRfirst + "\n";
+                        result = "\tjbe " + IRfirst + "\n";
                         asmCode.addCode(result);
                         break;
                     case INC:
@@ -470,13 +479,13 @@ public class AsmCodeGenerator {
                             if (isVariable(IRfirst)) {
                                 result = "\tfld dword[" + IRfirst + "]\n";
                                 result += "\tfchs\n";
-                                result += "\tfst dword[float_buff]\n";
+                                result += "\tfstp dword[float_buff]\n";
                                 result += "\tmov eax,dword[float_buff]\n";
                             } else if (isRegister(IRfirst)) {
                                 result = "\tmov dword[float_buff]," + getRegister(size, IRresult) + "\n";
                                 result = "\tfld [float_buff]\n";
                                 result += "\tfchs\n";
-                                result += "\tfst dword[float_buff]\n";
+                                result += "\tfstp dword[float_buff]\n";
                                 result += "\tmov eax,dword[float_buff]\n";
                             }
 
@@ -509,7 +518,7 @@ public class AsmCodeGenerator {
                                 result += "\tfld dword[" + IRfirst + "]\n";
                                 int id = asmCode.getTempid();
                                 asmCode.addData("_buff_" + id + ": dd 0\n");
-                                result += "\tfist dword[_buff_" + id + "]\n";
+                                result += "\tfistp dword[_buff_" + id + "]\n";
                                 result += "\tmov eax,[_buff_" + id + "]\n";
                                 result += "\tcall print_num\n";
                             } else {
