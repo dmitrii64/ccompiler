@@ -96,6 +96,12 @@ H = [a-fA-F0-9]
     }
     return Parser.IM;
 }
+"sim"      {
+    if (yyparser != null) {
+        yyparser.yylval = new ParserVal(new PTLeaf(Parser.SIM, yylineno));
+    }
+    return Parser.SIM;
+}
 "int"     {
     if (yyparser != null) {
         yyparser.yylval = new ParserVal(new PTLeaf(Parser.INT, yylineno));
@@ -125,6 +131,12 @@ H = [a-fA-F0-9]
         yyparser.yylval = new ParserVal(new PTLeaf(Parser.RE, yylineno));
     }
     return Parser.RE;
+}
+"sre"      {
+    if (yyparser != null) {
+        yyparser.yylval = new ParserVal(new PTLeaf(Parser.SRE, yylineno));
+    }
+    return Parser.SRE;
 }
 "return"  {
     if (yyparser != null) {

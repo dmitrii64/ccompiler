@@ -12,7 +12,7 @@
 %token STATIC
 %token CHAR SHORT INT LONG FLOAT DOUBLE VOID COMPLEX BOOL
 
-%token RE IM MOD PRINT NEW
+%token RE IM SRE SIM MOD PRINT NEW
 
 %token IF ELSE WHILE DO FOR GOTO BREAK RETURN
 
@@ -58,6 +58,8 @@ unary_expression
 	| RE RBLEFT IDENTIFIER RBRIGHT         { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTLeaf)$1.obj, (PTLeaf)$2.obj, (PTLeaf)$3.obj, (PTLeaf)$4.obj)); }
 	| IM RBLEFT CONSTANT RBRIGHT           { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTLeaf)$1.obj, (PTLeaf)$2.obj, (PTLeaf)$3.obj, (PTLeaf)$4.obj)); }
 	| IM RBLEFT IDENTIFIER RBRIGHT         { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTLeaf)$1.obj, (PTLeaf)$2.obj, (PTLeaf)$3.obj, (PTLeaf)$4.obj)); }
+	| SRE RBLEFT IDENTIFIER COMMA IDENTIFIER RBRIGHT         { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTLeaf)$1.obj, (PTLeaf)$2.obj, (PTLeaf)$3.obj, (PTLeaf)$4.obj,(PTLeaf)$5.obj,(PTLeaf)$6.obj)); }
+	| SIM RBLEFT IDENTIFIER COMMA IDENTIFIER RBRIGHT         { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTLeaf)$1.obj, (PTLeaf)$2.obj, (PTLeaf)$3.obj, (PTLeaf)$4.obj,(PTLeaf)$5.obj,(PTLeaf)$6.obj)); }
 	| MOD RBLEFT CONSTANT RBRIGHT          { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTLeaf)$1.obj, (PTLeaf)$2.obj, (PTLeaf)$3.obj, (PTLeaf)$4.obj)); }
 	| MOD RBLEFT IDENTIFIER RBRIGHT        { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTLeaf)$1.obj, (PTLeaf)$2.obj, (PTLeaf)$3.obj, (PTLeaf)$4.obj)); }
 	| PRINT RBLEFT STRING_LITERAL RBRIGHT  { $$ = new ParserVal(new PTNode(Nonterminals.UNARY_EXPRESSION, (PTLeaf)$1.obj, (PTLeaf)$2.obj, (PTLeaf)$3.obj, (PTLeaf)$4.obj)); }

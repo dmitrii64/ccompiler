@@ -68,6 +68,8 @@ public enum Operation {
 
     RE,
     IM,
+    SRE,
+    SIM,
     MOD,
 
     NEW,

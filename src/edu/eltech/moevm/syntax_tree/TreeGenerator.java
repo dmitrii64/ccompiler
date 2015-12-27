@@ -326,7 +326,6 @@ public class TreeGenerator {
                     PTElement unaryFirst = node.getElements().get(0);
                     PTElement unarySecond = node.getElements().get(1);
 
-
                     String firstString = null;
                     String secondString = null;
                     try {
@@ -354,6 +353,10 @@ public class TreeGenerator {
                             op = Operation.RE;
                         else if (firstString.compareTo(Operation.IM.name()) == 0)
                             op = Operation.IM;
+                        else if (firstString.compareTo(Operation.SRE.name()) == 0)
+                            op = Operation.SRE;
+                        else if (firstString.compareTo(Operation.SIM.name()) == 0)
+                            op = Operation.SIM;
                     }
 
 
@@ -373,6 +376,13 @@ public class TreeGenerator {
                             unaryLeaf = createLeafFromPTLeaf((PTLeaf) third);
                             result.add(unaryLeaf);
                         }
+                    } else if (op == Operation.SRE || op == Operation.SIM) {
+                        PTElement third = node.getElements().get(2);
+                        PTElement operand = node.getElements().get(4);
+                        unaryLeaf = createLeafFromPTLeaf((PTLeaf) third);
+                        result.add(unaryLeaf);
+                        unaryLeaf = createLeafFromPTLeaf((PTLeaf) operand);
+                        result.add(unaryLeaf);
                     } else if (op == Operation.PRINT) {
                         PTElement third = node.getElements().get(2);
                         unaryLeaf = createLeafFromPTLeaf((PTLeaf) third);
