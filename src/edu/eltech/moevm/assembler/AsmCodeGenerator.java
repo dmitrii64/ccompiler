@@ -319,11 +319,11 @@ public class AsmCodeGenerator {
                         break;
                     case DIV:
                         if (el.getType() == Type.INT || el.getType() == Type.LONG)
-                            result = binaryOp(asmCode, "idiv", IRfirst, IRsecond, IRresult, el.getType());
+                            result = binaryOp(asmCode, "idiv", IRsecond, IRfirst, IRresult, el.getType());
                         else if (el.getType() == Type.FLOAT)
-                            result = floatOp(asmCode, "fdiv", IRfirst, IRsecond, IRresult, el.getType());
+                            result = floatOp(asmCode, "fdiv", IRsecond, IRfirst, IRresult, el.getType());
                         else if (el.getType() == Type.COMPLEX)
-                            result = complexOp(asmCode, "fdiv", IRfirst, IRsecond, IRresult, el.getType());
+                            result = complexOp(asmCode, "fdiv", IRsecond, IRfirst, IRresult, el.getType());
                         asmCode.addCode(result);
                         break;
                     case CMP:
@@ -363,9 +363,9 @@ public class AsmCodeGenerator {
                         if (el.getType() == Type.INT || el.getType() == Type.LONG)
                             result = binaryOp(asmCode, "sub", IRsecond, IRfirst, IRresult, el.getType());
                         else if (el.getType() == Type.FLOAT)
-                            result = floatOp(asmCode, "fsub", IRfirst, IRsecond, IRresult, el.getType());
+                            result = floatOp(asmCode, "fsub", IRsecond, IRfirst, IRresult, el.getType());
                         else if (el.getType() == Type.COMPLEX)
-                            result = complexOp(asmCode, "fsub", IRfirst, IRsecond, IRresult, el.getType());
+                            result = complexOp(asmCode, "fsub", IRsecond, IRfirst, IRresult, el.getType());
                         asmCode.addCode(result);
                         break;
                     case DEFL:
@@ -386,6 +386,10 @@ public class AsmCodeGenerator {
                         break;
                     case BML:
                         result = "\tjbe " + IRfirst + "\n";
+                        asmCode.addCode(result);
+                        break;
+                    case BPL:
+                        result = "\tja " + IRfirst + "\n";
                         asmCode.addCode(result);
                         break;
                     case INC:

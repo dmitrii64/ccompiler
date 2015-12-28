@@ -8,9 +8,9 @@ comp_im:	dd 0
 _const_1: dd 3.2
 _const_2: dd 8.2
 i_var:	dd 1
-p:	dd 0
+p:	dd 10.0
 z:	dd 0
-_const_3: dd 10.0
+_const_3: dd 3.0
 const_4: dd 1.0
 _buff_5: dd 0
 temp1: db " "
@@ -91,11 +91,11 @@ L0:	fld dword[_const_3]
 	wait
 	fstsw ax
 	sahf
-	jbe L1
+	ja L1
+	fld dword[p]
 	mov eax,[const_4]
 	mov [float_buff],eax
-	fld dword[float_buff]
-	fadd dword[p]
+	fsub dword[float_buff]
 	fstp dword[float_buff]
 	mov edx,[float_buff]
 	mov [p],edx
