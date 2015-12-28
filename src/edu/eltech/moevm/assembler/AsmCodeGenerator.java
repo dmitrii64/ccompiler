@@ -125,8 +125,8 @@ public class AsmCodeGenerator {
         if (type == Type.FLOAT) {
             if (isConstant(IRfirst)) {
                 int temp1 = code.getTempid();
-                code.addData("const_" + temp1 + ": dd " + IRfirst + "\n");
-                result += "\tmov eax,[" + "const_" + temp1 + "]\n";
+                code.addData("_const_" + temp1 + ": dd " + IRfirst + "\n");
+                result += "\tmov eax,[" + "_const_" + temp1 + "]\n";
                 result += "\tmov [float_buff],eax\n";
                 result += "\tfld dword[float_buff]" + "\n";
             } else if (isVariable(IRfirst)) {
@@ -138,8 +138,8 @@ public class AsmCodeGenerator {
 
             if (isConstant(IRsecond)) {
                 int temp2 = code.getTempid();
-                code.addData("const_" + temp2 + ": dd " + IRsecond + "\n");
-                result += "\tmov eax,[" + "const_" + temp2 + "]\n";
+                code.addData("_const_" + temp2 + ": dd " + IRsecond + "\n");
+                result += "\tmov eax,[" + "_const_" + temp2 + "]\n";
                 result += "\tmov [float_buff],eax\n";
                 result += "\t" + op + " dword[float_buff]" + "\n";
             } else if (isVariable(IRsecond)) {
@@ -173,7 +173,7 @@ public class AsmCodeGenerator {
             result += "\tmov eax,dword[" + IRsecond + "_re]\n";
         } else if (isRegister(IRsecond)) {
             result += "\tmov rax," + getRegister("r", IRsecond) + "\n";
-            result += "\tshr rax,32\t";
+            result += "\tshr rax,32\n";
         }
         result += "\tmov dword[float_buff],eax\n";
         result += "\t" + op + " dword[float_buff]\n";

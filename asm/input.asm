@@ -7,11 +7,10 @@ comp_re:	dd 0
 comp_im:	dd 0
 _const_1: dd 3.2
 _const_2: dd 8.2
+p:	dd 0.0
 i_var:	dd 1
-p:	dd 10.0
-z:	dd 0
-_const_3: dd 3.0
-const_4: dd 1.0
+_const_3: dd 10.0
+_const_4: dd 1.0
 _buff_5: dd 0
 temp1: db " "
 .len: equ	$ - temp1
@@ -86,19 +85,27 @@ _start:
 	mov [comp_re],eax
 	mov eax,[_const_2]
 	mov [comp_im],eax
+	mov eax,[comp_re]
+	mov ecx,eax
+	mov [p],ecx
 L0:	fld dword[_const_3]
 	fcomp dword[p]
 	wait
 	fstsw ax
 	sahf
-	ja L1
-	fld dword[p]
-	mov eax,[const_4]
+	jbe L1
+	mov eax,[comp_re]
+	mov edx,eax
+	mov eax,[_const_4]
 	mov [float_buff],eax
-	fsub dword[float_buff]
+	fld dword[float_buff]
+	mov [float_buff],edx
+	fadd dword[float_buff]
 	fstp dword[float_buff]
 	mov edx,[float_buff]
 	mov [p],edx
+	mov eax,[p]
+	mov [comp_re],eax
 	xor rax,rax
 	fld dword[p]
 	fistp dword[_buff_5]

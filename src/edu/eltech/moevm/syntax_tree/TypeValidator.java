@@ -31,6 +31,8 @@ public class TypeValidator implements TreeCallback {
                     break;
                 case RE:
                 case IM:
+                    node.setType(Type.FLOAT);
+                    break;
                 case UMINUS:
                     TreeElement single = node.getElements().get(0);
                     node.setType(single.getType());
