@@ -69,7 +69,7 @@ public class SyntaxTreeJsGenerator implements TreeCallback {
                 "\n" +
                 "<link rel=\"stylesheet\" href=\"css/demo.css\">\n" +
                 "<script src=\"js/d3.v3.min.js\" charset=\"utf-8\"></script>\n" +
-                "<script src=\"js/dagre-d3.min.js\"></script>\n" +
+                "<script src=\"js/dagre-d3.js\"></script>\n" +
                 "\n" +
                 "<style id=\"css\">\n" +
                 "body {\n" +
