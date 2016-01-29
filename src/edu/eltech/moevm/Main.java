@@ -201,15 +201,28 @@ public class Main {
             String asmCodeToFile = asmCode.print();
             System.out.println(asmCodeToFile);
 
-            FileWriter fileWriter2 = new FileWriter("asm/input.asm");
+            System.out.println("Writing asm code to asm/input.asm");
+            FileWriter fileWriter2 = new FileWriter("input.asm");
             fileWriter2.write(asmCodeToFile);
             fileWriter2.close();
 
+            System.out.println("Compilation...");
+            ProcessBuilder pb = new ProcessBuilder("./asm/compile.sh");
+            pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+            pb.redirectError(ProcessBuilder.Redirect.INHERIT);
+            Process p = pb.start();
+            p.waitFor();
 
-
-
-
-
+            if (p.exitValue() == 0) {
+                System.out.println("Execution:");
+                pb = new ProcessBuilder("./output");
+                pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+                pb.redirectError(ProcessBuilder.Redirect.INHERIT);
+                p = pb.start();
+                p.waitFor();
+            } else {
+                System.err.println("compiler stops with invalid exit code");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } catch (IdentifierDefinedException e) {
@@ -223,6 +236,8 @@ public class Main {
         } catch (UnusedIdentifierException e) {
             e.printStackTrace();
         } catch (DuplicateArgumentException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
